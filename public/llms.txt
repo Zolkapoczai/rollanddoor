@@ -7,7 +7,7 @@ A Roll’n’Door egy magyar vállalkozás. Egyedi gyártású tolóajtókat ké
 
 ## Mit csinálunk
 - Egyedi ajtólap, vasalat és beszerelés.
-- Minden vasalat-szett dupla sínnel érkezik a stabilitásért. Más rendszerekben általában egy sín van.
+- Minden ajtót dupla sínnel szerelünk a stabilitásért. Más rendszerekben általában egy sín van.
 - Bármilyen RAL vagy NCS szín kérhető, vagy megadható egy gyártó konkrét terméke.
 - Az ajtólap legfeljebb 80 kg lehet.
 - Beszerelés az egész országban.
