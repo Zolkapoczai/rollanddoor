@@ -30,7 +30,7 @@ Egy Cloudflare Worker szolgálja ki a statikus oldalt (`public/`) és az API-t (
 | Rész | Technológia | Megjegyzés |
 |---|---|---|
 | Felület | HTML/CSS/JS a `public/` alatt | Sötét arculat, kiemelő szín `#d4a373`, Inter + Outfit |
-| API | Worker, TypeScript (`worker/src/`) | Csak `/api/*`, `/r/*`, `/m/*`, `/le/*` útvonalakon fut elsőként |
+| API | Worker, TypeScript (`worker/src/`) | Csak `/api/*`, `/r/*`, `/m/*`, `/le/*`, `/pult` útvonalakon fut elsőként |
 | Adat | Cloudflare D1 (`worker/schema.sql`) | `megrendeles`, `uzenet`, `fajl`, `allomas_naplo` |
 | Fájlok | Cloudflare R2, privát | Ügyfélfotók, látványtervek, csatolmányok |
 | Robotszűrő | Cloudflare Turnstile | Helyben a mindig-átmegy tesztkulcsok |
@@ -125,7 +125,14 @@ Irányított igényfelvétel, **nem** árkalkulátor. Hat lépés: elrendezés �
 
 ### Később
 
-Ricsi összesítő képernyője (Rám vár · Készül · Ügyfélre vár), fizetős Gemini az ajánlat megírásához, ajtó ráillesztése az ügyfél fotójára, „mi nem megy együtt” szabályok, ár vagy „-tól” ár, új logó, Analytics bekötése, heti D1-mentés, e-mailes belépőlink Ricsi oldalához.
+Fizetős Gemini az ajánlat megírásához, ajtó ráillesztése az ügyfél fotójára, „mi nem megy együtt” szabályok, ár vagy „-tól” ár, új logó, Analytics bekötése, heti D1-mentés.
+
+### Ricsi összesítője (`/pult`), 2026-11-14, helyben kipróbálva
+
+- Egy oldal az összes megrendeléssel, három csoportban: **Rám vár** (1., 2., 4. állomás, jóváhagyott látványterv, megválaszolatlan ügyfél-üzenet), **Készül** (6., a beszerelés dátumával), **Ügyfélre vár** (3., jóváhagyásra váró 5., 7.). A lezártak és „nem érdeklődik” jelzésűek összecsukva. Minden sor a megrendelés `/m/…` oldalára visz.
+- „Megválaszolatlan”: az utolsó ügyfél-üzenet (`uzenet.irany = 'be'`) frissebb, mint Ricsi utolsó válasza, megjegyzése vagy állomásváltása.
+- Belépés: Ricsi a `/pult` oldalon belépőlinket kér, ami a `RICSI_EMAIL` címre megy (a cím kívülről nem adható meg). A link 15 percig él, egyszer használható, és csak gombnyomásra léptet be (a levelezők linkellenőrzője ne használja el). Utána `HttpOnly`, `SameSite=Strict` süti, 60 napig. Óránként legfeljebb 5 link kérhető. A tokenek csak SHA-256 hash-ként vannak a D1-ben (`pult_belepo`, `pult_munkamenet`).
+- Élesítéshez: `worker/migrations/0003_pult.sql` a távoli D1-re, utána deploy. A megrendelésenkénti `/m/…` linkek változatlanul működnek.
 
 ## 7. Ismert kockázatok
 

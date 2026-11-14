@@ -2,6 +2,7 @@ import type { Env } from "./env";
 import { handleBejovo } from "./bejovo";
 import { futtatCron } from "./cron";
 import { handleIgeny } from "./igeny";
+import { handlePult } from "./pult";
 import { handleRicsi } from "./ricsi";
 import { hiba, withSecurity } from "./util";
 import { handleLeiratkozas, handleVevo } from "./vevo";
@@ -61,12 +62,15 @@ export default {
 
       const sh = /^\/(r|m|le)\/[^/]+\/?$/.exec(pathname);
       if (sh) return await shell(request, env, SHELLS[sh[1]]);
+      // Ricsi összesítője és a belépőlink oldala ugyanaz a váz.
+      if (/^\/pult\/?$/.test(pathname) || /^\/pult\/be\/[^/]+\/?$/.test(pathname)) return await shell(request, env, "/pult.html");
 
       if (pathname.startsWith("/api/")) {
         const parts = pathname.slice("/api/".length).replace(/\/+$/, "").split("/");
         if (parts[0] === "r" && parts.length >= 2) return await handleVevo(request, env, ctx, parts);
         if (parts[0] === "m" && parts.length >= 2) return await handleRicsi(request, env, ctx, parts);
         if (parts[0] === "le" && parts.length >= 2) return await handleLeiratkozas(request, env, ctx, parts);
+        if (parts[0] === "pult") return await handlePult(request, env, ctx, parts);
         return hiba("Nem található.", 404);
       }
     } catch {
@@ -75,7 +79,7 @@ export default {
     }
 
     // /r/, /m/, /le/ token nelkul vagy tovabbi szegmenssel: nincs ilyen oldal.
-    if (/^\/(r|m|le)\//.test(pathname)) {
+    if (/^\/(r|m|le|pult)\//.test(pathname)) {
       return withSecurity(new Response("Nem található.", { status: 404, headers: { "Content-Type": "text/plain; charset=utf-8" } }));
     }
     // Ide csak a run_worker_first mintakon kivuli utak jutnak (elvileg soha); biztonsagi halo.
