@@ -126,8 +126,25 @@ async function parse(form: FormData): Promise<Parsed | string> {
   return { forras, nev, email, telefon, uzenet, igenyJson, igenyLines, fotok, token: get("cf-turnstile-response") };
 }
 
+// Sebességkorlát (D1-ből számolva, IP-t nem tárolunk). Valós forgalom: havi ~8 igény, ezért bőven laza.
+// - Összesen: a Resend ingyenes levélkeretét és a D1-et védi a tömeges beküldéstől.
+// - Egy e-mail címre: megakadályozza, hogy valaki mások címére záporoztassa a visszaigazolást.
+const MAX_IGENY_ORANKENT = 15;
+const MAX_IGENY_CIMENKENT_NAPONTA = 3;
+
+async function szamol(env: Env, sql: string, ...binds: unknown[]): Promise<number> {
+  const r = await env.DB.prepare(sql).bind(...binds).first<{ n: number }>();
+  return r?.n ?? 0;
+}
+
+const tulSok = () => hiba("Most túl sok igény érkezett. Kérjük, próbáld újra később, vagy hívj minket telefonon.", 429);
+
 export async function handleIgeny(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
   if (request.method !== "POST") return hiba("Nem engedélyezett módszer.", 405);
+  const oraja = new Date(Date.now() - 3600_000).toISOString();
+  if ((await szamol(env, "SELECT COUNT(*) AS n FROM megrendeles WHERE letrehozva > ?", oraja)) >= MAX_IGENY_ORANKENT) {
+    return tulSok();
+  }
   const ct = request.headers.get("content-type") ?? "";
   if (!ct.toLowerCase().startsWith("multipart/form-data")) return hiba("Érvénytelen kérés.", 415);
   const len = Number(request.headers.get("content-length"));
@@ -145,6 +162,14 @@ export async function handleIgeny(request: Request, env: Env, ctx: ExecutionCont
 
   if (!(await verifyTurnstile(env, p.token, request.headers.get("CF-Connecting-IP")))) {
     return hiba("A robotvédelmi ellenőrzés nem sikerült, kérjük, próbálja újra.", 403);
+  }
+
+  const napja = new Date(Date.now() - 24 * 3600_000).toISOString();
+  if (
+    (await szamol(env, "SELECT COUNT(*) AS n FROM megrendeles WHERE lower(email) = ? AND letrehozva > ?", p.email.toLowerCase(), napja)) >=
+    MAX_IGENY_CIMENKENT_NAPONTA
+  ) {
+    return tulSok();
   }
 
   // Fotok ellenorzese (magic byte), mielott barmit irnank.
