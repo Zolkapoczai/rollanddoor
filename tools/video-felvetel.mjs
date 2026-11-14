@@ -4,7 +4,8 @@
 //
 // Előfeltétel: fut a helyi szerver (rollndoor-dev, port 8787), telepítve a Chrome és az ffmpeg.
 // Futtatás:  node tools/video-felvetel.mjs [--url http://localhost:8787] [--fps 30] [--kepek 2,6.8,19.9]
-// Kimenet:   tools/kimenet/dupla-sin-1x1.mp4, tools/kimenet/dupla-sin-9x16.mp4 (a git nem követi)
+// Kimenet:   public/video/dupla-sin-1x1.mp4 és -9x16.mp4 + poszterkép (.jpg); ezeket a főoldal mutatja (#technologia).
+//            A --kepek állóképei a tools/kimenet/ alá kerülnek (a git nem követi).
 import { spawn } from "node:child_process";
 import { existsSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -20,7 +21,10 @@ const FPS = Number(arg("--fps", "30"));
 const KEPEK = arg("--kepek", "") ? arg("--kepek").split(",").map(Number) : null;
 const HOSSZ = 20; // mp, a technologia.css idővonalával egyezik
 const PORT = 9333;
-const OUT = join(dirname(fileURLToPath(import.meta.url)), "kimenet");
+const ITT = dirname(fileURLToPath(import.meta.url));
+const OUT = join(ITT, "kimenet");
+const VIDEO = join(ITT, "..", "public", "video");
+const POSZTER_MP = 13; // a teljes metszet látszik
 
 const FORMATUMOK = [
   { nev: "dupla-sin-1x1", w: 1080, h: 1080, cap: 40, svgMax: "calc(100vh - 190px)" },
@@ -118,7 +122,8 @@ async function felvesz(c, f) {
     return;
   }
 
-  const kimenet = join(OUT, `${f.nev}.mp4`);
+  mkdirSync(VIDEO, { recursive: true });
+  const kimenet = join(VIDEO, `${f.nev}.mp4`);
   const ff = spawn("ffmpeg", ["-y", "-loglevel", "error", "-f", "image2pipe", "-framerate", String(FPS), "-i", "-",
     "-c:v", "libx264", "-pix_fmt", "yuv420p", "-crf", "20", "-preset", "slow", "-movflags", "+faststart", kimenet], { stdio: ["pipe", "inherit", "inherit"] });
   const kesz = new Promise((ok, hiba) => ff.on("close", (k) => (k === 0 ? ok() : hiba(new Error(`ffmpeg kilépési kód: ${k}`)))));
@@ -132,7 +137,12 @@ async function felvesz(c, f) {
   }
   ff.stdin.end();
   await kesz;
-  process.stdout.write(`\r${f.nev}: kész -> ${kimenet}\n`);
+  // Poszterkép: ez látszik, amíg a videó betölt.
+  await new Promise((ok, hiba) =>
+    spawn("ffmpeg", ["-y", "-loglevel", "error", "-ss", String(POSZTER_MP), "-i", kimenet, "-frames:v", "1", "-q:v", "4", join(VIDEO, `${f.nev}.jpg`)], { stdio: "inherit" })
+      .on("close", (k) => (k === 0 ? ok() : hiba(new Error(`ffmpeg poszter: ${k}`)))),
+  );
+  process.stdout.write(`\r${f.nev}: kész -> ${kimenet} (+ .jpg)\n`);
 }
 
 const profil = mkdtempSync(join(tmpdir(), "rnd-felvetel-"));

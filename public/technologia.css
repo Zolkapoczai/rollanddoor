@@ -1,6 +1,14 @@
 /* /technologia: a dupla sín animációja és a faltípusos rögzítés. A landing.css változóit használja. */
 
 .tech { max-width: 1100px; margin: 0 auto; padding: 120px 16px 64px; }
+/* Főoldali szakasz (#technologia) */
+.tech-section { padding: 8rem 5%; background-color: var(--bg-primary); }
+.tech-section .tech { padding: 0; }
+.tech-h { font-size: clamp(1.6rem, 4.5vw, 2.25rem); margin-bottom: 12px; }
+.tech-video { margin: 0 auto 64px; max-width: 640px; }
+.tech-video video { display: block; width: 100%; height: auto; border-radius: 16px; background: #121212; border: 1px solid var(--border-color); }
+.tech-video video.tech-video--tall { width: auto; max-width: 100%; max-height: 82vh; margin: 0 auto; }
+.tech-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 .tech-head { max-width: 720px; margin-bottom: 32px; }
 .tech-head h1 { font-size: clamp(2rem, 6vw, 3rem); margin: 8px 0 16px; }
 .tech-lead { color: var(--text-secondary); font-size: 1.125rem; line-height: 1.6; max-width: 720px; margin-bottom: 24px; }
@@ -95,7 +103,7 @@
 .wall-grid { display: grid; grid-template-columns: 1fr; gap: 16px; margin-bottom: 32px; }
 .wall-card { background: var(--bg-glass); border: 1px solid var(--border-color); border-radius: 16px; padding: 16px; }
 .wall-svg { display: block; width: 100%; height: auto; background: var(--bg-secondary); border-radius: 10px; margin-bottom: 14px; }
-.wall-card h3 { font-size: 1.375rem; margin-bottom: 8px; }
+.wall-card h3, .wall-card h4 { font-size: 1.375rem; margin-bottom: 8px; }
 .wall-card p { color: var(--text-secondary); line-height: 1.6; font-size: 1.0625rem; }
 .wall-todo { margin-top: 12px; padding-left: 18px; color: #ffd6a8; font-size: 0.9375rem; }
 .wall-todo li { margin-bottom: 4px; }

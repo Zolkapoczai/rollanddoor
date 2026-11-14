@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Így működik a dupla sín | Roll’n’Door – ajtó másképp</title>
     <meta name="description" content="A Roll’n’Door dupla sínes tolóajtó-vasalata: hogyan épül fel, miért nem leng ki, és hogyan rögzítjük panel-, fém-, tégla-, kő-, vályog- és gipszkartonfalba.">
-    <!-- TODO (Ricsi jóváhagyása előtt): a noindex marad, a landingről nincs link. Jóváhagyás után: noindex törlése, sitemap, llms.txt, menü. -->
+    <!-- Ez az oldal a dupla sín videóinak FORRÁSA (tools/video-felvetel.mjs veszi fel). A látogatók a főoldal #technologia szakaszában a videót látják. Mindig noindex. -->
     <meta name="robots" content="noindex">
     <link rel="canonical" href="https://rollndoor.hu/technologia.html">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -79,6 +79,12 @@
                         <circle r="6" fill="#3a3a3a" stroke="#9a9a9a" stroke-width="1"/>
                         <path d="M-2.5 -1.5L0 -3L2.5 -1.5V1.5L0 3L-2.5 1.5Z" fill="#111"/>
                     </symbol>
+                    <!-- Fehér kontúr a logó piros betűi körül (a fehér szlogent nem vastagítja): a piros képpontokból maszk, kitágítva, a logó alá -->
+                    <filter id="logo-outline" x="-4%" y="-14%" width="108%" height="128%" color-interpolation-filters="sRGB">
+                        <feColorMatrix in="SourceGraphic" type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  4 -4 0 0 0" result="piros"/>
+                        <feMorphology in="piros" operator="dilate" radius="3" result="kontur"/>
+                        <feMerge><feMergeNode in="kontur"/><feMergeNode in="SourceGraphic"/></feMerge>
+                    </filter>
                 </defs>
 
                 <rect class="a a-grid" width="600" height="520" fill="url(#grid)"/>
@@ -213,7 +219,7 @@
 
                 <!-- ================= Zárókép (18–20 mp): az eredeti piros logó ================= -->
                 <g class="a-finale">
-                    <image href="img/logo.webp" x="80" y="200" width="440" height="103" preserveAspectRatio="xMidYMid meet"/>
+                    <image href="img/logo.webp" x="80" y="200" width="440" height="103" preserveAspectRatio="xMidYMid meet" filter="url(#logo-outline)"/>
                 </g>
 
                 <!-- CAD-szövegmező -->
@@ -238,172 +244,6 @@
             </figcaption>
         </figure>
 
-        <!-- ===== Rögzítés faltípusonként ===== -->
-        <section class="tech-walls" id="rogzites">
-            <h2>Rögzítés faltípusonként</h2>
-            <p class="tech-lead">A sín csak annyira stabil, amennyire a fal megtartja. Ezért minden falhoz más rögzítést választunk. Ha nem tudod, milyen a falad, küldj róla fotót, és megmondjuk.</p>
-            <p class="tech-draft" data-todo>VÁZLAT – a rögzítési adatok Ricsi jóváhagyására várnak. Élesítés előtt minden <code>TODO</code> pontot meg kell erősíteni vagy javítani.</p>
-
-            <!-- Közös rajzelemek a falkártyákhoz -->
-            <svg width="0" height="0" aria-hidden="true" style="position:absolute">
-                <defs>
-                    <symbol id="rail-stack" viewBox="0 0 90 100" width="90" height="100">
-                        <rect x="0" y="20" width="7" height="55" fill="#d4a373"/>
-                        <rect x="7" y="40" width="16" height="12" fill="none" stroke="#d4a373" stroke-width="1.5"/>
-                        <rect x="23" y="20" width="7" height="55" fill="#d4a373"/>
-                        <rect x="30" y="38" width="8" height="16" fill="#6b6b6b"/>
-                    </symbol>
-                    <pattern id="p-beton" width="24" height="24" patternUnits="userSpaceOnUse">
-                        <rect width="24" height="24" fill="#3a3a3a"/>
-                        <circle cx="5" cy="6" r="1.4" fill="#8a8a8a"/><circle cx="17" cy="15" r="1.1" fill="#8a8a8a"/><circle cx="9" cy="19" r="0.9" fill="#8a8a8a"/>
-                        <path d="M14 4l4 6h-8z" fill="none" stroke="#8a8a8a" stroke-width="0.8"/>
-                    </pattern>
-                    <pattern id="p-tegla" width="40" height="20" patternUnits="userSpaceOnUse">
-                        <rect width="40" height="20" fill="#5a3a2c"/>
-                        <path d="M0 0H40M0 10H40M20 0V10M0 10V20M40 10V20" stroke="#2a1d17" stroke-width="1.5"/>
-                        <rect x="5" y="2.5" width="10" height="5" fill="#2a1d17"/><rect x="25" y="12.5" width="10" height="5" fill="#2a1d17"/>
-                    </pattern>
-                    <pattern id="p-ko" width="50" height="40" patternUnits="userSpaceOnUse">
-                        <rect width="50" height="40" fill="#4a4a46"/>
-                        <path d="M0 12L14 8L24 16L20 30L4 32ZM24 16L40 6L50 14L44 30L20 30ZM4 32L20 30L28 40H0Z" fill="none" stroke="#2b2b28" stroke-width="1.5"/>
-                    </pattern>
-                    <pattern id="p-valyog" width="20" height="20" patternUnits="userSpaceOnUse">
-                        <rect width="20" height="20" fill="#6b5640"/>
-                        <circle cx="4" cy="5" r="1" fill="#9b8462"/><circle cx="14" cy="12" r="1.2" fill="#9b8462"/>
-                        <path d="M8 16l6-3M2 11l4 2" stroke="#c9b48a" stroke-width="0.8"/>
-                    </pattern>
-                    <pattern id="p-gipsz" width="10" height="10" patternUnits="userSpaceOnUse">
-                        <rect width="10" height="10" fill="#d8d4cc"/><circle cx="3" cy="3" r="0.7" fill="#a9a49a"/><circle cx="8" cy="7" r="0.6" fill="#a9a49a"/>
-                    </pattern>
-                    <pattern id="p-fa" width="12" height="40" patternUnits="userSpaceOnUse">
-                        <rect width="12" height="40" fill="#8a5a35"/><path d="M3 0V40M8 0Q10 20 8 40" stroke="#6a4224" stroke-width="1"/>
-                    </pattern>
-                </defs>
-            </svg>
-
-            <div class="wall-grid">
-                <!-- Panelház beton -->
-                <article class="wall-card">
-                    <svg class="wall-svg" viewBox="0 0 300 200" role="img" aria-label="Metszet: panelházas vasbeton fal, fém feszítődübel, rajta a dupla sín">
-                        <rect x="10" y="10" width="110" height="180" fill="url(#p-beton)" stroke="#b0b0b0"/>
-                        <g stroke="#d9d9d9" stroke-width="2"><circle cx="40" cy="45" r="4" fill="none"/><circle cx="40" cy="155" r="4" fill="none"/></g>
-                        <path d="M60 94H120M60 106H120" stroke="#faedcd" stroke-width="2"/>
-                        <path d="M60 92L48 100L60 108Z" fill="#faedcd"/>
-                        <path d="M70 90V110M84 90V110" stroke="#d4a373" stroke-width="2"/>
-                        <use href="#rail-stack" x="120" y="50"/>
-                        <text x="40" y="34" class="t-small">vasalás</text>
-                    </svg>
-                    <h3>Panelház (vasbeton)</h3>
-                    <p>Kemény, jól teherbíró fal. Fém feszítődübellel (horgonnyal) rögzítünk. Fúrás előtt megkeressük a vasalást, hogy ne abba fúrjunk.</p>
-                    <ul class="wall-todo" data-todo>
-                        <li>TODO Ricsi: dübel típusa és mérete, fúrási mélység.</li>
-                        <li>TODO Ricsi: rögzítési pontok száma és távolsága.</li>
-                    </ul>
-                </article>
-
-                <!-- Fém -->
-                <article class="wall-card">
-                    <svg class="wall-svg" viewBox="0 0 300 200" role="img" aria-label="Metszet: fém tartószerkezet, szegecsanya és csavar, rajta a dupla sín">
-                        <path d="M30 10H120V190H30" fill="none" stroke="#b0b0b0" stroke-width="2"/>
-                        <rect x="112" y="10" width="8" height="180" fill="#6b6b6b" stroke="#b0b0b0"/>
-                        <path d="M30 10V40M30 160V190" stroke="#b0b0b0" stroke-width="2"/>
-                        <path d="M106 92H112V108H106Z M112 96H122V104H112Z" fill="#faedcd"/>
-                        <path d="M98 97H140" stroke="#d4a373" stroke-width="3"/>
-                        <use href="#rail-stack" x="120" y="50"/>
-                        <text x="40" y="62" class="t-small">üreges profil</text>
-                        <text x="40" y="150" class="t-small">szegecsanya</text>
-                        <path d="M80 140L106 106" stroke="#8a8a8a" stroke-width="1"/>
-                    </svg>
-                    <h3>Fém</h3>
-                    <p>Acél tartószerkezet vagy fém profil. A vékony falú fémbe menetes szegecsanyát teszünk, abba megy a csavar. Vastag acélba menetet is vághatunk.</p>
-                    <ul class="wall-todo" data-todo>
-                        <li>TODO Ricsi: szegecsanya vagy menetfúrás, milyen anyagvastagságtól.</li>
-                        <li>TODO Ricsi: használjuk-e egyáltalán (pl. acél gerenda, fémvázas fal)?</li>
-                    </ul>
-                </article>
-
-                <!-- Tégla -->
-                <article class="wall-card">
-                    <svg class="wall-svg" viewBox="0 0 300 200" role="img" aria-label="Metszet: üreges téglafal, vegyi dübel szitahüvellyel, rajta a dupla sín">
-                        <rect x="10" y="10" width="110" height="180" fill="url(#p-tegla)" stroke="#b0b0b0"/>
-                        <rect x="44" y="90" width="76" height="20" rx="3" fill="rgba(212,163,115,0.45)" stroke="#d4a373" stroke-dasharray="3 2"/>
-                        <path d="M48 100H140" stroke="#faedcd" stroke-width="3" stroke-dasharray="2 2"/>
-                        <use href="#rail-stack" x="120" y="50"/>
-                        <text x="18" y="84" class="t-small">ragasztó + szitahüvely</text>
-                    </svg>
-                    <h3>Tégla</h3>
-                    <p>Az üreges téglában a hagyományos dübel nem tart jól. Szitahüvelyt teszünk a furatba, és vegyi (ragasztós) dübellel töltjük ki, ez kitölti az üregeket. Tömör téglában erős fém vagy műanyag dübel is elég lehet.</p>
-                    <ul class="wall-todo" data-todo>
-                        <li>TODO Ricsi: melyik ragasztó és menetes szár, mennyi kötési idő kell.</li>
-                        <li>TODO Ricsi: tömör téglánál milyen dübelt használunk.</li>
-                    </ul>
-                </article>
-
-                <!-- Kő -->
-                <article class="wall-card">
-                    <svg class="wall-svg" viewBox="0 0 300 200" role="img" aria-label="Metszet: terméskő fal, vegyi dübel menetes szárral, rajta a dupla sín">
-                        <rect x="10" y="10" width="110" height="180" fill="url(#p-ko)" stroke="#b0b0b0"/>
-                        <rect x="50" y="92" width="70" height="16" rx="3" fill="rgba(212,163,115,0.5)"/>
-                        <path d="M54 100H140" stroke="#faedcd" stroke-width="3" stroke-dasharray="2 2"/>
-                        <use href="#rail-stack" x="120" y="50"/>
-                        <text x="18" y="84" class="t-small">vegyi dübel</text>
-                    </svg>
-                    <h3>Kő</h3>
-                    <p>A kő kemény, de rideg, és a fugái gyengék. A rögzítési pontot magába a kőbe tesszük, nem a fugába, és vegyi dübelt használunk, ami nem feszíti szét a követ.</p>
-                    <ul class="wall-todo" data-todo>
-                        <li>TODO Ricsi: rakott terméskő és burkolat (kőlap) külön kezelendő?</li>
-                        <li>TODO Ricsi: ragasztó típusa, fúrási mélység.</li>
-                    </ul>
-                </article>
-
-                <!-- Vályog -->
-                <article class="wall-card">
-                    <svg class="wall-svg" viewBox="0 0 300 200" role="img" aria-label="Metszet: vályogfal, átmenő csavar ellenlemezzel és teherelosztó gerenda, rajta a dupla sín">
-                        <rect x="10" y="10" width="100" height="180" fill="url(#p-valyog)" stroke="#b0b0b0"/>
-                        <rect x="110" y="40" width="18" height="120" fill="url(#p-fa)" stroke="#b0b0b0"/>
-                        <rect x="2" y="84" width="8" height="32" fill="#6b6b6b" stroke="#b0b0b0"/>
-                        <path d="M10 100H128" stroke="#faedcd" stroke-width="3" stroke-dasharray="2 2"/>
-                        <use href="#rail-stack" x="128" y="50"/>
-                        <text x="20" y="34" class="t-small">ellenlemez a túloldalon</text>
-                        <text x="104" y="176" class="t-small">teherelosztó gerenda</text>
-                    </svg>
-                    <h3>Vályog</h3>
-                    <p>A vályog puha, a dübel kiszakadhat belőle. Ezért a terhet szétosztjuk: a falra egy gerenda kerül, azt átmenő csavarokkal rögzítjük, a fal túloldalán ellenlemezzel. A sín a gerendára kerül.</p>
-                    <ul class="wall-todo" data-todo>
-                        <li>TODO Ricsi: ez a megoldásunk, vagy a födémhez/áthidalóhoz rögzítünk?</li>
-                        <li>TODO Ricsi: vállaljuk-e vályogfalra, van-e feltétel (pl. helyszíni felmérés)?</li>
-                    </ul>
-                </article>
-                <!-- Gipszkarton -->
-                <article class="wall-card">
-                    <svg class="wall-svg" viewBox="0 0 300 200" role="img" aria-label="Metszet: kétrétegű gipszkarton fal fém vázprofillal, a falban fa erősítés, abba megy a csavar, rajta a dupla sín">
-                        <rect x="10" y="10" width="110" height="180" fill="#1d1d1d" stroke="#b0b0b0"/>
-                        <path d="M30 10V190M90 10V190" stroke="#8a8a8a" stroke-width="1.5"/>
-                        <path d="M30 10H36M30 190H36M90 10H84M90 190H84" stroke="#8a8a8a" stroke-width="1.5"/>
-                        <path d="M34 30l8 10l-8 10l8 10l-8 10l8 10l-8 10l8 10l-8 10l8 10l-8 10l8 10l-8 10l8 10l-8 10" fill="none" stroke="#4a4a40" stroke-width="1"/>
-                        <rect x="10" y="10" width="10" height="180" fill="url(#p-gipsz)" stroke="#b0b0b0" stroke-width="0.8"/>
-                        <rect x="20" y="10" width="10" height="180" fill="url(#p-gipsz)" stroke="#b0b0b0" stroke-width="0.8"/>
-                        <rect x="100" y="10" width="10" height="180" fill="url(#p-gipsz)" stroke="#b0b0b0" stroke-width="0.8"/>
-                        <rect x="110" y="10" width="10" height="180" fill="url(#p-gipsz)" stroke="#b0b0b0" stroke-width="0.8"/>
-                        <rect x="56" y="66" width="34" height="68" fill="url(#p-fa)" stroke="#d4a373" stroke-width="1.2"/>
-                        <path d="M64 100H140" stroke="#faedcd" stroke-width="3" stroke-dasharray="2 2"/>
-                        <use href="#rail-stack" x="120" y="50"/>
-                        <text x="36" y="26" class="t-small">2 réteg gipszkarton</text>
-                        <text x="36" y="160" class="t-small">erősítés a falban</text>
-                    </svg>
-                    <h3>Gipszkarton</h3>
-                    <p>A gipszkarton lap önmagában nem bír el egy tolóajtót, a dübel kiszakadhat belőle. Ezért a sínt a fal belsejében lévő erősítéshez rögzítjük: fa vagy acél merevítőhöz a vázprofilok között. Ha a fal még csak épül, szólj, és megmondjuk, hova kell az erősítés.</p>
-                    <ul class="wall-todo" data-todo>
-                        <li>TODO Ricsi: meglévő falnál, ahol nincs erősítés, mi a megoldás (pl. falon kívüli teherelosztó gerenda a vázprofilokba csavarozva, vagy mennyezeti rögzítés)?</li>
-                        <li>TODO Ricsi: mit kérjünk a szárazépítőtől (erősítés anyaga, vastagsága, magassága)?</li>
-                    </ul>
-                </article>
-
-            </div>
-
-            <p class="tech-lead">Bármilyen a falad, a rögzítést mindig mi választjuk ki a fotók és a méretek alapján. Az ajtólap legfeljebb 80 kg lehet.</p>
-            <a href="index.html#quote" class="btn-primary">Kérj ajánlatot</a>
-        </section>
     </main>
 
     <footer>

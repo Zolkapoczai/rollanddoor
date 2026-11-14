@@ -127,13 +127,14 @@ Irányított igényfelvétel, **nem** árkalkulátor. Hat lépés: elrendezés �
 
 Fizetős Gemini az ajánlat megírásához, ajtó ráillesztése az ügyfél fotójára, „mi nem megy együtt” szabályok, ár vagy „-tól” ár, új logó, Analytics bekötése, heti D1-mentés.
 
-### Technológia oldal (`/technologia.html`), 2026-11-14, VÁZLAT, helyben kipróbálva
+### Technológia a főoldalon (`/#technologia`), 2026-11-15, VÁZLAT, helyben kipróbálva
 
-- 20 mp-es animált SVG a dupla sínről (CAD-stílusú metszet → elölnézet → zárókép), a feliratok valódi szövegek; görgetésre indul, „Lejátszás újra” gomb, csökkentett mozgásnál álló rajz + feliratlista. Fájlok: `public/technologia.html`, `.css`, `.js`.
+- A főoldalon a „Miért a Roll’n’Door?” után, menüpont: Technológia. Benne: a 20 mp-es videó és a 6 faltípus. Ricsi itt nézi át és itt válaszol a `TODO`-kra.
+- Videó: telefonon az álló (9:16), szélesebb képernyőn a négyzetes (1:1) változat, hang nélkül, ismétlődve. Csak a közelébe görgetve töltődik le, látható állapotban magától indul, eltűnve megáll; csökkentett mozgásnál lejátszógombokkal jelenik meg. Fájlok: `public/video/dupla-sin-*.mp4` + poszterkép (`.jpg`), a logika a `public/technologia.js`-ben. A feliratok szövege rejtett listaként a felolvasóknak és a keresőknek.
+- A videók forrása a `public/technologia.html` SVG-animációja (mindig `noindex`, nincs rá link). Az animáció módosítása után: `node tools/video-felvetel.mjs` (fut a helyi szerver; Chrome + ffmpeg kell, npm-csomag nem), ez felülírja a `public/video/` fájljait.
 - A rajz a fotók alapján készült, nem méretarányos. Felépítés (Zoli, 2026-11-15): **a belső laposacél sín közvetlenül a falon van**, előtte távtartó perselyeken és átmenő imbuszcsavaron a külső sín; **a kerék csak a külső sínen fut**; alul kiugrásgátló csap.
 - Rögzítés faltípusonként (panelház vasbeton, fém, tégla, kő, vályog, gipszkarton): metszeti ábra + rövid szöveg, minden adat `data-todo` jelöléssel. **Ricsi jóváhagyása nélkül nem élesíthető** (80 kg-os ajtónál a rossz rögzítési tanács balesetveszélyes).
-- Jóváhagyásig `noindex`, nincs benne a sitemapben és az llms.txt-ben, a landingről nincs rá link. Jóváhagyás után: `noindex` törlése, sitemap, llms.txt, menüpont + link a hero „dupla sínnel” sorából (landing-módosítás, Ricsi engedélyével), VideoObject strukturált adat.
-- Videó a közösségi oldalakra: `node tools/video-felvetel.mjs` (fut a helyi szerver; Chrome + ffmpeg kell, npm-csomag nem). Kimenet: `tools/kimenet/dupla-sin-1x1.mp4` és `-9x16.mp4` (20 mp, <1 MB, a git nem követi). Az animáció módosítása után újra kell futtatni.
+- **Élesítési kockázat:** a főoldal indexelhető, és a névszerver-váltás után a `rollndoor.hu`-n is ez fut. Ha addig Ricsi nem hagyja jóvá a rögzítési adatokat, a faltípusos részt (és a „VÁZLAT” sávot) a váltás előtt ki kell venni, vagy a `TODO`-kat törölni. Jóváhagyás után: VideoObject strukturált adat.
 
 ### Ricsi összesítője (`/pult`), 2026-11-14, helyben kipróbálva
 
