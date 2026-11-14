@@ -824,3 +824,5 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 .logo-link { display: flex; align-items: center; text-decoration: none; }
 .logo-img { display: block; height: 44px; width: auto; }
 .footer-logo-img { display: block; height: 44px; width: auto; margin-bottom: 1rem; }
+/* Vékony fehér kontúr a főoldal logóján (szűrő: index.html eleje) */
+.logo-contour { filter: url(#logo-contour); }
