@@ -11,10 +11,10 @@
 /ajanlat-keres /#kapcsolat 301
 /elerhetoseg/ /#kapcsolat 301
 /elerhetoseg /#kapcsolat 301
-/rendeles-menete/ /#rendeles-menete 301
-/rendeles-menete /#rendeles-menete 301
-/hogyan-lehet-ilyen-ajtom/ /#rendeles-menete 301
-/hogyan-lehet-ilyen-ajtom /#rendeles-menete 301
-# A blog egyelőre rejtett (helykitöltő képek). Ha kész, vissza: /blog.html 301
-/antik-ajto-uj-elete/ / 302
-/antik-ajto-uj-elete / 302
+/rendeles-menete/ / 301
+/rendeles-menete / 301
+/hogyan-lehet-ilyen-ajtom/ / 301
+/hogyan-lehet-ilyen-ajtom / 301
+# A blog egyelőre noindex (a minta sablonszövege). Ha kész és indexelhető: 301-re cserélni.
+/antik-ajto-uj-elete/ /blog.html 302
+/antik-ajto-uj-elete /blog.html 302
