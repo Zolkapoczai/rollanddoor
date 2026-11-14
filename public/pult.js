@@ -104,30 +104,50 @@
     ]);
   }
 
-  function csoport(c) {
-    var sec = h('section', { class: 'p-group' }, [
-      h('h2', { class: 'p-sub', text: c.cim + ' (' + c.elemek.length + ')' }),
-    ]);
-    if (!c.elemek.length) {
-      sec.appendChild(h('p', { class: 'p-muted p-group-empty', text: c.kulcs === 'ram_var' ? 'Most nincs teendőd.' : 'Nincs ilyen megrendelés.' }));
-    } else {
-      sec.appendChild(h('ul', { class: 'p-list' }, c.elemek.map(kartya)));
-    }
-    return sec;
+  /* ---------- Csempék: 4 nagy gomb, mögöttük az ügyek (#kulcs a címben, a Vissza gomb is működik) ---------- */
+  var adat = null;
+  var URES = { ram_var: 'Most nincs teendőd.', lezart: 'Nincs lezárt megrendelés.' };
+
+  function csempek(d) {
+    return d.csoportok.concat([{ kulcs: 'lezart', cim: 'Lezárt', elemek: d.lezartak || [] }]);
   }
+
+  function csempe(c) {
+    var n = c.elemek.length;
+    var cls = 'p-tile p-tile--' + c.kulcs + (n ? '' : ' p-tile--empty');
+    return h('a', { class: cls, href: '#' + c.kulcs, 'aria-label': c.cim + ': ' + n + ' megrendelés' }, [
+      h('span', { class: 'p-tile-num', text: String(n) }),
+      h('span', { class: 'p-tile-title', text: c.cim }),
+    ]);
+  }
+
+  function csoportNezet(c) {
+    clear();
+    var vissza = h('a', { class: 'p-btn p-btn--ghost p-back', href: '#', text: '← Vissza' });
+    app.appendChild(vissza);
+    app.appendChild(h('h1', { class: 'p-headline', tabindex: '-1', text: c.cim + ' (' + c.elemek.length + ')' }));
+    if (!c.elemek.length) {
+      app.appendChild(h('p', { class: 'p-muted', text: URES[c.kulcs] || 'Nincs ilyen megrendelés.' }));
+    } else {
+      app.appendChild(h('ul', { class: 'p-list' }, c.elemek.map(kartya)));
+    }
+    app.querySelector('.p-headline').focus();
+  }
+
+  function rajzol() {
+    if (!adat) { return; }
+    var kulcs = location.hash.slice(1);
+    var c = csempek(adat).filter(function (x) { return x.kulcs === kulcs; })[0];
+    if (c) { csoportNezet(c); } else { lista(adat); }
+  }
+
+  window.addEventListener('hashchange', rajzol);
 
   function lista(d) {
     clear();
     var osszes = d.csoportok.reduce(function (s, c) { return s + c.elemek.length; }, 0);
     app.appendChild(h('h1', { class: 'p-headline', text: osszes ? osszes + ' futó megrendelés' : 'Nincs futó megrendelés' }));
-    d.csoportok.forEach(function (c) { app.appendChild(csoport(c)); });
-
-    if (d.lezartak && d.lezartak.length) {
-      app.appendChild(h('details', { class: 'p-block' }, [
-        h('summary', { text: 'Lezártak és nem érdeklődők (' + d.lezartak.length + ')' }),
-        h('div', { class: 'p-block-body' }, [h('ul', { class: 'p-list' }, d.lezartak.map(kartya))]),
-      ]));
-    }
+    app.appendChild(h('div', { class: 'p-tiles' }, csempek(d).map(csempe)));
 
     app.appendChild(h('div', { class: 'p-secondary' }, [
       gomb('Frissítés', 'p-btn--ghost', betolt),
@@ -140,7 +160,7 @@
 
   async function betolt() {
     var r = await api('GET', '');
-    if (r.ok) { lista(r); return; }
+    if (r.ok) { adat = r; rajzol(); return; }
     if (r.status === 401) { belepesKeres(); return; }
     clear();
     app.appendChild(h('h1', { class: 'p-headline', text: 'Most nem sikerült betölteni.' }));

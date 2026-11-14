@@ -129,7 +129,7 @@ Fizetős Gemini az ajánlat megírásához, ajtó ráillesztése az ügyfél fot
 
 ### Ricsi összesítője (`/pult`), 2026-11-14, helyben kipróbálva
 
-- Egy oldal az összes megrendeléssel, három csoportban: **Rám vár** (1., 2., 4. állomás, jóváhagyott látványterv, megválaszolatlan ügyfél-üzenet), **Készül** (6., a beszerelés dátumával), **Ügyfélre vár** (3., jóváhagyásra váró 5., 7.). A lezártak és „nem érdeklődik” jelzésűek összecsukva. Minden sor a megrendelés `/m/…` oldalára visz.
+- Nyitóképernyő: 4 nagy csempe a darabszámmal (Rám vár · Készül · Ügyfélre vár · Lezárt); a csempére bökve jön az ügyek listája, a „Vissza” gomb és a telefon vissza-gombja is a csempékhez visz. Csoportok: **Rám vár** (1., 2., 4. állomás, jóváhagyott látványterv, megválaszolatlan ügyfél-üzenet), **Készül** (6., a beszerelés dátumával), **Ügyfélre vár** (3., jóváhagyásra váró 5., 7.), **Lezárt** (lezárt és „nem érdeklődik”, a legutóbbi 30). Minden sor a megrendelés `/m/…` oldalára visz.
 - „Megválaszolatlan”: az utolsó ügyfél-üzenet (`uzenet.irany = 'be'`) frissebb, mint Ricsi utolsó válasza, megjegyzése vagy állomásváltása.
 - Belépés: Ricsi a `/pult` oldalon belépőlinket kér, ami a `RICSI_EMAIL` címre megy (a cím kívülről nem adható meg). A link 15 percig él, egyszer használható, és csak gombnyomásra léptet be (a levelezők linkellenőrzője ne használja el). Utána `HttpOnly`, `SameSite=Strict` süti, 60 napig. Óránként legfeljebb 5 link kérhető. A tokenek csak SHA-256 hash-ként vannak a D1-ben (`pult_belepo`, `pult_munkamenet`).
 - Élesítéshez: `worker/migrations/0003_pult.sql` a távoli D1-re, utána deploy. A megrendelésenkénti `/m/…` linkek változatlanul működnek.

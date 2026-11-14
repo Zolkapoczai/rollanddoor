@@ -187,3 +187,15 @@
 .p-item-meta { color: var(--text-secondary); font-size: 1rem; }
 .p-item-badges { padding: 0 16px; margin-bottom: 10px; }
 .p-item-tel { display: block; padding: 12px 16px; min-height: 48px; border-top: 1px solid var(--border-color); color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+
+/* /pult csempék: 2×2 nagy gomb */
+.p-tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 8px; }
+.p-tile { display: flex; flex-direction: column; justify-content: space-between; min-height: 150px; padding: 16px; border-radius: 16px; border: 2px solid var(--border-color); background: var(--bg-glass); color: var(--text-primary); text-decoration: none; }
+.p-tile:hover, .p-tile:focus-visible { border-color: var(--accent); }
+.p-tile-num { font-family: var(--font-display); font-weight: 700; font-size: 3rem; line-height: 1; }
+.p-tile-title { font-family: var(--font-display); font-weight: 600; font-size: 1.25rem; }
+.p-tile--ram_var { border-color: var(--accent); background: rgba(212, 163, 115, 0.16); }
+.p-tile--ram_var .p-tile-num { color: var(--accent); }
+.p-tile--empty .p-tile-num { color: var(--text-secondary); }
+.p-tile--ram_var.p-tile--empty { border-color: var(--border-color); background: var(--bg-glass); }
+.p-back { display: inline-flex; align-items: center; width: auto; min-height: 48px; padding: 0 18px; margin-bottom: 16px; text-decoration: none; }
