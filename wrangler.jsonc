@@ -13,8 +13,8 @@
     {
       "binding": "DB",
       "database_name": "rollndoor",
-      // Helyi fejlesztéshez placeholder jó; élesben a `wrangler d1 create` kimenete.
-      "database_id": "00000000-0000-0000-0000-000000000000"
+      // Az éles adatbázis azonosítója (`wrangler d1 create rollndoor` kimenete). Nem titok.
+      "database_id": "c88cba75-fe72-4faf-8073-aa187189d4fd"
     }
   ],
   "r2_buckets": [
@@ -27,6 +27,7 @@
   "vars": {
     "RICSI_EMAIL": "info@rollndoor.hu",
     "REPLY_DOMAIN": "valasz.rollndoor.hu",
-    "SITE_URL": "https://rollndoor.hu"
+    // ÁTMENETI (próbaüzem): a levelek linkjei a workers.dev címre mutatnak. A domain átállításakor VISSZA: "https://rollndoor.hu"
+    "SITE_URL": "https://rollndoor.poczaizoltan30.workers.dev"
   }
 }

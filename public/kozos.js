@@ -1,7 +1,10 @@
 // Közös kód a főoldalhoz (script.js) és az ajtótervezőhöz (tervezo.js). Klasszikus script: a const-ok globálisak.
 // Cloudflare Turnstile site key. Public value, safe in the browser.
-// This is the official always-pass TEST key: REPLACE with the real site key before launch.
-const TURNSTILE_SITEKEY = '1x00000000000000000000AA';
+// Éles kulcs (a widget hosztnevei: rollndoor.hu, www.rollndoor.hu és a workers.dev próbacím).
+// Helyben (localhost) a hivatalos "mindig átenged" TESZT kulcs fut, mert az éles kulcs ott nem érvényes.
+const TURNSTILE_SITEKEY = ['localhost', '127.0.0.1'].includes(location.hostname)
+    ? '1x00000000000000000000AA'
+    : '0x4AAAAAAGBNOKLp7qTCAlIE';
 
 const MAX_PHOTOS = 2;
 // A kliens 25 MB-ig enged: küldés előtt úgyis lekicsinyítjük. A szerver határa 8 MB / kép.

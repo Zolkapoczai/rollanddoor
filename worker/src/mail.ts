@@ -36,7 +36,8 @@ export async function sendMail(env: Env, m: MailInput): Promise<MailResult> {
     console.log(`[mail] dry-run -> ${m.to === env.RICSI_EMAIL ? "ricsi" : "ugyfel"}: ${oneLine(m.subject, 300)}`);
     return { ok: true };
   }
-  const from = `"${displayName(m.fromName)}" <${m.fromAddress ?? m.replyTo}>`;
+  // MAIL_TEST_FROM: csak próbaüzemben (a Resend megerősítetlen domainről nem enged küldeni); élesben üres.
+  const from = `"${displayName(m.fromName)}" <${env.MAIL_TEST_FROM || (m.fromAddress ?? m.replyTo)}>`;
   const body: Record<string, unknown> = {
     from,
     to: [m.to],

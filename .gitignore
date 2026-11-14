@@ -3,3 +3,9 @@ node_modules/
 .dev.vars
 forras-kepek/
 *.zip
+
+# Kulcs-exportok (API-kulcsot tartalmazhatnak): soha nem kerülhetnek a repóba
+*api-keys*.csv
+*api_keys*.csv
+*.key
+*.pem

@@ -84,6 +84,14 @@ Irányított igényfelvétel, **nem** árkalkulátor. Hat lépés: elrendezés �
 - 8 automatikus levél + leiratkozás + napi cron (emlékeztetők, szerelés előtti nap), `statusz` és `levelnaplo` a DB-ben. Részletek: `worker/README.md`.
 - Még nincs kész: a böngészős oldalak bekötése (`public/r.html`, `m.html`, `le.html`) és a valódi levélküldés próbája.
 
+### Éles próba (workers.dev): állapot, 2026-11-14
+
+- **Kész a Cloudflare-en:** D1 `rollndoor` (az azonosító a `wrangler.jsonc`-ban), R2 `rollndoor-files`, a séma betöltve az éles D1-be, titkok beállítva (`RESEND_API_KEY`, `TURNSTILE_SECRET`; a `RESEND_WEBHOOK_SECRET` még nincs, az a Resend-domain után jön), Turnstile site key a `public/kozos.js`-ben (localhoston automatikusan a teszt-kulcs), feltöltve: https://rollndoor.poczaizoltan30.workers.dev (a Turnstile-widget hosztnevei között szerepel). A robotszűrő élesben ellenőrizve (érvénytelen token 403).
+- **A `rollndoor.hu` hozzáadva a Cloudflare-fiókhoz, de a névszerverek NINCSENEK átállítva**: a domain az Integrityn marad, a régi WordPress szolgálja ki, a levelezés (messanet) érintetlen. Az átállás előfeltétele, hogy **a domainen be van kapcsolva a DNSSEC** (DS rekord, keytag 8330): előbb ki kell kapcsolni az Integrityn (Ricsi fér hozzá), várni legalább 1 órát (a DS TTL-je 3600 mp), és csak utána cserélni a névszervereket `greg.ns.cloudflare.com` és `joselyn.ns.cloudflare.com` értékre. Különben a domain (oldal és levelezés is) elérhetetlen lehet. A Cloudflare DNS-ben a régi rekordok be vannak másolva (A, www A, MX `mx.messanet.hu` DNS only, SPF TXT); a `_dmarc` TXT (`v=DMARC1; p=none;`) felvétele ellenőrizendő.
+- **Átmeneti beállítások, az átállításkor visszaállítandók:** `wrangler.jsonc` `SITE_URL` jelenleg a workers.dev cím (vissza: `https://rollndoor.hu`). A levélpróbához egyszeri deploy-kapcsolók valók, amik nem kerülnek a repóba, és a következő sima `deploy` törli őket: `--var MAIL_TEST_FROM:onboarding@resend.dev --var RICSI_EMAIL:<a Resend-fiók e-mail címe>` (a Resend megerősítetlen domainről nem küld; `MAIL_TEST_FROM` a `worker/src/mail.ts`-ben).
+- **Következő lépések:** (1) levélpróba telefonról a workers.dev címen: 2 levélnek kell jönnie (ügyfél-visszaigazolás, „Új igény #…" a kezelő linkkel), a linkek a workers.dev címre mutassanak; (2) az állomások végigjárása élesben, Ricsi- és ügyféloldalon; (3) Resend: `rollndoor.hu` domain megerősítése (a DNS-rekordok a Cloudflare-be vagy az Integrityhez kerülnek, attól függően, hol van akkor a DNS) és a `valasz` aldomain MX-e + webhook; (4) DNSSEC kikapcsolása → névszerver-váltás → `SITE_URL` vissza; (5) Ricsi tartalmi teendői (lásd lent).
+- **Windowson** az `npm run` és az `npx` a mappanévben lévő `&` miatt nem működik: `node node_modules/wrangler/bin/wrangler.js <parancs>` formában kell hívni (a hivatkozott `npx wrangler` parancsokat is így).
+
 ### Nincs kipróbálva
 
 - Valódi levélküldés (Resend-kulcs nélkül csak próbaüzem fut, a levelek kinézetét senki nem látta).
@@ -100,7 +108,7 @@ Irányított igényfelvétel, **nem** árkalkulátor. Hat lépés: elrendezés �
 4. **DNS átállításkor:** a levelezés bejegyzéseit pontosan át kell másolni (MX: `mx.messanet.hu`, SPF: `include:_spf.messanet.hu`), különben megáll az `info@rollndoor.hu`.
 5. **DMARC:** a `rollndoor.hu`-n nincs `_dmarc` bejegyzés. A levéltovábbító Ricsi nevében csak DMARC-hiteles levelet fogad el, e nélkül minden válasza elakad (ilyenkor „NEM MENT KI” levelet kap). Fel kell venni.
 6. **Resend:** fiók, domain és a `valasz` aldomain MX-e, webhook, API-kulcs. Lépések: `worker/README.md`.
-7. **Turnstile:** a tesztkulcs cseréje élesre (`public/kozos.js` és a Worker titka).
+7. **Turnstile:** kész (éles site key a `public/kozos.js`-ben, a secret beállítva a Workeren). Az éles `rollndoor.hu` és `www.rollndoor.hu` hosztnevet a widgetben fel kell venni az átállás előtt.
 8. Élő próba: egy igény végigküldése, válasz mindkét irányban, csatolmánnyal.
 9. A régi oldal hibái az átállással szűnnek meg (elavult WordPress, 2017-es akció, nem létező szegedi bemutatótermek, szemétoldalak a sitemapben).
 
