@@ -1,0 +1,33 @@
+---
+description: Roll’n’Door projekt alapszabályai
+alwaysApply: true
+---
+
+Mielőtt bármit tervezel vagy módosítasz, olvasd el a `docs/TERV.md` fájlt. Az a döntések forrása.
+
+## Kötelező
+
+- Egyszemélyes vállalkozás, 1–2 felhasználó. Ne építs semmit, ami nagyobb cégre való.
+- Tilos kérés nélkül: regisztráció, jelszó, jogosultsági szintek, fizetés, számlázás, készlet, kosár, árkalkulátor, új keretrendszer, build lépés a felületen.
+- Felület: sima HTML/CSS/JS a `public/` alatt, a `public/style.css` változóival. Magyar szöveg, tegezés, rövid mondatok. Betű ≥17 px, gombok ≥48 px, űrlapmező ≥16 px, 360 px szélesen ne legyen vízszintes görgetés.
+- A név írása: Roll’n’Door.
+- Üzleti tényt (ár, határidő, anyag, garancia, referencia) ne találj ki. Ami nincs megerősítve, kapjon `data-todo` jelölést vagy `TODO` megjegyzést.
+- A megrendelés 7 állomása (`docs/TERV.md` 4. pont) szerződés: ne nevezd át, ne bővítsd egyeztetés nélkül.
+- Levél kizárólag a `worker/src/mail.ts` `sendMail()` függvényén át menjen ki.
+- SQL csak paraméterezve. Felhasználói adat HTML-be csak escape-elve. Személyes adat ne kerüljön a naplóba.
+- Titkot (`.dev.vars`, API-kulcs) ne commitolj és ne írj ki.
+- A legkisebb helyes változtatást csináld; működő kódot ne írj át csak azért, mert lehetne szebb.
+
+## Parancsok
+
+Ha a projekt útvonalában `&` van (Windows), az `npm run` és az `npx` nem megy; hívd közvetlenül:
+
+- Fejlesztői szerver: `node node_modules/wrangler/bin/wrangler.js dev`
+- Típusellenőrzés: `node node_modules/typescript/bin/tsc --noEmit -p .`
+- Helyi adatbázis séma: `node node_modules/wrangler/bin/wrangler.js d1 execute rollndoor --local --file=worker/schema.sql`
+
+Élesítés előtti teendők és a beállítás lépései: `worker/README.md` és `docs/TERV.md` 6. pont.
+
+## Ellenőrzés
+
+Változtatás után futtasd a típusellenőrzést, és próbáld ki helyben telefonnézetben. Ha valamit nem tudtál kipróbálni, mondd ki.
