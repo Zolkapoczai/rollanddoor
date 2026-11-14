@@ -9,3 +9,6 @@ forras-kepek/
 *api_keys*.csv
 *.key
 *.pem
+
+# Videófelvétel kimenete (tools/video-felvetel.mjs)
+tools/kimenet/

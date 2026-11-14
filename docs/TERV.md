@@ -127,6 +127,14 @@ Irányított igényfelvétel, **nem** árkalkulátor. Hat lépés: elrendezés �
 
 Fizetős Gemini az ajánlat megírásához, ajtó ráillesztése az ügyfél fotójára, „mi nem megy együtt” szabályok, ár vagy „-tól” ár, új logó, Analytics bekötése, heti D1-mentés.
 
+### Technológia oldal (`/technologia.html`), 2026-11-14, VÁZLAT, helyben kipróbálva
+
+- 20 mp-es animált SVG a dupla sínről (CAD-stílusú metszet → elölnézet → zárókép), a feliratok valódi szövegek; görgetésre indul, „Lejátszás újra” gomb, csökkentett mozgásnál álló rajz + feliratlista. Fájlok: `public/technologia.html`, `.css`, `.js`.
+- **A rajz a fotók alapján készült, nem méretarányos, és a működés az én értelmezésem**: két párhuzamos laposacél sín távtartó perselyekkel és átmenő csavarral a falon, a kerék mindkét sínen fut, alatta kiugrásgátló csap. Ricsinek meg kell erősítenie, hogy ez így van.
+- Rögzítés faltípusonként (panelház vasbeton, fém, tégla, kő, vályog): metszeti ábra + rövid szöveg, minden adat `data-todo` jelöléssel. **Ricsi jóváhagyása nélkül nem élesíthető** (80 kg-os ajtónál a rossz rögzítési tanács balesetveszélyes). Javaslat: gipszkarton mint 6. faltípus.
+- Jóváhagyásig `noindex`, nincs benne a sitemapben és az llms.txt-ben, a landingről nincs rá link. Jóváhagyás után: `noindex` törlése, sitemap, llms.txt, menüpont + link a hero „dupla sínnel” sorából (landing-módosítás, Ricsi engedélyével), VideoObject strukturált adat.
+- Videó a közösségi oldalakra: `node tools/video-felvetel.mjs` (fut a helyi szerver; Chrome + ffmpeg kell, npm-csomag nem). Kimenet: `tools/kimenet/dupla-sin-1x1.mp4` és `-9x16.mp4` (20 mp, <1 MB, a git nem követi). Az animáció módosítása után újra kell futtatni.
+
 ### Ricsi összesítője (`/pult`), 2026-11-14, helyben kipróbálva
 
 - Nyitóképernyő: 4 nagy csempe a darabszámmal (Rám vár · Készül · Ügyfélre vár · Lezárt); a csempére bökve jön az ügyek listája, a „Vissza” gomb és a telefon vissza-gombja is a csempékhez visz. Csoportok: **Rám vár** (1., 2., 4. állomás, jóváhagyott látványterv, megválaszolatlan ügyfél-üzenet), **Készül** (6., a beszerelés dátumával), **Ügyfélre vár** (3., jóváhagyásra váró 5., 7.), **Lezárt** (lezárt és „nem érdeklődik”, a legutóbbi 30). Minden sor a megrendelés `/m/…` oldalára visz.

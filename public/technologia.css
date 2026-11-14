@@ -1,0 +1,104 @@
+/* /technologia: a dupla sín animációja és a faltípusos rögzítés. A landing.css változóit használja. */
+
+.tech { max-width: 1100px; margin: 0 auto; padding: 120px 16px 64px; }
+.tech-head { max-width: 720px; margin-bottom: 32px; }
+.tech-head h1 { font-size: clamp(2rem, 6vw, 3rem); margin: 8px 0 16px; }
+.tech-lead { color: var(--text-secondary); font-size: 1.125rem; line-height: 1.6; max-width: 720px; margin-bottom: 24px; }
+.tech h2 { font-size: clamp(1.6rem, 4.5vw, 2.25rem); margin-bottom: 12px; }
+
+/* ---------- Animáció ---------- */
+.tech-anim { margin: 0 0 64px; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 16px; padding: 16px; }
+.tech-svg { display: block; width: 100%; max-width: 640px; height: auto; margin: 0 auto; }
+.t-lbl { font: 500 19px var(--font-primary); fill: #d0d0d0; paint-order: stroke; stroke: #161616; stroke-width: 5px; stroke-linejoin: round; }
+.t-dim { font: 600 18px var(--font-display); fill: #d4a373; }
+.t-force { font: 600 19px var(--font-primary); fill: #d4a373; }
+.t-brand { font: 800 64px var(--font-display); fill: #d4a373; }
+.t-slogan { font: 400 28px var(--font-display); fill: #f5f5f5; letter-spacing: 0.08em; }
+.t-note { font: 400 14px var(--font-primary); fill: #8a8a8a; }
+.t-tb { font: 600 12px var(--font-display); fill: #e5e5e5; letter-spacing: 0.06em; }
+.t-tb2 { font: 400 11px var(--font-primary); fill: #a0a0a0; }
+.t-plate { font: 700 8px var(--font-display); fill: #d4a373; }
+.t-small { font: 500 13px var(--font-primary); fill: #e5e5e5; paint-order: stroke; stroke: rgba(0,0,0,0.6); stroke-width: 3px; }
+
+/* Alapállapot (nincs JS vagy csökkentett mozgás): a teljes metszet látszik, a feliratok listaként. */
+.a-elev, .a-finale { opacity: 0; }
+.tech-caps { list-style: none; margin: 16px auto 0; max-width: 640px; display: grid; gap: 6px; }
+.cap { font: 600 1.125rem/1.4 var(--font-display); color: var(--text-primary); text-align: center; }
+.tech-replay { display: none; }
+
+/* JS-sel: lejátszásra kész, minden rejtve, amíg el nem indul. */
+.tech-anim.ready .a { opacity: 0; }
+.tech-anim.ready .d { stroke-dasharray: 1; stroke-dashoffset: 1; }
+.tech-anim.ready .tech-caps { grid-template-areas: "cap"; min-height: 3.2em; align-items: center; }
+.tech-anim.ready .cap { grid-area: cap; opacity: 0; }
+.tech-anim.ready .tech-replay {
+  display: block; margin: 16px auto 0; min-height: 48px; padding: 0 22px; border-radius: 999px;
+  background: transparent; color: var(--text-primary); border: 2px solid rgba(255,255,255,0.35);
+  font: 600 1rem var(--font-primary); cursor: pointer;
+}
+.tech-anim.ready .tech-replay:hover, .tech-anim.ready .tech-replay:focus-visible { border-color: var(--accent); color: var(--accent); }
+
+@keyframes t-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes t-out { to { opacity: 0; } }
+@keyframes t-dim { to { opacity: 0.15; } }
+@keyframes t-draw { to { stroke-dashoffset: 0; } }
+@keyframes t-drop { from { opacity: 0; transform: translateY(-30px); } to { opacity: 1; transform: none; } }
+@keyframes t-slide { to { transform: translateX(240px); } }
+@keyframes t-spin { to { transform: rotate(491deg); } }
+@keyframes t-cap { 0% { opacity: 0; transform: translateY(6px); } 12% { opacity: 1; transform: none; } 88% { opacity: 1; } 100% { opacity: 0; } }
+@keyframes t-cap-last { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+/* Idővonal, összesen 20 mp. 0–3 fal · 3–7 sínek · 7–11 kerék és ajtó · 11–15 erő · 15–18 gördülés · 18–20 zárókép */
+.play .a-grid      { animation: t-in .6s 0s both; }
+.play .d-wall      { animation: t-draw 1.4s .3s both ease-in-out; }
+.play .a-hatch     { animation: t-in .8s 1.4s both; }
+.play .a-anchor    { animation: t-in .6s 2.0s both; }
+.play .d-bush1     { animation: t-draw .5s 3.0s both; }
+.play .a-bush1f    { animation: t-in .3s 3.4s both; }
+.play .d-rail1     { animation: t-draw .8s 3.4s both; }
+.play .a-rail1     { animation: t-in .4s 4.1s both; }
+.play .d-bush2     { animation: t-draw .5s 4.6s both; }
+.play .a-bush2f    { animation: t-in .3s 5.0s both; }
+.play .d-rail2     { animation: t-draw .8s 5.0s both; }
+.play .a-rail2     { animation: t-in .4s 5.7s both; }
+.play .a-bolt      { animation: t-in .3s 6.1s both; }
+.play .a-cl        { animation: t-in .5s 6.2s both; }
+.play .a-dim       { animation: t-in .5s 6.3s both, t-out .3s 7.0s forwards; } /* eltűnik, mielőtt a kerék a helyére ér */
+.play .a-labels1   { animation: t-in .5s 6.4s both; }
+.play .a-wheel     { animation: t-drop .7s 7.2s both cubic-bezier(.3,1.4,.6,1); }
+.play .a-axle      { animation: t-in .4s 7.8s both; }
+.play .d-strap     { animation: t-draw 1s 8.2s both; }
+.play .a-strapf    { animation: t-in .4s 9.0s both; }
+.play .d-door      { animation: t-draw 1s 9.2s both; }
+.play .a-doorfill  { animation: t-in .4s 10.0s both; }
+.play .a-screws    { animation: t-in .3s 10.0s both; }
+.play .a-pin       { animation: t-in .4s 10.3s both; }
+.play .a-labels2   { animation: t-in .5s 10.4s both; }
+.play .a-force     { animation: t-in .5s 11.3s both; }
+.play .a-section   { animation: t-out .6s 15.0s forwards; }
+.play .a-elev      { animation: t-in .6s 15.3s both, t-dim .6s 18.2s forwards; }
+.play .a-slide     { animation: t-slide 2.2s 16.0s both ease-in-out; }
+.a-spin { transform-box: fill-box; transform-origin: center; }
+.play .a-spin      { animation: t-spin 2.2s 16.0s both ease-in-out; } /* 240 px út / (2π·28) ≈ 1,36 fordulat */
+.play .a-finale    { animation: t-in .6s 18.2s both; }
+
+.play .cap1 { animation: t-cap 3s 0s both; }
+.play .cap2 { animation: t-cap 4s 3s both; }
+.play .cap3 { animation: t-cap 4s 7s both; }
+.play .cap4 { animation: t-cap 4s 11s both; }
+.play .cap5 { animation: t-cap 3.2s 15s both; }
+.play .cap6 { animation: t-cap-last .6s 18.2s both; }
+
+/* ---------- Faltípusok ---------- */
+.tech-walls { margin-bottom: 32px; }
+.tech-draft { background: rgba(255, 196, 120, 0.12); border: 1px solid rgba(255, 196, 120, 0.55); color: #ffd6a8; border-radius: 12px; padding: 12px 16px; margin-bottom: 24px; font-weight: 500; }
+.wall-grid { display: grid; grid-template-columns: 1fr; gap: 16px; margin-bottom: 32px; }
+.wall-card { background: var(--bg-glass); border: 1px solid var(--border-color); border-radius: 16px; padding: 16px; }
+.wall-svg { display: block; width: 100%; height: auto; background: var(--bg-secondary); border-radius: 10px; margin-bottom: 14px; }
+.wall-card h3 { font-size: 1.375rem; margin-bottom: 8px; }
+.wall-card p { color: var(--text-secondary); line-height: 1.6; font-size: 1.0625rem; }
+.wall-todo { margin-top: 12px; padding-left: 18px; color: #ffd6a8; font-size: 0.9375rem; }
+.wall-todo li { margin-bottom: 4px; }
+
+@media (min-width: 720px) { .wall-grid { grid-template-columns: 1fr 1fr; } }
+@media (min-width: 1040px) { .wall-grid { grid-template-columns: repeat(3, 1fr); } }
