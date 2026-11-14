@@ -63,7 +63,9 @@ export async function sendMail(env: Env, m: MailInput): Promise<MailResult> {
       body: JSON.stringify(body),
     });
     if (!res.ok) {
-      console.log(`[mail] resend hiba: HTTP ${res.status}`);
+      // A Resend hibaüzenete (pl. "domain not verified") nem tartalmaz titkot; ez kell a hibakereséshez.
+      const detail = oneLine(await res.text().catch(() => ""), 300);
+      console.log(`[mail] resend hiba: HTTP ${res.status} ${detail}`);
       return { ok: false, error: `HTTP ${res.status}` };
     }
     return { ok: true };
