@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <meta name="referrer" content="no-referrer">
+  <title>Hol tart az ajtóm? – Roll'n'Door</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/portal.css">
+</head>
+<body class="p-body">
+  <main class="p-wrap">
+    <div class="p-top">
+      <img class="p-logo" src="/img/logo.webp" alt="Roll'n'Door">
+      <div class="p-hello" id="p-hello"></div>
+    </div>
+
+    <div id="p-app">
+      <p class="p-loading" id="p-loading">Betöltés…</p>
+      <noscript><p>Az oldal működéséhez JavaScript kell. Írj nekünk: info@rollndoor.hu.</p></noscript>
+    </div>
+
+    <div id="p-content" hidden>
+      <div class="p-progress-label" id="p-progress-label"></div>
+      <ol class="p-steps" id="p-steps" aria-label="Folyamat lépései"></ol>
+
+      <section id="p-stage" aria-live="polite"></section>
+
+      <details class="p-block" id="p-d-order">
+        <summary>Mit rendeltél</summary>
+        <div class="p-block-body"><dl class="p-dl" id="p-order"></dl></div>
+      </details>
+
+      <details class="p-block" id="p-d-msg">
+        <summary>Üzenetek</summary>
+        <div class="p-block-body">
+          <div class="p-bubble-list" id="p-msg-list"></div>
+          <form id="p-msg-form" class="p-form" novalidate>
+            <label class="p-label" for="p-msg-text">Új üzenet</label>
+            <textarea class="p-textarea" id="p-msg-text" placeholder="Írd ide, amit kérdeznél" maxlength="5000"></textarea>
+            <p class="p-err" id="p-msg-err" role="alert"></p>
+            <p class="p-status" id="p-msg-ok" role="status"></p>
+            <button type="submit" class="p-btn btn-primary" id="p-msg-send">Küldés</button>
+          </form>
+        </div>
+      </details>
+
+      <details class="p-block">
+        <summary>Elérhetőség</summary>
+        <div class="p-block-body">
+          <p class="p-contact-line">Roll'n'Door</p>
+          <div class="p-contact-btns p-contact-btns--one" id="p-contact"></div>
+        </div>
+      </details>
+
+      <div class="p-foot">
+        <a class="p-small-link" id="p-unsub" href="#">Nem kérek több levelet</a>
+      </div>
+    </div>
+  </main>
+  <script src="/kozos.js"></script>
+  <script src="/r.js"></script>
+</body>
+</html>

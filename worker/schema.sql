@@ -15,6 +15,8 @@ CREATE TABLE IF NOT EXISTS megrendeles (
   varhato_beszereles TEXT,
   latvanyterv_jovahagyva TEXT,
   leiratkozott INTEGER NOT NULL DEFAULT 0,
+  -- 2. kor: aktiv | lezarva | nem_erdeklodik (meglevo DB-hez: worker/migrations/0002_kor2.sql)
+  statusz TEXT NOT NULL DEFAULT 'aktiv' CHECK (statusz IN ('aktiv','lezarva','nem_erdeklodik')),
   letrehozva TEXT NOT NULL,
   allomas_valtas_ideje TEXT
 );
@@ -52,3 +54,12 @@ CREATE TABLE IF NOT EXISTS allomas_naplo (
   ido TEXT NOT NULL
 );
 CREATE INDEX IF NOT EXISTS allomas_naplo_megrendeles ON allomas_naplo(megrendeles_id);
+
+-- 2. kor: idempotencia az automatikus (cron) leveleknek: egy tipus megrendelesenkent legfeljebb egyszer.
+CREATE TABLE IF NOT EXISTS levelnaplo (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  megrendeles_id INTEGER NOT NULL REFERENCES megrendeles(id),
+  tipus TEXT NOT NULL,
+  ido TEXT NOT NULL,
+  UNIQUE (megrendeles_id, tipus)
+);

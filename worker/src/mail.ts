@@ -32,7 +32,8 @@ function displayName(name: string): string {
 
 export async function sendMail(env: Env, m: MailInput): Promise<MailResult> {
   if (!env.RESEND_API_KEY) {
-    console.log("[mail] dry-run: RESEND_API_KEY nincs beallitva, a level nem megy ki");
+    // Csak dry-runban (helyi fejlesztes) logoljuk a targyat es a cimzett szerepet; a valodi kuldesi uton nem.
+    console.log(`[mail] dry-run -> ${m.to === env.RICSI_EMAIL ? "ricsi" : "ugyfel"}: ${oneLine(m.subject, 300)}`);
     return { ok: true };
   }
   const from = `"${displayName(m.fromName)}" <${m.fromAddress ?? m.replyTo}>`;

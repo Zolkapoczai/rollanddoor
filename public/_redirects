@@ -15,5 +15,6 @@
 /rendeles-menete /#rendeles-menete 301
 /hogyan-lehet-ilyen-ajtom/ /#rendeles-menete 301
 /hogyan-lehet-ilyen-ajtom /#rendeles-menete 301
-/antik-ajto-uj-elete/ /blog.html 301
-/antik-ajto-uj-elete /blog.html 301
+# A blog egyelőre rejtett (helykitöltő képek). Ha kész, vissza: /blog.html 301
+/antik-ajto-uj-elete/ / 302
+/antik-ajto-uj-elete / 302

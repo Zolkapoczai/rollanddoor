@@ -20,6 +20,10 @@
   "r2_buckets": [
     { "binding": "FILES", "bucket_name": "rollndoor-files" }
   ],
+  // 2. kor: napi cron (UTC 07:00): ajánlat-emlékeztetők és szerelés előtti napi levél (worker/src/cron.ts)
+  "triggers": {
+    "crons": ["0 7 * * *"]
+  },
   "vars": {
     "RICSI_EMAIL": "info@rollndoor.hu",
     "REPLY_DOMAIN": "valasz.rollndoor.hu",

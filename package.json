@@ -9,7 +9,10 @@
     "types": "wrangler types",
     "db:local": "wrangler d1 execute rollndoor --local --file=worker/schema.sql",
     "db:remote": "wrangler d1 execute rollndoor --remote --file=worker/schema.sql",
-    "deploy": "wrangler deploy"
+    "deploy": "wrangler deploy",
+    "db:migrate:local": "wrangler d1 execute rollndoor --local --file=worker/migrations/0002_kor2.sql",
+    "db:migrate:remote": "wrangler d1 execute rollndoor --remote --file=worker/migrations/0002_kor2.sql",
+    "test:cron": "esbuild worker/test/cron.test.ts --bundle --platform=node --format=esm --external:wrangler --outfile=.wrangler/cron.test.mjs && node .wrangler/cron.test.mjs"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^5.20261113.1",

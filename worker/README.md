@@ -32,7 +32,9 @@ Eltérések a briefhez képest: (1) a `_redirects` támogatott, ezért nincs red
 
 ```
 cp .dev.vars.example .dev.vars        # teszt Turnstile secret, nincs RESEND_API_KEY -> levelek dry-run
-npm run db:local                      # séma a helyi D1-be
+npm run db:local                      # séma a helyi D1-be (friss telepítés)
+npm run db:migrate:local              # MEGLÉVŐ (1. kori) helyi DB-hez: worker/migrations/0002_kor2.sql (egyszer futtatható)
+npm run test:cron                     # a cron-logika tesztje kamu `now`-val a helyi D1 ellen
 npm run dev                           # http://localhost:8787
 npm run typecheck
 ```
@@ -47,5 +49,20 @@ Helyi Turnstile: a `cf-turnstile-response` értéke legyen `XXXX.DUMMY.TOKEN.XXX
 - Nincs rate limit a `/api/igeny`-n, csak Turnstile. Kell-e Cloudflare WAF rate limiting rule, azt élesítés előtt döntsd el.
 - A levélküldés a válasz után fut (`waitUntil`); hiba esetén `rendszer` sor kerül az `uzenet`-be, nincs automatikus újrapróbálás.
 - Bejövő levél: csak a szöveges rész továbbítódik (HTML-ből tagek nélküli szöveg, ha nincs text), max 20 csatolmány, a Resend letöltési URL-je 1 óráig él. Ugyanaz az `email_id` nem dolgozódik fel kétszer; ha a továbbítás elbukik, nem jön újrapróbálás.
-- Az R2 bucket privát; a fájlok kiszolgálása a 2. kör (`/r/*`, `/m/*`, `/le/*` most 404).
+- Az R2 bucket privát; a fájlokat csak az alábbi tokenes végpontok szolgálják ki.
 - A `/api/*` többi útvonala 404 JSON.
+
+## 2. kör (követőoldal, Ricsi-oldal, automatikus levelek)
+
+Meglévő éles DB-hez egyszer: `npm run db:migrate:remote` (az `ALTER TABLE` nem ismételhető). Friss telepítésnél a `schema.sql` már tartalmazza (`megrendeles.statusz`, `levelnaplo`). Cron: a `wrangler.jsonc` `triggers.crons` (`0 7 * * *`, UTC) a deployjal él.
+
+Fájlok: `allomasok.ts` (a 7 állomás, egyetlen forrás), `levelek.ts` (automatikus levelek + minden ügyfél-levél védőhálója), `vevo.ts` (`/api/r/*`, `/api/le/*`), `ricsi.ts` (`/api/m/*`), `cron.ts`, `megrendeles.ts`, `fajlok.ts`. A `/r/{token}`, `/m/{token}`, `/le/{token}` az `r.html`/`m.html`/`le.html` statikus fájlt adja (`Referrer-Policy: no-referrer`, `Cache-Control: no-store`, `X-Robots-Tag: noindex`, mindig 200, hiányzó fájlnál 503).
+
+Szabályok, amik a kódban vannak:
+- Ismeretlen / hibás / idegen token: mindig ugyanaz a 404 (`A link nem érvényes.`). Az ügyfél-token csak `/api/r`, `/api/le` alatt, a Ricsi-token csak `/api/m` alatt él.
+- A `ricsi_token` csak Ricsinek menő levélben szerepel. Az ügyfélnek menő minden levél a `kuldUgyfelnek()`-en megy át, ami eldobja a levelet, ha a tokent tartalmazza.
+- Automatikus levél nem megy ki, ha `leiratkozott=1` vagy `statusz!='aktiv'`. Ricsi kézi válasza (`/valasz`) mindig kimegy.
+- 6. állomás: a továbblépő gomb a „Beszerelve”. Az időpont-megadás (`POST /api/m/{token}/idopont`) külön, nem lépteti az állomást; minden dátumváltáskor új levél megy, a cron a dátum előtti napon még egyet küld (`levelnaplo`: `szerelesi_emlekezo:<datum>`).
+- Emlékeztetők: 3. állomáson, ha az érkezés óta nincs ügyfél-üzenet: a 3. naptól `emlekezo3`, a 7. naptól `emlekezo7` (legfeljebb a 14. napig; utána semmi). A 3. állomásra visszalépés újraindítja őket.
+- Fájlok kiszolgálása: csak JPG/PNG/WebP/GIF/PDF megy `inline`, minden más (pl. bejövő levél csatolmánya) `attachment` + `application/octet-stream`. Az ügyfél csak `latvanyterv` (az 5. állomástól) és `kesz` fájlt kap.
+- Dry-run módban (nincs `RESEND_API_KEY`) a log a levél tárgyát és a címzett szerepét (`ricsi`/`ugyfel`) írja ki, a valódi küldési úton nem logolunk tárgyat.

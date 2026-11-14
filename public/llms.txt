@@ -28,7 +28,6 @@ A Roll’n’Door egy magyar vállalkozás. Egyedi gyártású tolóajtókat ké
 
 ## Oldalak
 - [Főoldal](https://rollndoor.hu/)
-- [Blog](https://rollndoor.hu/blog.html)
 - [Ajtótervező](https://rollndoor.hu/tervezo.html)
 - [Adatkezelés](https://rollndoor.hu/adatkezeles.html)
 - [Impresszum](https://rollndoor.hu/impresszum.html)

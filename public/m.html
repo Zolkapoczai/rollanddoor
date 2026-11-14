@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <meta name="referrer" content="no-referrer">
+  <title>Megrendelés – Roll'n'Door</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/portal.css">
+</head>
+<body class="p-body">
+  <main class="p-wrap">
+    <div class="p-top">
+      <img class="p-logo" src="/img/logo.webp" alt="Roll'n'Door">
+      <div class="p-hello">Megrendelés</div>
+    </div>
+
+    <div id="p-app">
+      <p class="p-loading" id="p-loading">Betöltés…</p>
+      <noscript><p>Az oldal működéséhez JavaScript kell.</p></noscript>
+    </div>
+
+    <div id="p-content" hidden>
+      <h1 class="p-headline" id="p-name"></h1>
+      <div class="p-badges" id="p-badges"></div>
+      <div class="p-contact-btns" id="p-contact"></div>
+      <p class="p-sample" id="p-phone" style="margin-bottom:16px"></p>
+
+      <div class="p-card">
+        <div class="p-label">Itt tart most</div>
+        <div class="p-quote-amount" id="p-stage-name" style="font-size:1.75rem"></div>
+        <div class="p-sample" id="p-since"></div>
+      </div>
+
+      <section id="p-action" aria-live="polite"></section>
+
+      <div style="height:24px"></div>
+
+      <details class="p-block">
+        <summary>Igény és fotók</summary>
+        <div class="p-block-body">
+          <dl class="p-dl" id="p-order"></dl>
+          <div class="p-thumbs" id="p-thumbs"></div>
+        </div>
+      </details>
+
+      <details class="p-block" id="p-d-mail">
+        <summary>Levelezés</summary>
+        <div class="p-block-body">
+          <form id="p-reply-form" class="p-form" novalidate>
+            <label class="p-label" for="p-reply-text">Válasz az ügyfélnek</label>
+            <p class="p-hint-quiet">A válasz az ügyfél e-mailjére megy, innen.</p>
+            <textarea class="p-textarea" id="p-reply-text" placeholder="Írd ide a választ" maxlength="10000"></textarea>
+            <label class="p-label" for="p-reply-subj">Tárgy (nem kötelező)</label>
+            <input class="p-input p-field" id="p-reply-subj" type="text" maxlength="200" autocomplete="off">
+            <label class="p-label" for="p-reply-files">Csatolmány (legfeljebb 3 fájl, egyenként 8 MB-ig)</label>
+            <input class="p-input p-field" id="p-reply-files" type="file" multiple>
+            <ul class="p-chosen" id="p-reply-chosen"></ul>
+            <p class="p-err" id="p-reply-err" role="alert"></p>
+            <p class="p-status" id="p-reply-ok" role="status"></p>
+            <button type="submit" class="p-btn btn-primary" id="p-reply-send">Küldés az ügyfélnek</button>
+          </form>
+          <ul class="p-msgs" id="p-mail-list"></ul>
+        </div>
+      </details>
+
+      <details class="p-block">
+        <summary>Megjegyzéseim</summary>
+        <div class="p-block-body">
+          <form id="p-note-form" class="p-form" novalidate>
+            <label class="p-label" for="p-note-text">Új megjegyzés</label>
+            <textarea class="p-textarea" id="p-note-text" placeholder="Pl. telefonon megbeszéltük, hogy…" maxlength="5000"></textarea>
+            <p class="p-err" id="p-note-err" role="alert"></p>
+            <button type="submit" class="p-btn btn-primary" id="p-note-send">Mentés</button>
+          </form>
+          <ul class="p-notes" id="p-note-list"></ul>
+        </div>
+      </details>
+    </div>
+  </main>
+  <script src="/kozos.js"></script>
+  <script src="/m.js"></script>
+</body>
+</html>

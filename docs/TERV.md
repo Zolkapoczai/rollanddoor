@@ -78,6 +78,12 @@ Irányított igényfelvétel, **nem** árkalkulátor. Hat lépés: elrendezés �
 - Worker: igény mentése, levél Ricsinek és visszaigazolás az ügyfélnek, levéltovábbító (bejövő Resend webhook), átirányítások.
 - Kattintható minta a két megrendelés-oldalról.
 
+### Kész (2. kör backend, helyben kipróbálva)
+
+- API: ügyfél (`/api/r/*`, `/api/le/*`) és Ricsi (`/api/m/*`), tokenes HTML-vázak, 7 állomás léptetése ellenőrzésekkel, fájlfeltöltés/-kiszolgálás, válasz írása, vélemény- és fotókérés.
+- 8 automatikus levél + leiratkozás + napi cron (emlékeztetők, szerelés előtti nap), `statusz` és `levelnaplo` a DB-ben. Részletek: `worker/README.md`.
+- Még nincs kész: a böngészős oldalak bekötése (`public/r.html`, `m.html`, `le.html`) és a valódi levélküldés próbája.
+
 ### Nincs kipróbálva
 
 - Valódi levélküldés (Resend-kulcs nélkül csak próbaüzem fut, a levelek kinézetét senki nem látta).

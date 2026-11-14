@@ -1,4 +1,5 @@
 import type { Env } from "./env";
+import { kuldUgyfelnek, lablec } from "./levelek";
 import { sendMail, type MailAttachment } from "./mail";
 import { verifyTurnstile } from "./turnstile";
 import { esc, hiba, json, nowIso, oneLine, randomKey, randomToken, replyAddress, toBase64 } from "./util";
@@ -40,10 +41,10 @@ const MAX_SUM_ROWS = 40;
 const MAX_SUM_LABEL = 60;
 const MAX_SUM_VALUE = 600;
 
-/** A tervezo "osszegzes" tombjebol "Cimke: ertek" sorok; minden mast ("nem {cimke, ertek} string-par") eldob. */
-function summaryLines(v: unknown): string[] {
+/** A tervezo "osszegzes" tombjebol {cimke, ertek} parok; minden mast ("nem {cimke, ertek} string-par") eldob. */
+export function summaryPairs(v: unknown): { cimke: string; ertek: string }[] {
   if (!Array.isArray(v)) return [];
-  const out: string[] = [];
+  const out: { cimke: string; ertek: string }[] = [];
   for (const r of v) {
     if (out.length >= MAX_SUM_ROWS) break;
     if (!r || typeof r !== "object") continue;
@@ -52,9 +53,23 @@ function summaryLines(v: unknown): string[] {
     const c = oneLine(cimke, MAX_SUM_LABEL);
     const e = oneLine(ertek, MAX_SUM_VALUE);
     if (!c || !e) continue;
-    out.push(`${c}: ${e}`);
+    out.push({ cimke: c, ertek: e });
   }
   return out;
+}
+
+function summaryLines(v: unknown): string[] {
+  return summaryPairs(v).map((r) => `${r.cimke}: ${r.ertek}`);
+}
+
+/** Olvashato lapitas cimke-ertek parokba (ha nincs "osszegzes"). */
+export function flattenPairs(v: unknown): { cimke: string; ertek: string }[] {
+  const lines: string[] = [];
+  flatten(v, "", lines);
+  return lines.slice(0, MAX_SUM_ROWS).map((l) => {
+    const i = l.indexOf(": ");
+    return i < 0 ? { cimke: "Adat", ertek: oneLine(l, MAX_SUM_VALUE) } : { cimke: oneLine(l.slice(0, i), MAX_SUM_LABEL) || "Adat", ertek: oneLine(l.slice(i + 2), MAX_SUM_VALUE) };
+  });
 }
 
 interface Parsed {
@@ -143,11 +158,13 @@ export async function handleIgeny(request: Request, env: Env, ctx: ExecutionCont
 
   const now = nowIso();
   const key = randomKey(10);
+  const ugyfelToken = randomToken();
+  const ricsiToken = randomToken();
   const ins = await env.DB.prepare(
     `INSERT INTO megrendeles (ugyfel_token, ricsi_token, valasz_kulcs, nev, email, telefon, forras, uzenet, igeny_json, allomas, letrehozva, allomas_valtas_ideje)
      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?, ?)`,
   )
-    .bind(randomToken(), randomToken(), key, p.nev, p.email, p.telefon || null, p.forras, p.uzenet || null, p.igenyJson, now, now)
+    .bind(ugyfelToken, ricsiToken, key, p.nev, p.email, p.telefon || null, p.forras, p.uzenet || null, p.igenyJson, now, now)
     .run();
   const id = Number(ins.meta.last_row_id);
 
@@ -185,7 +202,7 @@ export async function handleIgeny(request: Request, env: Env, ctx: ExecutionCont
   }
 
   // Levelek a valasz utan, hogy a latogato ne varjon rajuk.
-  ctx.waitUntil(sendNotifications(env, id, key, p, subject, summary, attachments, storeFailed));
+  ctx.waitUntil(sendNotifications(env, id, key, ugyfelToken, ricsiToken, p, subject, summary, attachments, storeFailed));
   return json({ ok: true });
 }
 
@@ -202,18 +219,20 @@ function buildSummary(p: Parsed): string {
   return lines.join("\n");
 }
 
-function buildHtml(p: Parsed, id: number): string {
+function buildHtml(p: Parsed, id: number, kezelesLink: string): string {
   const row = (k: string, v: string) => `<tr><td style="padding:2px 12px 2px 0;color:#666">${esc(k)}</td><td>${esc(v)}</td></tr>`;
   const igeny = p.igenyLines.length
     ? `<h3>Tervező adatai</h3><ul>${p.igenyLines.map((l) => `<li>${esc(l)}</li>`).join("")}</ul>`
     : "";
-  return `<h2>Új igény #${id}</h2><table>${row("Forrás", p.forras === "tervezo" ? "Tervező" : "Ajánlatkérő űrlap")}${row("Név", p.nev)}${row("E-mail", p.email)}${row("Telefon", p.telefon || "(nincs megadva)")}${row("Fotók száma", String(p.fotok.length))}</table>${p.uzenet ? `<h3>Üzenet</h3><p style="white-space:pre-wrap">${esc(p.uzenet)}</p>` : ""}${igeny}<p style="color:#666">A „Válasz” gomb az ügyfélnek megy, a rendszeren keresztül.</p>`;
+  return `<h2>Új igény #${id}</h2><table>${row("Forrás", p.forras === "tervezo" ? "Tervező" : "Ajánlatkérő űrlap")}${row("Név", p.nev)}${row("E-mail", p.email)}${row("Telefon", p.telefon || "(nincs megadva)")}${row("Fotók száma", String(p.fotok.length))}</table>${p.uzenet ? `<h3>Üzenet</h3><p style="white-space:pre-wrap">${esc(p.uzenet)}</p>` : ""}${igeny}<p><a href="${esc(kezelesLink)}" style="display:inline-block;padding:12px 20px;background:#d4a373;color:#1c1c1c;text-decoration:none;border-radius:8px;font-weight:bold">Megrendelés kezelése</a></p><p style="color:#666">A „Válasz” gomb az ügyfélnek megy, a rendszeren keresztül.</p>`;
 }
 
 async function sendNotifications(
   env: Env,
   id: number,
   key: string,
+  ugyfelToken: string,
+  ricsiToken: string,
   p: Parsed,
   subject: string,
   summary: string,
@@ -224,41 +243,42 @@ async function sendNotifications(
   const problems: string[] = [];
   if (storeFailed) problems.push("fotó mentése R2-be nem sikerült");
 
+  const kezelesLink = `${env.SITE_URL.replace(/\/+$/, "")}/m/${ricsiToken}`;
   const toRicsi = await sendMail(env, {
     to: env.RICSI_EMAIL,
     subject,
-    text: summary,
-    html: buildHtml(p, id),
+    text: `${summary}\n\nMegrendelés kezelése: ${kezelesLink}`,
+    html: buildHtml(p, id, kezelesLink),
     replyTo: addr,
     fromName: p.nev,
     attachments,
   });
   if (!toRicsi.ok) problems.push(`értesítő levél Ricsinek nem ment ki (${toRicsi.error})`);
 
+  const lab = lablec(env, { ugyfel_token: ugyfelToken });
   const confirm = [
-    `Kedves ${p.nev}!`,
+    "Szia!",
     "",
-    "Köszönjük, megkaptuk az igényét. Egy munkanapon belül jelentkezünk.",
+    "Megkaptuk az igényed, köszönjük! Egy munkanapon belül keresünk.",
     "",
-    "Amit küldött:",
-    p.uzenet ? `Üzenet: ${p.uzenet}` : "A tervezőben összeállított ajtó adatait.",
+    "Amit küldtél:",
+    p.uzenet ? `Üzenet: ${p.uzenet}` : "A tervezőben összeállított ajtó adatai.",
     ...(p.igenyLines.length ? p.igenyLines.map((l) => `  ${l}`) : []),
     `Fotók száma: ${p.fotok.length}`,
     "",
-    "Ha kiegészítené valamivel, egyszerűen válaszoljon erre a levélre.",
+    "Ha kiegészítenéd valamivel, egyszerűen válaszolj erre a levélre.",
     "",
-    "Üdvözlettel,",
+    "Üdv,",
     "Roll’n’Door",
+    "",
+    lab.text,
   ].join("\n");
-  const confirmHtml = `<p>Kedves ${esc(p.nev)}!</p><p>Köszönjük, megkaptuk az igényét. <strong>Egy munkanapon belül jelentkezünk.</strong></p><p>Amit küldött:</p><ul>${p.uzenet ? `<li>Üzenet: ${esc(p.uzenet)}</li>` : "<li>A tervezőben összeállított ajtó adatai</li>"}${p.igenyLines.map((l) => `<li>${esc(l)}</li>`).join("")}<li>Fotók száma: ${p.fotok.length}</li></ul><p>Ha kiegészítené valamivel, egyszerűen válaszoljon erre a levélre.</p><p>Üdvözlettel,<br>Roll’n’Door</p>`;
-  const toCustomer = await sendMail(env, {
-    to: p.email,
-    subject: "Megkaptuk az igényét – Roll’n’Door",
-    text: confirm,
-    html: confirmHtml,
-    replyTo: addr,
-    fromName: "Roll’n’Door",
-  });
+  const confirmHtml = `<div style="font-family:Arial,Helvetica,sans-serif;font-size:17px;line-height:1.5;color:#222;max-width:560px"><p>Szia!</p><p>Megkaptuk az igényed, köszönjük! <strong>Egy munkanapon belül keresünk.</strong></p><p>Amit küldtél:</p><ul>${p.uzenet ? `<li>Üzenet: ${esc(p.uzenet)}</li>` : "<li>A tervezőben összeállított ajtó adatai</li>"}${p.igenyLines.map((l) => `<li>${esc(l)}</li>`).join("")}<li>Fotók száma: ${p.fotok.length}</li></ul><p>Ha kiegészítenéd valamivel, egyszerűen válaszolj erre a levélre.</p><p>Üdv,<br>Roll’n’Door</p>${lab.html}</div>`;
+  const toCustomer = await kuldUgyfelnek(
+    env,
+    { id, email: p.email, valasz_kulcs: key, ricsi_token: ricsiToken },
+    { subject: "Roll’n’Door – Megkaptuk az igényed", text: confirm, html: confirmHtml },
+  );
   if (!toCustomer.ok) problems.push(`visszaigazoló levél az ügyfélnek nem ment ki (${toCustomer.error})`);
 
   if (problems.length) {
