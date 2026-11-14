@@ -87,7 +87,7 @@
     <!-- Navbar -->
     <nav class="navbar" id="navbar" aria-label="Főmenü">
         <a href="index.html" class="logo-link" aria-label="Roll’n’Door – kezdőlap">
-            <img src="img/logo.png" alt="Roll’n’Door – ajtó.másképp" class="logo-img" width="128" height="44">
+            <img src="img/logo.webp" alt="Roll’n’Door – ajtó.másképp" class="logo-img" width="128" height="44">
         </a>
         <button class="nav-toggle" id="navToggle" type="button" aria-expanded="false" aria-controls="navLinks"
             aria-label="Menü megnyitása">
@@ -107,9 +107,9 @@
     <main>
     <!-- Hero Section -->
     <section class="hero" id="hero">
-        <img class="hero-img" src="img/hero.webp"
-            srcset="img/hero-640.webp 640w, img/hero.webp 1024w" sizes="100vw"
-            width="1024" height="1024" fetchpriority="high" alt="" decoding="async">
+        <img class="hero-img" src="img/hero-lakas-1600.webp"
+            srcset="img/hero-lakas-640.webp 640w, img/hero-lakas-960.webp 960w, img/hero-lakas-1600.webp 1600w" sizes="100vw"
+            width="1600" height="1066" fetchpriority="high" alt="" decoding="async">
         <div class="hero-content">
             <span class="hero-subtitle">ajtó.másképp</span>
             <h1>Egyedi tolóajtó dupla sínes vasalattal</h1>
@@ -122,7 +122,6 @@
     </section>
 
     <!-- Products / Features Section -->
-    <!-- TODO: valódi fotók a fotómappából -->
     <section class="features" id="products">
         <div class="section-header">
             <h2>Miért a Roll’n’Door?</h2>
@@ -132,8 +131,8 @@
         <div class="grid">
             <div class="card card-lead">
                 <div class="card-img-wrapper">
-                    <img class="card-img" src="img/sajat-vasalat.webp" width="800" height="600" loading="lazy"
-                        alt="Dupla sínes tolóajtó vasalat közelről">
+                    <img class="card-img" src="img/kartya-dupla-sin.webp" width="800" height="600" loading="lazy"
+                        alt="A vasalat két lapos, fekete sínje egymás előtt, közelről">
                 </div>
                 <div class="card-content">
                     <span class="card-badge">Ez a legfontosabb</span>
@@ -144,8 +143,8 @@
             </div>
             <div class="card">
                 <div class="card-img-wrapper">
-                    <img class="card-img" src="img/gallery1.webp" width="800" height="600" loading="lazy"
-                        alt="Fehér tolóajtó modern lakásban">
+                    <img class="card-img" src="img/kartya-egyedi-szin.webp" width="800" height="600" loading="lazy"
+                        alt="Élénkkék, Z-merevítős tolóajtó egy gardróbban">
                 </div>
                 <div class="card-content">
                     <h3>Pont olyan, amilyet akarsz</h3>
@@ -155,8 +154,8 @@
             </div>
             <div class="card">
                 <div class="card-img-wrapper">
-                    <img class="card-img" src="img/hardware.webp" width="800" height="600" loading="lazy"
-                        alt="Tolóajtó vasalat alkatrészei">
+                    <img class="card-img" src="img/kartya-beszereles.webp" width="800" height="600" loading="lazy"
+                        alt="Beszerelt tömörfa tolóajtó fekete sínen egy berendezett szobában">
                 </div>
                 <div class="card-content">
                     <h3>Beszerelés nálad, országosan</h3>
@@ -219,24 +218,47 @@
     </section>
 
     <!-- Gallery Section -->
-    <!-- TODO: valódi fotók a fotómappából -->
     <section class="gallery-section" id="galeria" style="background-color: var(--bg-secondary);">
         <div class="section-header">
-            <h2>Képek az ajtóinkról</h2>
+            <h2>Referenciáink</h2>
             <p>Kattints a képekre a nagyításhoz.</p>
         </div>
         <div class="gallery-grid">
-            <button type="button" class="gallery-item" data-index="0" aria-label="Kép nagyítása: modern fehér kétszárnyú tolóajtó">
-                <img src="img/gallery1.webp" width="800" height="600" loading="lazy" alt="Modern fehér kétszárnyú tolóajtó">
+            <button type="button" class="gallery-item" data-index="0" aria-label="Kép nagyítása: fa tolóajtó egy előszobában">
+                <img src="img/galeria-01-eloszoba-fa-ajto-s.webp" width="800" height="600" loading="lazy" alt="Fa tolóajtó fekete sínen egy előszobában, fehér szekrények mellett">
             </button>
-            <button type="button" class="gallery-item" data-index="1" aria-label="Kép nagyítása: rusztikus fa pajtaajtó">
-                <img src="img/gallery2.webp" width="800" height="600" loading="lazy" alt="Rusztikus fa pajtaajtó sötét vasalattal">
+            <button type="button" class="gallery-item" data-index="1" aria-label="Kép nagyítása: tömörfa tolóajtó téglafal mellett">
+                <img src="img/galeria-02-loft-tomorfa-s.webp" width="800" height="600" loading="lazy" alt="Tömörfa tolóajtó fekete sínen, téglafal és fényfüzér mellett">
             </button>
-            <button type="button" class="gallery-item" data-index="2" aria-label="Kép nagyítása: fahatású tolóajtó">
-                <img src="img/hero-640.webp" width="640" height="640" loading="lazy" alt="Masszív fahatású tolóajtó kilátással">
+            <button type="button" class="gallery-item" data-index="2" aria-label="Kép nagyítása: üveges kétszárnyú tolóajtó">
+                <img src="img/galeria-03-uveges-ajtopar-s.webp" width="800" height="600" loading="lazy" alt="Kétszárnyú tolóajtó fa kerettel és fekete osztású üveggel, kandalló mellett">
             </button>
-            <button type="button" class="gallery-item" data-index="3" aria-label="Kép nagyítása: sínrendszer részlet">
-                <img src="img/sajat-vasalat.webp" width="800" height="600" loading="lazy" alt="Matt fekete sínrendszer és görgő részlet">
+            <button type="button" class="gallery-item" data-index="3" aria-label="Kép nagyítása: élfás tölgy tolóajtó">
+                <img src="img/galeria-04-elfas-tolgy-s.webp" width="800" height="600" loading="lazy" alt="Élfás, természetes szélű tölgy tolóajtó egy hálószobában">
+            </button>
+            <button type="button" class="gallery-item" data-index="4" aria-label="Kép nagyítása: szürkészöld tolóajtó">
+                <img src="img/galeria-05-szurkeszold-z-ajto-s.webp" width="800" height="600" loading="lazy" alt="Szürkészöldre festett, deszkázott tolóajtó, a sínen roll’n’door felirattal">
+            </button>
+            <button type="button" class="gallery-item" data-index="5" aria-label="Kép nagyítása: antik, díszes ajtólap">
+                <img src="img/galeria-06-antik-diszes-ajto-s.webp" width="800" height="600" loading="lazy" alt="Régi, díszes, kopott festésű ajtólap tolóajtóként felszerelve">
+            </button>
+            <button type="button" class="gallery-item" data-index="6" aria-label="Kép nagyítása: fehér-fekete kétszárnyú tolóajtó">
+                <img src="img/galeria-07-feher-fekete-ketszarnyu-s.webp" width="800" height="600" loading="lazy" alt="Fehér keretes, fekete betétes kétszárnyú tolóajtó fekete sínen">
+            </button>
+            <button type="button" class="gallery-item" data-index="7" aria-label="Kép nagyítása: lézervágott mintás fehér ajtó">
+                <img src="img/galeria-08-lezervagott-feher-s.webp" width="800" height="600" loading="lazy" alt="Fehér, lézerrel vágott mintás tolóajtó két szárnnyal">
+            </button>
+            <button type="button" class="gallery-item" data-index="8" aria-label="Kép nagyítása: fehér, üveges tolóajtó">
+                <img src="img/galeria-09-feher-uveges-ajto-s.webp" width="800" height="600" loading="lazy" alt="Fehér, kopottas festésű, matt üvegtáblás ajtó tolóajtóként">
+            </button>
+            <button type="button" class="gallery-item" data-index="9" aria-label="Kép nagyítása: acéllemez tolóajtó">
+                <img src="img/galeria-10-acel-ajto-s.webp" width="800" height="600" loading="lazy" alt="Szegecselt acéllemez tolóajtó fényes sínen">
+            </button>
+            <button type="button" class="gallery-item" data-index="10" aria-label="Kép nagyítása: a vasalat közelről">
+                <img src="img/galeria-11-roll-n-door-vasalat-s.webp" width="800" height="600" loading="lazy" alt="Roll’n’door feliratú lemez a fekete sínen, a görgő és a konzol közelről">
+            </button>
+            <button type="button" class="gallery-item" data-index="11" aria-label="Kép nagyítása: türkizkék kétszárnyú tolóajtó">
+                <img src="img/galeria-12-turkiz-ketszarnyu-s.webp" width="800" height="600" loading="lazy" alt="Türkizkékre festett, deszkázott kétszárnyú tolóajtó fekete sínen">
             </button>
         </div>
     </section>
@@ -359,7 +381,7 @@
     <!-- Footer -->
     <footer>
         <div class="footer-content">
-            <img src="img/logo.png" alt="Roll’n’Door – ajtó.másképp" class="footer-logo-img" width="128" height="44"
+            <img src="img/logo.webp" alt="Roll’n’Door – ajtó.másképp" class="footer-logo-img" width="128" height="44"
                 loading="lazy">
             <p>Egyedi tolóajtók: ajtólap, vasalat és beszerelés.</p>
             <div class="footer-contact">

@@ -217,7 +217,7 @@
     }
     if (st.n === 5) {
       main.appendChild(h('figure', { class: 'm-figure' }, [
-        h('img', { src: '../img/gallery1.webp', alt: 'Minta látványterv az ajtóról', class: 'm-plan' }),
+        h('img', { src: '../img/kartya-beszereles.webp', alt: 'Minta látványterv az ajtóról', class: 'm-plan' }),
         h('figcaption', { text: 'Minta látványterv' })
       ]));
       if (state.approved) {

@@ -153,10 +153,18 @@ if (quoteForm) {
 
 // Lightbox Gallery Logic
 const galleryImages = [
-    { src: 'img/gallery1.webp', alt: 'Modern fehér kétszárnyú tolóajtó' },
-    { src: 'img/gallery2.webp', alt: 'Rusztikus fa pajtaajtó sötét vasalattal' },
-    { src: 'img/hero.webp', alt: 'Masszív fahatású tolóajtó kilátással' },
-    { src: 'img/sajat-vasalat.webp', alt: 'Matt fekete sínrendszer és görgő részlet' }
+    { src: 'img/galeria-01-eloszoba-fa-ajto.webp', alt: 'Fa tolóajtó fekete sínen egy előszobában, fehér szekrények mellett' },
+    { src: 'img/galeria-02-loft-tomorfa.webp', alt: 'Tömörfa tolóajtó fekete sínen, téglafal és fényfüzér mellett' },
+    { src: 'img/galeria-03-uveges-ajtopar.webp', alt: 'Kétszárnyú tolóajtó fa kerettel és fekete osztású üveggel, kandalló mellett' },
+    { src: 'img/galeria-04-elfas-tolgy.webp', alt: 'Élfás, természetes szélű tölgy tolóajtó egy hálószobában' },
+    { src: 'img/galeria-05-szurkeszold-z-ajto.webp', alt: 'Szürkészöldre festett, deszkázott tolóajtó, a sínen roll’n’door felirattal' },
+    { src: 'img/galeria-06-antik-diszes-ajto.webp', alt: 'Régi, díszes, kopott festésű ajtólap tolóajtóként felszerelve' },
+    { src: 'img/galeria-07-feher-fekete-ketszarnyu.webp', alt: 'Fehér keretes, fekete betétes kétszárnyú tolóajtó fekete sínen' },
+    { src: 'img/galeria-08-lezervagott-feher.webp', alt: 'Fehér, lézerrel vágott mintás tolóajtó két szárnnyal' },
+    { src: 'img/galeria-09-feher-uveges-ajto.webp', alt: 'Fehér, kopottas festésű, matt üvegtáblás ajtó tolóajtóként' },
+    { src: 'img/galeria-10-acel-ajto.webp', alt: 'Szegecselt acéllemez tolóajtó fényes sínen' },
+    { src: 'img/galeria-11-roll-n-door-vasalat.webp', alt: 'Roll’n’door feliratú lemez a fekete sínen, a görgő és a konzol közelről' },
+    { src: 'img/galeria-12-turkiz-ketszarnyu.webp', alt: 'Türkizkékre festett, deszkázott kétszárnyú tolóajtó fekete sínen' }
 ];
 
 const lightbox = document.getElementById('lightbox');
