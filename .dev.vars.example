@@ -1,0 +1,8 @@
+# Másold .dev.vars néven (a .gitignore már kizárja). Soha ne commitolj valódi titkot.
+# RESEND_API_KEY hiányában a levélküldés dry-run (csak egy log sor).
+# RESEND_API_KEY=re_xxx
+# Aláírás nélküli webhookot úgyis elutasítunk; élesben a Resend whsec_... titka.
+RESEND_WEBHOOK_SECRET=whsec_dGVzdC1zZWNyZXQ=
+# Cloudflare hivatalos "mindig sikeres" teszt secret:
+TURNSTILE_SECRET=1x0000000000000000000000000000000AA
+# SITE_URL=http://localhost:8787

@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="hu">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ajtótervező – Roll’n’Door</title>
+    <meta name="description"
+        content="Állítsd össze 6 rövid lépésben, milyen tolóajtót szeretnél. Mi ebből ajánlatot írunk. Az ajánlat ingyenes.">
+    <link rel="canonical" href="https://rollndoor.hu/tervezo.html">
+    <link rel="icon" href="favicon.svg" type="image/svg+xml">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@400;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="tervezo.css">
+</head>
+
+<body class="tz">
+    <a class="skip-link" href="#tzMain">Ugrás a tartalomhoz</a>
+
+    <!-- Újrahasznált jelek (nem látszanak, csak <use> hivatkozik rájuk) -->
+    <svg width="0" height="0" class="vh" aria-hidden="true" focusable="false">
+        <symbol id="ik-kerdes" viewBox="0 0 120 84">
+            <circle cx="60" cy="42" r="26" fill="none" stroke="currentColor" stroke-width="3" stroke-dasharray="5 5"/>
+            <text x="60" y="55" text-anchor="middle" font-size="36" font-weight="700" font-family="Outfit, sans-serif" fill="currentColor">?</text>
+        </symbol>
+    </svg>
+
+    <header class="tz-head">
+        <a href="index.html" class="logo-link" aria-label="Roll’n’Door – kezdőlap">
+            <img src="img/logo.png" alt="Roll’n’Door – ajtó.másképp" class="logo-img" width="128" height="44">
+        </a>
+        <a href="index.html" class="tz-home">Vissza a főoldalra</a>
+    </header>
+
+    <main id="tzMain" class="tz-main">
+        <h1 class="vh">Ajtótervező</h1>
+
+        <div id="planner">
+            <div class="tz-progress">
+                <p class="tz-count" id="tzCount" aria-live="polite"><span id="tzNow">1</span> / 6</p>
+                <div class="tz-bar" id="tzBar" role="progressbar" aria-label="Haladás" aria-valuemin="1" aria-valuemax="6"
+                    aria-valuenow="1"><span id="tzBarFill"></span></div>
+            </div>
+
+            <form id="tzForm" novalidate autocomplete="off">
+
+                <!-- 1. lépés -->
+                <section class="step" data-step="1" aria-labelledby="h1">
+                    <h2 id="h1" tabindex="-1">Milyen ajtót szeretnél?</h2>
+                    <p class="step-lead">Válaszd ki, melyik áll hozzád a legközelebb.</p>
+                    <fieldset class="opts opts-pic">
+                        <legend class="vh">Ajtó típusa</legend>
+
+                        <label class="opt">
+                            <input type="radio" name="tipus" value="egyszarnyu">
+                            <span class="opt-body">
+                                <span class="opt-pic"><svg viewBox="0 0 120 84" aria-hidden="true" focusable="false">
+                                    <rect class="w" x="1" y="1" width="118" height="82" rx="3"/>
+                                    <rect class="o" x="22" y="14" width="40" height="64"/>
+                                    <line class="r" x1="14" y1="10" x2="108" y2="10"/>
+                                    <rect class="l" x="40" y="12" width="40" height="66" rx="1"/>
+                                    <path class="a" d="M88 46h18m-6-6 6 6-6 6"/>
+                                </svg></span>
+                                <span class="opt-txt">Egyszárnyú</span>
+                            </span>
+                        </label>
+
+                        <label class="opt">
+                            <input type="radio" name="tipus" value="ketszarnyu">
+                            <span class="opt-body">
+                                <span class="opt-pic"><svg viewBox="0 0 120 84" aria-hidden="true" focusable="false">
+                                    <rect class="w" x="1" y="1" width="118" height="82" rx="3"/>
+                                    <rect class="o" x="24" y="14" width="72" height="64"/>
+                                    <line class="r" x1="6" y1="10" x2="114" y2="10"/>
+                                    <rect class="l" x="10" y="12" width="38" height="66" rx="1"/>
+                                    <rect class="l" x="72" y="12" width="38" height="66" rx="1"/>
+                                    <path class="a" d="M57 46h-5m3-4-3 4 3 4M63 46h5m-3-4 3 4-3 4"/>
+                                </svg></span>
+                                <span class="opt-txt">Kétszárnyú <small>(középről szétnyíló)</small></span>
+                            </span>
+                        </label>
+
+                        <label class="opt">
+                            <input type="radio" name="tipus" value="bypass">
+                            <span class="opt-body">
+                                <span class="opt-pic"><svg viewBox="0 0 120 84" aria-hidden="true" focusable="false">
+                                    <rect class="w" x="1" y="1" width="118" height="82" rx="3"/>
+                                    <rect class="o" x="24" y="14" width="72" height="64"/>
+                                    <line class="r" x1="14" y1="7" x2="106" y2="7"/>
+                                    <line class="r" x1="14" y1="12" x2="106" y2="12"/>
+                                    <rect class="l2" x="58" y="14" width="38" height="64"/>
+                                    <rect class="l" x="24" y="14" width="38" height="64"/>
+                                    <path class="a2" d="M54 46H34m6-6-6 6 6 6M68 46h20m-6-6 6 6-6 6"/>
+                                </svg></span>
+                                <span class="opt-txt">Két ajtó egymás előtt <small>(bypass)</small></span>
+                            </span>
+                        </label>
+
+                        <label class="opt">
+                            <input type="radio" name="tipus" value="falban">
+                            <span class="opt-body">
+                                <span class="opt-pic"><svg viewBox="0 0 120 84" aria-hidden="true" focusable="false">
+                                    <rect class="w" x="1" y="1" width="118" height="82" rx="3"/>
+                                    <rect class="o" x="12" y="14" width="42" height="64"/>
+                                    <rect class="d" x="54" y="13" width="54" height="66"/>
+                                    <line class="r" x1="8" y1="9" x2="110" y2="9"/>
+                                    <rect class="l" x="30" y="14" width="42" height="64" rx="1"/>
+                                    <path class="a2" d="M40 46h22m-6-6 6 6-6 6"/>
+                                </svg></span>
+                                <span class="opt-txt">Falban futó</span>
+                            </span>
+                        </label>
+
+                        <label class="opt">
+                            <input type="radio" name="tipus" value="nem_tudom">
+                            <span class="opt-body">
+                                <span class="opt-pic opt-pic-q"><svg viewBox="0 0 120 84" aria-hidden="true" focusable="false"><use href="#ik-kerdes"/></svg></span>
+                                <span class="opt-txt">Nem tudom, segítsetek</span>
+                            </span>
+                        </label>
+                    </fieldset>
+                    <p class="pic-note">Szemléltető kép. A pontos látványtervet megrendelés után kapod.</p>
+                </section>
+
+                <!-- 2. lépés -->
+                <section class="step" data-step="2" aria-labelledby="h2" hidden>
+                    <h2 id="h2" tabindex="-1">Mekkora a nyílás, és milyen a fal?</h2>
+
+                    <details class="howto">
+                        <summary>Hogyan mérjek?</summary>
+                        <div class="howto-body">
+                            <svg class="howto-svg" viewBox="0 0 240 170" role="img"
+                                aria-label="Ajtónyílás rajza: a szélességet vízszintes, a magasságot függőleges nyíl jelzi">
+                                <rect class="w" x="4" y="4" width="232" height="140" rx="4"/>
+                                <rect class="o" x="50" y="20" width="110" height="124"/>
+                                <path class="a" d="M50 156h110m-8-6 8 6-8 6M58 150l-8 6 8 6"/>
+                                <text x="105" y="168" text-anchor="middle" class="t">szélesség</text>
+                                <path class="a" d="M178 20v124m-6-8 6 8 6-8M172 28l6-8 6 8"/>
+                                <text x="212" y="86" text-anchor="middle" class="t" transform="rotate(90 212 82)">magasság</text>
+                            </svg>
+                            <ul class="howto-tips">
+                                <li>Mérd a szélességet 3 helyen (lent, középen, fent), és a legnagyobbat írd be.</li>
+                                <li>A magasságot a padlótól a nyílás tetejéig mérd.</li>
+                                <li>Az ajtó oldalra tolódik, ezért a nyílás mellett legyen legalább ajtónyi szabad fal.</li>
+                            </ul>
+                            <p class="pic-note">Szemléltető kép. A pontos látványtervet megrendelés után kapod.</p>
+                        </div>
+                    </details>
+
+                    <div class="dims">
+                        <div class="form-group" data-field="szelesseg">
+                            <label for="szelesseg">Szélesség (cm)</label>
+                            <input type="number" id="szelesseg" name="szelesseg" class="form-control" inputmode="numeric"
+                                step="1" placeholder="pl. 90" aria-describedby="szelesseg-hint szelesseg-err">
+                            <span class="form-hint soft" id="szelesseg-hint" aria-live="polite"></span>
+                            <span class="field-error" id="szelesseg-err" role="alert"></span>
+                        </div>
+                        <div class="form-group" data-field="magassag">
+                            <label for="magassag">Magasság (cm)</label>
+                            <input type="number" id="magassag" name="magassag" class="form-control" inputmode="numeric"
+                                step="1" placeholder="pl. 210" aria-describedby="magassag-hint magassag-err">
+                            <span class="form-hint soft" id="magassag-hint" aria-live="polite"></span>
+                            <span class="field-error" id="magassag-err" role="alert"></span>
+                        </div>
+                    </div>
+
+                    <fieldset class="opts opts-row">
+                        <legend>Milyen a fal?</legend>
+                        <label class="opt"><input type="radio" name="fal" value="tegla"><span class="opt-body"><span class="opt-txt">Tégla</span></span></label>
+                        <label class="opt"><input type="radio" name="fal" value="beton"><span class="opt-body"><span class="opt-txt">Beton</span></span></label>
+                        <label class="opt"><input type="radio" name="fal" value="gipszkarton"><span class="opt-body"><span class="opt-txt">Gipszkarton</span></span></label>
+                        <label class="opt"><input type="radio" name="fal" value="ytong"><span class="opt-body"><span class="opt-txt">Ytong / pórusbeton</span></span></label>
+                        <label class="opt"><input type="radio" name="fal" value="nem_tudom"><span class="opt-body"><span class="opt-txt">Nem tudom</span></span></label>
+                    </fieldset>
+
+                    <fieldset class="opts opts-row">
+                        <legend>Merre tolódjon az ajtó?</legend>
+                        <label class="opt"><input type="radio" name="irany" value="balra"><span class="opt-body"><span class="opt-txt">Balra</span></span></label>
+                        <label class="opt"><input type="radio" name="irany" value="jobbra"><span class="opt-body"><span class="opt-txt">Jobbra</span></span></label>
+                        <label class="opt"><input type="radio" name="irany" value="mindegy"><span class="opt-body"><span class="opt-txt">Mindegy / nem tudom</span></span></label>
+                    </fieldset>
+
+                    <div class="form-group" data-field="foto">
+                        <label for="fotok">Fotó a nyílásról</label>
+                        <input type="file" id="fotok" class="form-control" accept="image/*" multiple
+                            aria-describedby="fotok-hint fotok-note fotok-err">
+                        <span class="form-hint" id="fotok-hint">1–2 kép. Telefonnal készült fotó is jó.</span>
+                        <ul class="photo-list" id="photoList"></ul>
+                        <p class="form-hint note-gentle" id="fotok-note" role="status"></p>
+                        <div class="check-group">
+                            <label for="fotoKesobb">
+                                <input type="checkbox" id="fotoKesobb" name="fotoKesobb">
+                                <span>Most nem tudok fotót küldeni, később küldöm e-mailben</span>
+                            </label>
+                        </div>
+                        <span class="field-error" id="fotok-err" role="alert"></span>
+                    </div>
+                </section>
+
+                <!-- 3. lépés -->
+                <!-- TODO: valódi fotók a fotómappából -->
+                <section class="step" data-step="3" aria-labelledby="h3" hidden>
+                    <h2 id="h3" tabindex="-1">Milyen legyen az ajtólap?</h2>
+                    <fieldset class="opts opts-pic">
+                        <legend class="vh">Ajtólap típusa</legend>
+
+                        <label class="opt">
+                            <input type="radio" name="lap" value="tomorfa">
+                            <span class="opt-body">
+                                <span class="opt-pic"><img src="img/gallery2.webp" width="800" height="600" loading="lazy" alt=""></span>
+                                <span class="opt-txt">Tömörfa <em class="opt-badge">leggyakoribb</em></span>
+                            </span>
+                        </label>
+                        <label class="opt">
+                            <input type="radio" name="lap" value="uveg">
+                            <span class="opt-body">
+                                <span class="opt-pic"><img src="img/gallery1.webp" width="800" height="600" loading="lazy" alt=""></span>
+                                <span class="opt-txt">Üveg</span>
+                            </span>
+                        </label>
+                        <label class="opt">
+                            <input type="radio" name="lap" value="fem_uveg">
+                            <span class="opt-body">
+                                <span class="opt-pic"><img src="img/hero-640.webp" width="640" height="640" loading="lazy" alt=""></span>
+                                <span class="opt-txt">Fém keret üveggel</span>
+                            </span>
+                        </label>
+                        <label class="opt">
+                            <input type="radio" name="lap" value="van_lap">
+                            <span class="opt-body">
+                                <span class="opt-pic"><svg viewBox="0 0 120 84" aria-hidden="true" focusable="false">
+                                    <line class="r" x1="10" y1="20" x2="110" y2="20"/>
+                                    <rect class="l" x="28" y="20" width="7" height="12"/>
+                                    <rect class="l" x="85" y="20" width="7" height="12"/>
+                                    <rect class="d" x="22" y="32" width="76" height="46"/>
+                                </svg></span>
+                                <span class="opt-txt">Már van ajtólapom, csak vasalat kell</span>
+                            </span>
+                        </label>
+                        <label class="opt">
+                            <input type="radio" name="lap" value="sajat">
+                            <span class="opt-body">
+                                <span class="opt-pic"><svg viewBox="0 0 120 84" aria-hidden="true" focusable="false">
+                                    <path class="a" d="M38 66l3-13 32-32 10 10-32 32zM68 26l10 10"/>
+                                </svg></span>
+                                <span class="opt-txt">Saját elképzelésem van</span>
+                            </span>
+                        </label>
+                        <label class="opt">
+                            <input type="radio" name="lap" value="nem_tudom">
+                            <span class="opt-body">
+                                <span class="opt-pic opt-pic-q"><svg viewBox="0 0 120 84" aria-hidden="true" focusable="false"><use href="#ik-kerdes"/></svg></span>
+                                <span class="opt-txt">Nem tudom, segítsetek</span>
+                            </span>
+                        </label>
+                    </fieldset>
+                    <p class="pic-note">Szemléltető kép. A pontos látványtervet megrendelés után kapod.</p>
+
+                    <div class="form-group">
+                        <label for="lapLeiras">Írd le pár szóval, mit képzeltél el <span class="optional">(nem kötelező)</span></label>
+                        <textarea id="lapLeiras" name="lapLeiras" class="form-control" rows="4" maxlength="500"
+                            aria-describedby="lapLeiras-hint"></textarea>
+                        <span class="form-hint" id="lapLeiras-hint">Mintaképet a visszaigazoló e-mailre válaszolva is küldhetsz.</span>
+                    </div>
+                </section>
+
+                <!-- 4. lépés -->
+                <!-- TODO: Ricsi erősítse meg a színlistát -->
+                <section class="step" data-step="4" aria-labelledby="h4" hidden>
+                    <h2 id="h4" tabindex="-1">Milyen színt szeretnél?</h2>
+                    <fieldset class="opts opts-pic opts-sw">
+                        <legend class="vh">Ajtó színe</legend>
+                        <label class="opt"><input type="radio" name="szin" value="natur_fa"><span class="opt-body"><span class="sw sw-natur" aria-hidden="true"></span><span class="opt-txt">Natúr fa <small>(lakkozva)</small></span></span></label>
+                        <label class="opt"><input type="radio" name="szin" value="pacolt_fa"><span class="opt-body"><span class="sw sw-pacolt" aria-hidden="true"></span><span class="opt-txt">Pácolt, sötét fa</span></span></label>
+                        <label class="opt"><input type="radio" name="szin" value="ral9016"><span class="opt-body"><span class="sw sw-feher" aria-hidden="true"></span><span class="opt-txt">Fehér <small>(RAL 9016)</small></span></span></label>
+                        <label class="opt"><input type="radio" name="szin" value="ral9005"><span class="opt-body"><span class="sw sw-fekete" aria-hidden="true"></span><span class="opt-txt">Fekete <small>(RAL 9005)</small></span></span></label>
+                        <label class="opt"><input type="radio" name="szin" value="ral7016"><span class="opt-body"><span class="sw sw-antracit" aria-hidden="true"></span><span class="opt-txt">Antracit <small>(RAL 7016)</small></span></span></label>
+                        <label class="opt"><input type="radio" name="szin" value="ral7035"><span class="opt-body"><span class="sw sw-vszurke" aria-hidden="true"></span><span class="opt-txt">Világosszürke <small>(RAL 7035)</small></span></span></label>
+                        <label class="opt"><input type="radio" name="szin" value="egyeb"><span class="opt-body"><span class="sw sw-egyeb" aria-hidden="true"></span><span class="opt-txt">Egyéb szín</span></span></label>
+                        <label class="opt"><input type="radio" name="szin" value="nem_tudom"><span class="opt-body"><span class="sw sw-q" aria-hidden="true">?</span><span class="opt-txt">Még nem tudom</span></span></label>
+                    </fieldset>
+                    <div class="form-group reveal" id="szinEgyebWrap" hidden>
+                        <label for="szinEgyeb">RAL vagy NCS kód, vagy a gyártó és a termék neve</label>
+                        <input type="text" id="szinEgyeb" name="szinEgyeb" class="form-control" maxlength="150">
+                    </div>
+                    <p class="pic-note">A képernyőn látott szín eltérhet a valóditól.</p>
+                </section>
+
+                <!-- 5. lépés -->
+                <section class="step" data-step="5" aria-labelledby="h5" hidden>
+                    <h2 id="h5" tabindex="-1">Vasalat és kiegészítők</h2>
+                    <div class="infobox" role="note">
+                        <strong>Dupla sín minden szetthez jár.</strong> Ettől stabil az ajtó, nem leng ki.
+                    </div>
+
+                    <fieldset class="opts opts-row">
+                        <legend>Vasalat színe</legend>
+                        <label class="opt"><input type="radio" name="vasalatSzin" value="matt_fekete" checked><span class="opt-body"><span class="opt-txt">Matt fekete</span></span></label>
+                        <label class="opt"><input type="radio" name="vasalatSzin" value="egyeb"><span class="opt-body"><span class="opt-txt">Egyéb</span></span></label>
+                        <label class="opt"><input type="radio" name="vasalatSzin" value="nem_tudom"><span class="opt-body"><span class="opt-txt">Nem tudom</span></span></label>
+                    </fieldset>
+                    <div class="form-group reveal" id="vasalatEgyebWrap" hidden>
+                        <label for="vasalatEgyeb">Milyen színű legyen a vasalat?</label>
+                        <input type="text" id="vasalatEgyeb" name="vasalatEgyeb" class="form-control" maxlength="150">
+                    </div>
+
+                    <fieldset class="opts opts-row opts-check">
+                        <legend>Mi legyen az ajtón?</legend>
+                        <label class="opt"><input type="checkbox" name="fogantyu" checked><span class="opt-body"><span class="opt-txt">Fogantyú</span><span class="opt-sub">amivel az ajtót tolni lehet</span></span></label>
+                        <label class="opt"><input type="checkbox" name="lagyZaras" checked><span class="opt-body"><span class="opt-txt">Lágy záródás <small>(soft-close)</small></span><span class="opt-sub">az ajtó magától, halkan csukódik be</span></span></label>
+                        <label class="opt"><input type="checkbox" name="zar" checked><span class="opt-body"><span class="opt-txt">Zár</span><span class="opt-sub">ha az ajtót le kell tudni zárni</span></span></label>
+                        <label class="opt"><input type="checkbox" name="megvezeto" checked><span class="opt-body"><span class="opt-txt">Alsó megvezető</span><span class="opt-sub">a padlónál tartja egyenesben az ajtót</span></span></label>
+                    </fieldset>
+
+                    <fieldset class="opts opts-row">
+                        <legend>Beszerelést is kérsz?</legend>
+                        <label class="opt"><input type="radio" name="beszereles" value="igen" checked><span class="opt-body"><span class="opt-txt">Igen</span></span></label>
+                        <label class="opt"><input type="radio" name="beszereles" value="nem"><span class="opt-body"><span class="opt-txt">Nem, magam szerelem</span></span></label>
+                        <label class="opt"><input type="radio" name="beszereles" value="nem_tudom"><span class="opt-body"><span class="opt-txt">Még nem tudom</span></span></label>
+                    </fieldset>
+                </section>
+
+                <!-- 6. lépés -->
+                <section class="step" data-step="6" aria-labelledby="h6" hidden>
+                    <h2 id="h6" tabindex="-1">Hova küldjük az ajánlatot?</h2>
+
+                    <h3 class="sum-title">Ezt adtad meg</h3>
+                    <ul class="summary" id="summary"></ul>
+
+                    <div class="form-group" data-field="nev">
+                        <label for="nev">Név</label>
+                        <input type="text" id="nev" name="nev" class="form-control" autocomplete="name" maxlength="120"
+                            aria-describedby="nev-err">
+                        <span class="field-error" id="nev-err" role="alert"></span>
+                    </div>
+                    <div class="form-group" data-field="email">
+                        <label for="email">E-mail</label>
+                        <input type="email" id="email" name="email" class="form-control" autocomplete="email"
+                            placeholder="pelda@email.hu" maxlength="200" aria-describedby="email-err">
+                        <span class="field-error" id="email-err" role="alert"></span>
+                    </div>
+                    <div class="form-group">
+                        <label for="telefon">Telefon <span class="optional">(nem kötelező)</span></label>
+                        <input type="tel" id="telefon" name="telefon" class="form-control" autocomplete="tel" inputmode="tel"
+                            maxlength="40" aria-describedby="telefon-hint">
+                        <span class="form-hint" id="telefon-hint">Így gyorsabban tudunk egyeztetni</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="megjegyzes">Megjegyzés <span class="optional">(nem kötelező)</span></label>
+                        <textarea id="megjegyzes" name="megjegyzes" class="form-control" rows="3" maxlength="1500"></textarea>
+                    </div>
+
+                    <div class="form-group check-group" data-field="felelos">
+                        <label for="felelos">
+                            <input type="checkbox" id="felelos" name="felelos" aria-describedby="felelos-err">
+                            <span>A megadott méretek pontosságáért én felelek.</span>
+                        </label>
+                        <span class="field-error" id="felelos-err" role="alert"></span>
+                    </div>
+                    <div class="form-group check-group" data-field="adatkezeles">
+                        <label for="adatkezeles">
+                            <input type="checkbox" id="adatkezeles" name="adatkezeles" aria-describedby="adatkezeles-err">
+                            <span>Elolvastam az <a href="/adatkezeles.html" target="_blank" rel="noopener">adatkezelési tájékoztatót</a></span>
+                        </label>
+                        <span class="field-error" id="adatkezeles-err" role="alert"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <div id="tzTurnstile"></div>
+                    </div>
+
+                    <div class="form-error" id="tzError" role="alert" tabindex="-1"></div>
+                </section>
+
+                <div class="tz-bar-nav" id="tzNav">
+                    <button type="button" class="btn-primary btn-outline tz-btn" id="tzBack">Vissza</button>
+                    <button type="submit" class="btn-primary tz-btn" id="tzNext">Tovább</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="thanks tz-thanks" id="tzThanks" role="status" tabindex="-1" hidden>
+            <h2>Megkaptuk!</h2>
+            <p>1 munkanapon belül keresünk. Küldtünk egy visszaigazoló e-mailt is.</p>
+            <a href="index.html" class="btn-primary">Vissza a főoldalra</a>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <img src="img/logo.png" alt="Roll’n’Door – ajtó.másképp" class="footer-logo-img" width="128" height="44"
+                loading="lazy">
+            <p>Egyedi tolóajtók: ajtólap, vasalat és beszerelés.</p>
+            <div class="footer-contact">
+                <a href="tel:+36205650661">06 20 565 0661</a>
+                <a href="tel:+3615500566">06 1 550 0566</a>
+                <a href="mailto:info@rollndoor.hu">info@rollndoor.hu</a>
+            </div>
+            <div class="footer-links">
+                <a href="/adatkezeles.html">Adatkezelés</a>
+                <a href="/impresszum.html">Impresszum</a>
+            </div>
+        </div>
+        <div class="copyright">
+            &copy; 2026 Roll’n’Door. Minden jog fenntartva.
+        </div>
+    </footer>
+
+    <script src="kozos.js" defer></script>
+    <script src="tervezo.js" defer></script>
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" defer></script>
+</body>
+
+</html>

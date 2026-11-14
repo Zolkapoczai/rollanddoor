@@ -1,0 +1,19 @@
+# Cloudflare Workers static assets _redirects (a Worker nem fut ezekre az utvonalakra).
+/vasalatok/ /#products 301
+/vasalatok /#products 301
+/ajtolapok/ /#products 301
+/ajtolapok /#products 301
+/elonyok/ /#products 301
+/elonyok /#products 301
+/szolgaltatasunk/ /#products 301
+/szolgaltatasunk /#products 301
+/ajanlat-keres/ /#kapcsolat 301
+/ajanlat-keres /#kapcsolat 301
+/elerhetoseg/ /#kapcsolat 301
+/elerhetoseg /#kapcsolat 301
+/rendeles-menete/ /#rendeles-menete 301
+/rendeles-menete /#rendeles-menete 301
+/hogyan-lehet-ilyen-ajtom/ /#rendeles-menete 301
+/hogyan-lehet-ilyen-ajtom /#rendeles-menete 301
+/antik-ajto-uj-elete/ /blog.html 301
+/antik-ajto-uj-elete /blog.html 301

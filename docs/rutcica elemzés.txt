@@ -1,0 +1,63 @@
+# Üzleti Elemzés és Konkurenciavizsgálat: Rustica.com 
+**Készült a Rolandor weboldal és ajtótervező fejlesztésének támogatására**
+
+## 1. Vezetői Összefoglaló (Executive Summary)
+A Rustica (rustica.com) az amerikai piac egyik vezető, prémium kategóriás, egyedi gyártású pajtaajtókat (barn doors), nyílászárókat és vasalatokat forgalmazó e-kereskedelmi szereplője. Weboldaluk legnagyobb értéke és fő konverziós motorja a rendkívül részletes, mégis felhasználóbarát **Ajtótervező (Configurator)**. 
+
+A Rolandor számára a Rustica tökéletes benchmark (viszonyítási pont), mivel sikeresen oldja meg azt az e-kereskedelmi kihívást, hogy egy alapvetően komplex, sok paraméteres, egyedi gyártást igénylő fizikai terméket hogyan lehet teljesen online, emberi beavatkozás (sales asszisztens) nélkül értékesíteni.
+
+## 2. A Rustica Ajtótervező (Door Designer) Felépítése és Logikája
+A Rustica tervezője egy lineáris, lépésről-lépésre (step-by-step) haladó folyamaton vezeti végig a felhasználót. A UI (felhasználói felület) úgy van kialakítva, hogy a komplexitást "fogyasztható" darabokra bontja.
+
+### 2.1. A konfigurációs folyamat lépései
+A Rustica tervezője a következő logikai blokkokra épül, amelyeket a Rolandor esetében is érdemes megfontolni:
+
+1.  **Alapstílus kiválasztása (Belépési pont):**
+    *   A felhasználó nem egy "üres vászonnal" kezd, hanem egy alapmodellel (pl. Modern Cottage, Z-Barn Door, Chevron). Ez csökkenti a döntési paralízist.
+2.  **Méretezés (Dimensions - A legkritikusabb pont):**
+    *   **Szélesség és Magasság:** Legördülő menükből vagy csúszkákból választható. 
+    *   **Edukáció:** A felületen azonnali, vizuális súgók (tooltippek, ikonok) találhatók, amelyek elmagyarázzák a *Nyers falnyílás (Rough Opening)* és az *Ajtólap mérete (Door Slab)* közötti különbséget. (A pajtaajtóknál javasolják, hogy az ajtó 5-10 cm-rel szélesebb és magasabb legyen a nyílásnál a fényszivárgás elkerülése végett).
+3.  **Anyag és Textúra (Materials & Texture):**
+    *   Fafajta kiválasztása (pl. éger, fenyő, tölgy) vagy fém/üveg felületek.
+    *   A fa felületének kidolgozottsága (sima, rusztikus, szálcsiszolt, öregbített).
+4.  **Felületkezelés / Szín (Finishes & Colors):**
+    *   Pácok, festékek. Vizuális minták (színpaletták) segítik a döntést. 
+5.  **Vasalat rendszerek (Hardware Systems - Erős Cross-selling):**
+    *   A sínrendszer típusa (Standard, Heavy Duty, Bypass dupla ajtókhoz, Mennyezeti rögzítésű).
+    *   **Görgők (Hangers):** A design testreszabása (küllős, minimalista, pántos).
+    *   **Vasalat színe:** A fém részek felületkezelésének összehangolása (fekete, réz, rozsdamentes acél).
+6.  **Kiegészítők és Extra funkciók (Accessories):**
+    *   **Lágy záródás (Soft-close):** Nagyon fontos upsell termék.
+    *   **Fogantyúk (Pulls & Handles):** Belső és külső oldalra külön választható.
+    *   **Zárak és ütközők (Locks & Stops).**
+    *   **Alsó megvezető (Floor guide):** Padlóhoz vagy falhoz rögzített.
+
+### 2.2. Felhasználói Élmény (UX) és Interfész (UI) Elemzés
+*   **Valós idejű árazás (Dynamic Pricing):** Ahogy a felhasználó módosít egy paramétert (pl. nagyobb méretet vagy drágább fafajtát választ), a kosár értéke azonnal, oldalfrissítés nélkül frissül.
+*   **Dinamikus Vizuális Visszacsatolás:** A kiválasztott szín, üvegtípus vagy vasalat rávetül a termékképre. A felhasználó pontosan látja, mit épít.
+*   **Mobilra optimalizált elrendezés:** A bonyolult opciók mobilképernyőn is könnyen lapozható, harmonika-menüs (accordion) vagy tabos elrendezésben jelennek meg.
+*   **Kosár és "Summary" nézet:** A vásárlás gomb megnyomása előtt egy tiszta, átlátható listát ad arról, hogy pontosan mik a kiválasztott specifikációk.
+
+## 3. Üzleti és Funkcionális Értékelés (SWOT alapú megközelítés)
+
+### Erősségek (Strengths)
+*   **Rendkívül magas kosárérték (AOV) elérése:** A vasalatok, fogantyúk és a lágy záródás integrálása a tervezőbe zseniális upsell technika. A vásárló nem ajtót vesz, hanem "komplett rendszert".
+*   **Edukációs tartalmak:** A "Hogyan mérjünk?" (How to measure) videók és ábrák minimalizálják a rossz méretmegadásból fakadó ügyfélszolgálati panaszokat és garanciális problémákat.
+*   **Transzparencia:** Egyértelműen kommunikálják a gyártási időt (Lead time) már a konfigurátorban, ami menedzseli az ügyfélelvárásokat az egyedi gyártásnál.
+
+### Gyengeségek és Kockázatok (Weaknesses & Risks)
+*   **Túlterheltség (Choice Overload):** A rengeteg opció megijesztheti a kevésbé határozott vásárlót. 
+*   **Komplex háttérrendszer:** Egy ilyen részletes front-end tervező mögött egy nagyon robusztus ERP/gyártási adatbázisnak kell állnia. Minden méret/anyag kombinációnak pontosan kell, hogy ára és gyártási ideje legyen.
+
+## 4. Javaslatok a Rolandor Weboldal Számára
+A Rustica elemzése alapján a következő funkciókat és üzleti logikát javaslom implementálni a Rolandor új weboldalán:
+
+### 1. "Guided Selling" (Vezetett értékesítés) Tervező Modul
+Ne zúdítsunk minden opciót egyszerre a felhasználóra. Osszuk a konfigurátort 4-5 logikai lépésre (Tab-okra):
+*   *Lépés 1: Méretek (Súgóval)*
+*   *Lépés 2: Design és Szín*
+*   *Lépés 3: Vasalatok és Sínrendszer*
+*   *Lépés 4: Extrák (Fogantyú, Soft-close)*
+
+### 2. Beépített "Mérési Segédlet" (Mérnöki fókusz)
+Mivel a magyar piacon a vásárlók kevésbé rut

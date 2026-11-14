@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>Hol tart az ajtóm? – MINTA</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../style.css">
+  <link rel="stylesheet" href="minta.css">
+</head>
+<body class="m-body" data-page="ugyfel">
+  <div class="m-banner">MINTA – kitalált adatokkal</div>
+  <main class="m-wrap">
+    <div class="m-top">
+      <img class="m-logo" src="../img/logo.png" alt="Roll'n'Door">
+      <div class="m-hello">Szia, Anna!</div>
+    </div>
+
+    <h2 class="m-sr">Hol tart az ajtóm?</h2>
+    <div class="m-progress-label" id="m-progress-label" aria-live="polite"></div>
+    <ol class="m-steps" id="m-steps" aria-label="Folyamat lépései"></ol>
+
+    <section id="m-stage" aria-live="polite"><noscript>A minta működéséhez JavaScript kell.</noscript></section>
+
+    <details class="m-block">
+      <summary>Mit rendeltél</summary>
+      <div class="m-block-body">
+        <dl class="m-dl">
+          <dt>Termék</dt><dd>Egyszárnyú tolóajtó</dd>
+          <dt>Méret</dt><dd>95 × 210 cm</dd>
+          <dt>Anyag</dt><dd>Tömörfa</dd>
+          <dt>Szín</dt><dd>RAL 7016</dd>
+          <dt>Vasalat</dt><dd>Dupla sínes, soft-close</dd>
+        </dl>
+      </div>
+    </details>
+
+    <details class="m-block" id="m-d-msg">
+      <summary>Üzenetek</summary>
+      <div class="m-block-body">
+        <ul class="m-msgs" id="m-msg-list"></ul>
+        <form id="m-msg-form">
+          <label class="m-label" for="m-msg-text">Új üzenet</label>
+          <textarea class="m-textarea" id="m-msg-text" placeholder="Írd ide, amit kérdeznél"></textarea>
+          <button type="submit" class="m-btn btn-primary">Küldés</button>
+        </form>
+      </div>
+    </details>
+
+    <details class="m-block">
+      <summary>Elérhetőség</summary>
+      <div class="m-block-body">
+        <p style="margin-bottom:12px">Roll'n'Door – Ricsi</p>
+        <div class="m-contact-btns">
+          <a class="m-btn btn-primary" href="tel:+36205650661">Mobil: 06 20 565 0661</a>
+          <a class="m-btn m-btn--ghost" href="mailto:info@rollndoor.hu">info@rollndoor.hu</a>
+        </div>
+      </div>
+    </details>
+
+    <div class="m-foot">
+      <a href="ricsi.html">Így látja Ricsi</a>
+      <a href="#" id="m-reset" class="m-foot-small">Minta visszaállítása</a>
+    </div>
+  </main>
+  <div class="m-toast" id="m-toast" role="status" aria-live="polite"></div>
+  <script src="minta.js"></script>
+</body>
+</html>

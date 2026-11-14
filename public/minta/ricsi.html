@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>Megrendelés – Ricsi – MINTA</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../style.css">
+  <link rel="stylesheet" href="minta.css">
+</head>
+<body class="m-body" data-page="ricsi">
+  <div class="m-banner">MINTA – kitalált adatokkal</div>
+  <main class="m-wrap">
+    <div class="m-top">
+      <img class="m-logo" src="../img/logo.png" alt="Roll'n'Door">
+      <div class="m-hello">Megrendelés</div>
+    </div>
+
+    <h1 class="m-headline">Minta Anna</h1>
+    <div class="m-contact-btns">
+      <a class="m-btn btn-primary" href="tel:+36300000000">Hívás</a>
+      <a class="m-btn m-btn--ghost" href="mailto:minta.anna@example.com">E-mail</a>
+    </div>
+    <p class="m-sample" style="margin-bottom:16px">06 30 000 0000</p>
+
+    <div class="m-card">
+      <div class="m-label">Itt tart most</div>
+      <div class="m-quote-amount" id="m-stage-name" style="font-size:1.75rem"></div>
+      <div class="m-sample" id="m-since"></div>
+    </div>
+
+    <section id="m-action" aria-live="polite"><noscript>A minta működéséhez JavaScript kell.</noscript></section>
+
+    <div style="height:24px"></div>
+
+    <details class="m-block">
+      <summary>Igény és fotók</summary>
+      <div class="m-block-body">
+        <dl class="m-dl">
+          <dt>Termék</dt><dd>Egyszárnyú tolóajtó</dd>
+          <dt>Méret</dt><dd>95 × 210 cm</dd>
+          <dt>Anyag</dt><dd>Tömörfa</dd>
+          <dt>Szín</dt><dd>RAL 7016</dd>
+          <dt>Vasalat</dt><dd>Dupla sínes, soft-close</dd>
+        </dl>
+        <div class="m-thumbs">
+          <img src="../img/gallery2.webp" alt="Minta fotó a helyszínről, 1">
+          <img src="../img/hardware.webp" alt="Minta fotó a helyszínről, 2">
+        </div>
+      </div>
+    </details>
+
+    <details class="m-block">
+      <summary>Levelezés</summary>
+      <div class="m-block-body">
+        <ul class="m-msgs" id="m-mail-list"></ul>
+        <form id="m-reply-form">
+          <label class="m-label" for="m-reply-text">Válasz</label>
+          <textarea class="m-textarea" id="m-reply-text" placeholder="Írd ide a választ"></textarea>
+          <button type="submit" class="m-btn btn-primary">Válasz küldése</button>
+        </form>
+      </div>
+    </details>
+
+    <details class="m-block">
+      <summary>Megjegyzéseim</summary>
+      <div class="m-block-body">
+        <form id="m-note-form">
+          <label class="m-label" for="m-note-text">Új megjegyzés</label>
+          <textarea class="m-textarea" id="m-note-text" placeholder="Pl. telefonon megbeszéltük, hogy…"></textarea>
+          <button type="submit" class="m-btn btn-primary">Mentés</button>
+        </form>
+        <ul class="m-notes" id="m-note-list"></ul>
+      </div>
+    </details>
+
+    <div class="m-foot">
+      <a href="ugyfel.html">Így látja az ügyfél</a>
+      <a href="#" id="m-reset" class="m-foot-small">Minta visszaállítása</a>
+    </div>
+  </main>
+  <div class="m-toast" id="m-toast" role="status" aria-live="polite"></div>
+  <script src="minta.js"></script>
+</body>
+</html>

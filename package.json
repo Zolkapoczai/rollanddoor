@@ -1,0 +1,19 @@
+{
+  "name": "rollndoor-worker",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "typecheck": "tsc --noEmit",
+    "types": "wrangler types",
+    "db:local": "wrangler d1 execute rollndoor --local --file=worker/schema.sql",
+    "db:remote": "wrangler d1 execute rollndoor --remote --file=worker/schema.sql",
+    "deploy": "wrangler deploy"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^5.20261113.1",
+    "typescript": "^5.9.0",
+    "wrangler": "^4.0.0"
+  }
+}

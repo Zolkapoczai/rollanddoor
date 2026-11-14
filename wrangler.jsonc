@@ -1,0 +1,28 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "rollndoor",
+  "main": "worker/src/index.ts",
+  "compatibility_date": "2026-11-01",
+  "assets": {
+    "directory": "./public",
+    "binding": "ASSETS",
+    // A Worker csak ezekre fut elsőként; minden más közvetlenül statikus fájl.
+    "run_worker_first": ["/api/*", "/r/*", "/m/*", "/le/*"]
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "rollndoor",
+      // Helyi fejlesztéshez placeholder jó; élesben a `wrangler d1 create` kimenete.
+      "database_id": "00000000-0000-0000-0000-000000000000"
+    }
+  ],
+  "r2_buckets": [
+    { "binding": "FILES", "bucket_name": "rollndoor-files" }
+  ],
+  "vars": {
+    "RICSI_EMAIL": "info@rollndoor.hu",
+    "REPLY_DOMAIN": "valasz.rollndoor.hu",
+    "SITE_URL": "https://rollndoor.hu"
+  }
+}
