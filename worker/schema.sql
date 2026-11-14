@@ -64,7 +64,7 @@ CREATE TABLE IF NOT EXISTS levelnaplo (
   UNIQUE (megrendeles_id, tipus)
 );
 
--- Ricsi összesítő oldala (/pult): e-mailes belépőlink és munkamenet, a tokenek csak hash-ként (worker/src/pult.ts).
+-- Ricsi összesítő oldala (/dashboard): e-mailes belépőlink és munkamenet, a tokenek csak hash-ként (worker/src/dashboard.ts).
 CREATE TABLE IF NOT EXISTS pult_belepo (
   hash TEXT PRIMARY KEY,
   letrehozva TEXT NOT NULL,

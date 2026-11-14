@@ -1,4 +1,4 @@
-// Ricsi összesítő oldala: /pult (felület) és /api/pult/* (API).
+// Ricsi összesítő oldala: /dashboard (felület) és /api/dashboard/* (API).
 // Belépés: Ricsi a RICSI_EMAIL címére kér egy 15 percig élő, egyszer használható belépőlinket.
 // A link nem léptet be magától (a levelezők linkellenőrzője megnyithatja): az oldal egy gombbal POST-olja.
 // Belépés után HttpOnly süti tartja a munkamenetet. A tokeneket csak SHA-256 hash-ként tároljuk.
@@ -7,7 +7,7 @@ import { ALLOMASOK } from "./allomasok";
 import { sendMail } from "./mail";
 import { esc, formatDatum, hiba, json, nowIso, randomToken, readJson } from "./util";
 
-const SUTI = "__Host-pult";
+const SUTI = "__Host-dashboard";
 const BELEPO_PERC = 15;
 const MUNKAMENET_NAP = 60;
 const MAX_BELEPO_ORANKENT = 5;
@@ -41,8 +41,8 @@ async function munkamenetOk(request: Request, env: Env): Promise<boolean> {
   return !!r;
 }
 
-export async function handlePult(request: Request, env: Env, _ctx: ExecutionContext, parts: string[]): Promise<Response> {
-  // parts: ["pult", ...rest]
+export async function handleDashboard(request: Request, env: Env, _ctx: ExecutionContext, parts: string[]): Promise<Response> {
+  // parts: ["dashboard", ...rest]
   const rest = parts.slice(1);
   const m = request.method;
   if (rest.length === 0) return m === "GET" ? lista(request, env) : nemEngedett();
@@ -78,7 +78,7 @@ async function linkKeres(env: Env): Promise<Response> {
   const lejar = new Date(most.getTime() + BELEPO_PERC * 60_000).toISOString();
   await env.DB.prepare(`INSERT INTO pult_belepo (hash, letrehozva, lejar) VALUES (?, ?, ?)`).bind(await sha256(token), most.toISOString(), lejar).run();
 
-  const link = `${env.SITE_URL.replace(/\/+$/, "")}/pult/be/${token}`;
+  const link = `${env.SITE_URL.replace(/\/+$/, "")}/dashboard/be/${token}`;
   const szoveg = `Belépés a megrendelések összesítőjéhez:\n${link}\n\nA link ${BELEPO_PERC} percig érvényes, és csak egyszer használható. Ha nem te kérted, ne nyisd meg, és ne küldd tovább.`;
   const r = await sendMail(env, {
     to: env.RICSI_EMAIL,
@@ -195,7 +195,9 @@ function napja(iso: string | null, most: number): number {
 }
 
 async function lista(request: Request, env: Env): Promise<Response> {
-  if (!(await munkamenetOk(request, env))) return json({ ok: false, belepes: true, hiba: "Lépj be." }, 401);
+  // Átmeneti nyitott mód (DASHBOARD_NYILT=1): nincs belépés, amíg csak próbaadat van. A kapcsoló törlésével újra kell a belépés.
+  const nyitott = env.DASHBOARD_NYILT === "1";
+  if (!nyitott && !(await munkamenetOk(request, env))) return json({ ok: false, belepes: true, hiba: "Lépj be." }, 401);
 
   const [aktiv, lezart] = await Promise.all([
     env.DB.prepare(`${SOR_SQL} WHERE m.statusz = 'aktiv'`).all<Sor>(),
@@ -226,6 +228,7 @@ async function lista(request: Request, env: Env): Promise<Response> {
 
   return json({
     ok: true,
+    nyitott,
     csoportok: [
       { kulcs: "ram_var", cim: "Rám vár", elemek: csoportok.ram_var },
       { kulcs: "keszul", cim: "Készül", elemek: csoportok.keszul },

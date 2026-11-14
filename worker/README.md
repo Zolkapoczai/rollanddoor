@@ -52,7 +52,7 @@ Helyi Turnstile: a `cf-turnstile-response` értéke legyen `XXXX.DUMMY.TOKEN.XXX
 - Az R2 bucket privát; a fájlokat csak az alábbi tokenes végpontok szolgálják ki.
 - A `/api/*` többi útvonala 404 JSON.
 
-## Ricsi összesítője (`/pult`)
+## Ricsi dashboardja (`/dashboard`)
 
 Meglévő DB-hez (helyben és élesben is), többször futtatható:
 
@@ -61,7 +61,7 @@ node node_modules/wrangler/bin/wrangler.js d1 execute rollndoor --local  --file=
 node node_modules/wrangler/bin/wrangler.js d1 execute rollndoor --remote --file=worker/migrations/0003_pult.sql
 ```
 
-Fájlok: `worker/src/pult.ts`, `public/pult.html`, `public/pult.js`. API: `GET /api/pult` (lista, süti kell, különben 401), `POST /api/pult/link` (belépőlink a `RICSI_EMAIL`-re, óránként max. 5), `POST /api/pult/be` (`{token}` → `__Host-pult` süti, 60 nap), `POST /api/pult/ki`. A `__Host-` süti `Secure`, ezért csak HTTPS-en vagy `localhost`-on működik. Helyben a levél dry-run, a link nem látszik a logban: próbához tegyél egy ismert token SHA-256 hash-ét a `pult_belepo` táblába.
+Fájlok: `worker/src/dashboard.ts`, `public/dashboard.html`, `public/dashboard.js`. API: `GET /api/dashboard` (lista, süti kell, különben 401), `POST /api/dashboard/link` (belépőlink a `RICSI_EMAIL`-re, óránként max. 5), `POST /api/dashboard/be` (`{token}` → `__Host-pult` süti, 60 nap), `POST /api/dashboard/ki`. A `__Host-` süti `Secure`, ezért csak HTTPS-en vagy `localhost`-on működik. Helyben a levél dry-run, a link nem látszik a logban: próbához tegyél egy ismert token SHA-256 hash-ét a `pult_belepo` táblába.
 
 ## 2. kör (követőoldal, Ricsi-oldal, automatikus levelek)
 

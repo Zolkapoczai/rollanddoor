@@ -11,4 +11,6 @@ export interface Env {
   /** Csak a próbaüzemhez: ha meg van adva (pl. "onboarding@resend.dev"), a levelek feladó-címe ez lesz.
    *  A Reply-To marad a rendelés saját címe. Élesben NE legyen beállítva. */
   MAIL_TEST_FROM?: string;
+  /** "1": a /dashboard bejelentkezés nélkül nyitott. CSAK addig, amíg nincs éles ügyféladat (docs/TERV.md). Élesben törölni. */
+  DASHBOARD_NYILT?: string;
 }

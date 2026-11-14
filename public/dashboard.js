@@ -1,10 +1,10 @@
-/* Roll'n'Door – Ricsi összesítője (/pult) és a belépőlink oldala (/pult/be/{token}). */
+/* Roll'n'Door – Ricsi összesítője (/dashboard) és a belépőlink oldala (/dashboard/be/{token}). */
 (function () {
   'use strict';
 
   var app = document.getElementById('p-app');
   var GENERIC = 'Valami nem sikerült. Próbáld újra.';
-  var belepoToken = (/^\/pult\/be\/([A-Za-z0-9_-]{40,64})\/?$/.exec(location.pathname) || [])[1] || null;
+  var belepoToken = (/^\/dashboard\/be\/([A-Za-z0-9_-]{40,64})\/?$/.exec(location.pathname) || [])[1] || null;
 
   function h(tag, attrs, children) {
     var el = document.createElement(tag);
@@ -27,7 +27,7 @@
     var opts = { method: method, headers: { Accept: 'application/json' }, credentials: 'same-origin', referrerPolicy: 'no-referrer' };
     if (body !== undefined) { opts.headers['Content-Type'] = 'application/json'; opts.body = JSON.stringify(body); }
     try {
-      var res = await fetch('/api/pult' + path, opts);
+      var res = await fetch('/api/dashboard' + path, opts);
       var j = null;
       try { j = await res.json(); } catch (_) { j = null; }
       if (!j || typeof j !== 'object') { j = { ok: false, hiba: GENERIC }; }
@@ -79,8 +79,8 @@
       gomb('Belépés', 'btn-primary p-btn--big', async function () {
         err.textContent = '';
         var r = await api('POST', '/be', { token: belepoToken });
-        if (r.ok) { history.replaceState(null, '', '/pult'); belepoToken = null; await betolt(); return; }
-        if (r.status === 401) { history.replaceState(null, '', '/pult'); belepoToken = null; belepesKeres(r.hiba); return; }
+        if (r.ok) { history.replaceState(null, '', '/dashboard'); belepoToken = null; await betolt(); return; }
+        if (r.status === 401) { history.replaceState(null, '', '/dashboard'); belepoToken = null; belepesKeres(r.hiba); return; }
         err.textContent = r.hiba;
       }),
     ]));
@@ -151,7 +151,7 @@
 
     app.appendChild(h('div', { class: 'p-secondary' }, [
       gomb('Frissítés', 'p-btn--ghost', betolt),
-      gomb('Kilépés', 'p-btn--ghost', async function () {
+      d.nyitott ? null : gomb('Kilépés', 'p-btn--ghost', async function () {
         await api('POST', '/ki');
         belepesKeres('Kiléptél.');
       }),

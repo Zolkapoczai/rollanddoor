@@ -175,7 +175,7 @@
 @media (max-width: 330px) { .p-secondary { grid-template-columns: 1fr; } }
 .p-contact-btns--one { grid-template-columns: 1fr; }
 
-/* Ricsi összesítője (/pult) */
+/* Ricsi összesítője (/dashboard) */
 .p-group { margin-bottom: 28px; }
 .p-group-empty { margin-bottom: 0; }
 .p-list { list-style: none; display: grid; gap: 10px; }
@@ -188,7 +188,7 @@
 .p-item-badges { padding: 0 16px; margin-bottom: 10px; }
 .p-item-tel { display: block; padding: 12px 16px; min-height: 48px; border-top: 1px solid var(--border-color); color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
 
-/* /pult csempék: 2×2 nagy gomb */
+/* /dashboard csempék: 2×2 nagy gomb */
 .p-tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 8px; }
 .p-tile { display: flex; flex-direction: column; justify-content: space-between; min-height: 150px; padding: 16px; border-radius: 16px; border: 2px solid var(--border-color); background: var(--bg-glass); color: var(--text-primary); text-decoration: none; }
 .p-tile:hover, .p-tile:focus-visible { border-color: var(--accent); }

@@ -96,6 +96,13 @@ a {
   color: var(--accent);
 }
 
+/* Kilenc menüpont: a keskenyebb asztali képernyőn szűkebb köz és kisebb betű, hogy az Ajánlatkérés gomb is elférjen. */
+@media (min-width: 769px) and (max-width: 1299px) {
+  .nav-links { gap: 1rem; }
+  .nav-links a { font-size: 0.85rem; }
+  .navbar { gap: 1rem; }
+}
+
 .nav-links a::after {
   content: '';
   position: absolute;

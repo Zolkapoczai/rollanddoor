@@ -7,7 +7,7 @@
     "directory": "./public",
     "binding": "ASSETS",
     // A Worker csak ezekre fut elsőként; minden más közvetlenül statikus fájl.
-    "run_worker_first": ["/api/*", "/r/*", "/m/*", "/le/*", "/pult", "/pult/*"]
+    "run_worker_first": ["/api/*", "/r/*", "/m/*", "/le/*", "/dashboard", "/dashboard/*", "/pult", "/pult/*"]
   },
   "d1_databases": [
     {
@@ -28,6 +28,8 @@
     "RICSI_EMAIL": "info@rollndoor.hu",
     "REPLY_DOMAIN": "valasz.rollndoor.hu",
     // ÁTMENETI (próbaüzem): a levelek linkjei a workers.dev címre mutatnak. A domain átállításakor VISSZA: "https://rollndoor.hu"
-    "SITE_URL": "https://rollndoor.poczaizoltan30.workers.dev"
+    "SITE_URL": "https://rollndoor.poczaizoltan30.workers.dev",
+    // ÁTMENETI: a /dashboard belépés nélkül nyitott, mert még csak próbaadat van. ÉLESÍTÉS ELŐTT TÖRÖLNI (különben bárki látja az ügyfeleket és a /m/ linkjeiket).
+    "DASHBOARD_NYILT": "1"
   }
 }
