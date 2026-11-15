@@ -182,6 +182,25 @@ const galleryImages = [
     { src: "img/referencia/ref-40-kreta-szerelem.webp", alt: "Fekete tolóajtó, rajta krétával: I ♥ Roll’n’Door" }
 ];
 
+// Galéria-sáv: nyilak (érintőképernyőn az ujjmozdulat elég), a szélén a nyíl eltűnik.
+(function () {
+    const strip = document.getElementById('gallery-strip');
+    if (!strip) return;
+    const prev = document.querySelector('.gallery-prev');
+    const next = document.querySelector('.gallery-next');
+    const calm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const go = (dir) => strip.scrollBy({ left: dir * strip.clientWidth * 0.8, behavior: calm ? 'auto' : 'smooth' });
+    const sync = () => {
+        prev.disabled = strip.scrollLeft < 8;
+        next.disabled = strip.scrollLeft + strip.clientWidth >= strip.scrollWidth - 8;
+    };
+    prev.addEventListener('click', () => go(-1));
+    next.addEventListener('click', () => go(1));
+    strip.addEventListener('scroll', sync, { passive: true });
+    window.addEventListener('resize', sync);
+    sync();
+})();
+
 let currentImageIndex = 0;
 const lightbox = document.getElementById('lightbox');
 const lightboxImg = document.getElementById('lightbox-img');

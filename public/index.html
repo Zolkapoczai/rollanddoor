@@ -337,7 +337,10 @@
             <h2>Referenciáink</h2>
             <p>Inspirálódj korábbi munkáinkból! Kattints a képekre a nagyításhoz.</p>
         </div>
-        <div class="gallery-grid">
+        <div class="gallery-strip">
+        <button type="button" class="gallery-nav gallery-prev" aria-label="Előző képek" disabled><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg></button>
+        <button type="button" class="gallery-nav gallery-next" aria-label="Következő képek"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg></button>
+        <div class="gallery-grid" id="gallery-strip" tabindex="0" role="region" aria-label="Referenciafotók, oldalra görgethető">
             <div class="gallery-item" onclick="openLightbox(0)">
                 <img src="img/referencia/ref-01-nappali-fa-ajto-s.webp" alt="Fa tolóajtó fekete sínen egy nappaliban, pampafű és zöld bársony fotel mellett" width="720" height="480" loading="lazy" decoding="async">
             </div>
@@ -459,6 +462,8 @@
                 <img src="img/referencia/ref-40-kreta-szerelem-s.webp" alt="Fekete tolóajtó, rajta krétával: I ♥ Roll’n’Door" width="405" height="720" loading="lazy" decoding="async">
             </div>
         </div>
+        </div>
+        <p class="gallery-count">40 fotó · görgess oldalra, kattints a nagyításhoz</p>
     </section>
 
     <!-- GYIK -->

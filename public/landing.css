@@ -337,28 +337,64 @@ a {
   background-color: var(--bg-primary);
 }
 
-/* 40 vegyes arányú fotó (álló és fekvő): oszlopos elrendezés, a képek saját arányukkal, nincs vágás. */
+/* 40 vegyes arányú fotó egyetlen, vízszintesen görgethető sávban (scroll-snap): kevés helyet foglal,
+   a képek saját arányukkal látszanak, a következő kép mindig kilóg. Nincs automatikus lapozás. */
+.gallery-strip { position: relative; max-width: 1200px; margin: 0 auto; }
+
 .gallery-grid {
-  columns: 280px;
-  column-gap: 1.5rem;
-  max-width: 1200px;
-  margin: 0 auto;
+  display: flex;
+  gap: 1rem;
+  overflow-x: auto;
+  scroll-snap-type: x proximity;
+  scroll-padding-left: 0;
+  overscroll-behavior-x: contain;
+  padding-bottom: 14px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,0.3) transparent;
 }
+.gallery-grid:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; border-radius: 8px; }
 
 .gallery-item {
   position: relative;
+  flex: 0 0 auto;
+  height: 340px;
   overflow: hidden;
   border-radius: 8px;
   cursor: pointer;
-  break-inside: avoid;
-  margin-bottom: 1.5rem;
+  scroll-snap-align: start;
 }
 
 .gallery-item img {
   display: block;
-  width: 100%;
-  height: auto;
+  height: 100%;
+  width: auto;
   transition: transform var(--transition-slow);
+}
+
+.gallery-nav {
+  position: absolute;
+  top: calc(50% - 21px);
+  z-index: 2;
+  width: 44px; height: 44px;
+  display: flex; align-items: center; justify-content: center;
+  padding: 0;
+  color: #fff;
+  background: rgba(0,0,0,0.6);
+  border: 1px solid rgba(255,255,255,0.25);
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background-color .2s, opacity .2s;
+}
+.gallery-nav:hover, .gallery-nav:focus-visible { background-color: var(--accent); color: var(--bg-primary); }
+.gallery-nav:disabled { opacity: 0; pointer-events: none; }
+.gallery-prev { left: 10px; }
+.gallery-next { right: 10px; }
+.gallery-count { text-align: center; color: var(--text-secondary); margin: 1rem auto 0; font-size: 0.95rem; }
+@media (hover: none) { .gallery-nav { display: none; } }
+/* Telefonon a széles képek is csak a szélesség ~80%-át foglalják, így a következő kép kilóg. */
+@media (max-width: 600px) {
+  .gallery-item { height: 240px; max-width: 80vw; }
+  .gallery-item img { width: 100%; object-fit: cover; }
 }
 
 .gallery-item:hover img {
