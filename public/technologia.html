@@ -79,12 +79,6 @@
                         <circle r="6" fill="#3a3a3a" stroke="#9a9a9a" stroke-width="1"/>
                         <path d="M-2.5 -1.5L0 -3L2.5 -1.5V1.5L0 3L-2.5 1.5Z" fill="#111"/>
                     </symbol>
-                    <!-- Fehér kontúr a logó piros betűi körül (a fehér szlogent nem vastagítja): a piros képpontokból maszk, kitágítva, a logó alá -->
-                    <filter id="logo-outline" x="-4%" y="-14%" width="108%" height="128%" color-interpolation-filters="sRGB">
-                        <feColorMatrix in="SourceGraphic" type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  4 -4 0 0 0" result="piros"/>
-                        <feMorphology in="piros" operator="dilate" radius="3" result="kontur"/>
-                        <feMerge><feMergeNode in="kontur"/><feMergeNode in="SourceGraphic"/></feMerge>
-                    </filter>
                 </defs>
 
                 <rect class="a a-grid" width="600" height="520" fill="url(#grid)"/>
@@ -183,43 +177,47 @@
                     <rect x="20" y="506" width="560" height="10" fill="url(#hatch)"/>
                     <path d="M20 506H580" stroke="#b0b0b0" stroke-width="1.5"/>
                     <text x="300" y="44" text-anchor="middle" class="t-lbl">elölnézet: a két sín egymás mögött van</text>
-                    <!-- Sín, végein a logós zárólap -->
-                    <rect x="40" y="140" width="520" height="26" rx="13" fill="url(#steelH)" stroke="#8a8a8a" stroke-width="1"/>
-                    <path d="M53 142H547" stroke="rgba(255,255,255,0.25)" stroke-width="1"/>
+                    <!-- Sínek elölnézetben (a fotók alapján): elöl a vékony laposacél külső sín, mögötte kissé kilátszik a belső sín.
+                         A kerék a külső sín tetején fut, az ajtólap felső éle alig 3 egységgel a sín alatt van. -->
+                    <rect x="44" y="78" width="512" height="28" fill="#1b1b1b" stroke="#6a6a6a" stroke-width="1"/>
+                    <rect x="40" y="84" width="520" height="22" rx="2" fill="url(#steelH)" stroke="#8a8a8a" stroke-width="1"/>
+                    <path d="M42 85.5H558" stroke="rgba(255,255,255,0.28)" stroke-width="1"/>
+                    <path d="M42 107.5H558" stroke="rgba(0,0,0,0.55)" stroke-width="2"/>
                     <g>
-                        <rect x="46" y="144" width="54" height="18" rx="9" fill="#1a1a1a" stroke="#d4a373" stroke-width="1"/>
-                        <rect x="500" y="144" width="54" height="18" rx="9" fill="#1a1a1a" stroke="#d4a373" stroke-width="1"/>
-                        <text x="73" y="157" text-anchor="middle" class="t-plate">roll’n’door</text>
-                        <text x="527" y="157" text-anchor="middle" class="t-plate">roll’n’door</text>
+                        <rect x="48" y="88" width="50" height="14" rx="7" fill="#1a1a1a" stroke="#d4a373" stroke-width="1"/>
+                        <rect x="502" y="88" width="50" height="14" rx="7" fill="#1a1a1a" stroke="#d4a373" stroke-width="1"/>
+                        <text x="73" y="98.5" text-anchor="middle" class="t-plate">roll’n’door</text>
+                        <text x="527" y="98.5" text-anchor="middle" class="t-plate">roll’n’door</text>
                     </g>
-                    <g>
-                        <circle cx="130" cy="153" r="6" fill="url(#disc)" stroke="#9a9a9a"/><path d="M128 151h4v4h-4z" fill="#0d0d0d"/>
-                        <circle cx="300" cy="153" r="6" fill="url(#disc)" stroke="#9a9a9a"/><path d="M298 151h4v4h-4z" fill="#0d0d0d"/>
-                        <circle cx="470" cy="153" r="6" fill="url(#disc)" stroke="#9a9a9a"/><path d="M468 151h4v4h-4z" fill="#0d0d0d"/>
+                    <g fill="url(#disc)" stroke="#9a9a9a" stroke-width="0.8">
+                        <circle cx="140" cy="95" r="3.4"/><circle cx="300" cy="95" r="3.4"/><circle cx="460" cy="95" r="3.4"/>
                     </g>
-                    <g class="a-slide">
-                        <!-- Ajtólap: keret + betét, fogantyú -->
-                        <rect x="70" y="212" width="200" height="290" rx="3" fill="url(#wood)" stroke="#d9c3a5" stroke-width="1.6"/>
-                        <rect x="88" y="232" width="164" height="250" rx="2" fill="none" stroke="#4a2e18" stroke-width="2"/>
-                        <rect x="100" y="244" width="140" height="226" rx="2" fill="none" stroke="#8a6440" stroke-width="1"/>
-                        <rect x="248" y="330" width="8" height="70" rx="4" fill="url(#steelV)" stroke="#9a9a9a" stroke-width="1"/>
-                        <!-- Akasztók -->
+                    <g class="a-slide"><g transform="translate(48 0)">
+                        <!-- Ajtólap: 28 egység széles szárak, két betét, függőleges húzófogantyú -->
+                        <rect x="70" y="109" width="176" height="391" rx="2" fill="url(#wood)" stroke="#d9c3a5" stroke-width="1.6"/>
+                        <rect x="100" y="150" width="116" height="150" rx="2" fill="none" stroke="#4a2e18" stroke-width="2"/>
+                        <rect x="108" y="158" width="100" height="134" rx="1.5" fill="none" stroke="#8a6440" stroke-width="1"/>
+                        <rect x="100" y="332" width="116" height="150" rx="2" fill="none" stroke="#4a2e18" stroke-width="2"/>
+                        <rect x="108" y="340" width="100" height="134" rx="1.5" fill="none" stroke="#8a6440" stroke-width="1"/>
+                        <rect x="224" y="296" width="14" height="66" rx="4" fill="url(#steelV)" stroke="#9a9a9a" stroke-width="1"/>
+                        <rect x="229" y="304" width="4" height="50" rx="2" fill="#0d0d0d"/>
+                        <!-- Akasztók: laposacél pánt a kerék tengelyétől az ajtólap felső szárán át, két csavarral -->
                         <g fill="url(#steelV)" stroke="#9a9a9a" stroke-width="1">
-                            <path d="M99 120Q99 108 105 108Q111 108 111 120V300H99Z"/>
-                            <path d="M229 120Q229 108 235 108Q241 108 241 120V300H229Z"/>
+                            <path d="M78 71Q78 62 85 62Q92 62 92 71V163H78Z"/>
+                            <path d="M224 71Q224 62 231 62Q238 62 238 71V163H224Z"/>
                         </g>
                         <g fill="#1a1a1a" stroke="#9a9a9a" stroke-width="0.8">
-                            <circle cx="105" cy="250" r="3"/><circle cx="105" cy="285" r="3"/><circle cx="235" cy="250" r="3"/><circle cx="235" cy="285" r="3"/>
+                            <circle cx="85" cy="131" r="3.3"/><circle cx="85" cy="151" r="3.3"/><circle cx="231" cy="131" r="3.3"/><circle cx="231" cy="151" r="3.3"/>
                         </g>
-                        <!-- Görgők (forognak gördüléskor) -->
-                        <g class="a-spin"><use href="#wheel-front" x="75" y="82"/></g>
-                        <g class="a-spin"><use href="#wheel-front" x="205" y="82"/></g>
-                    </g>
+                        <!-- Görgők: 30 egység átmérő, a külső sín tetején (forognak gördüléskor) -->
+                        <g class="a-spin"><use href="#wheel-front" x="70" y="56" width="30" height="30"/></g>
+                        <g class="a-spin"><use href="#wheel-front" x="216" y="56" width="30" height="30"/></g>
+                    </g></g>
                 </g>
 
                 <!-- ================= Zárókép (18–20 mp): az eredeti piros logó ================= -->
                 <g class="a-finale">
-                    <image href="img/logo.webp" x="80" y="200" width="440" height="103" preserveAspectRatio="xMidYMid meet" filter="url(#logo-outline)"/>
+                    <image href="img/logo.webp" x="80" y="200" width="440" height="103" preserveAspectRatio="xMidYMid meet"/>
                 </g>
 
                 <!-- CAD-szövegmező -->

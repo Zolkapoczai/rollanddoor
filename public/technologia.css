@@ -53,8 +53,8 @@
 @keyframes t-dim { to { opacity: 0.15; } }
 @keyframes t-draw { to { stroke-dashoffset: 0; } }
 @keyframes t-drop { from { opacity: 0; transform: translateY(-30px); } to { opacity: 1; transform: none; } }
-@keyframes t-slide { to { transform: translateX(240px); } }
-@keyframes t-spin { to { transform: rotate(491deg); } }
+@keyframes t-slide { to { transform: translateX(200px); } }
+@keyframes t-spin { to { transform: rotate(764deg); } }
 @keyframes t-cap { 0% { opacity: 0; transform: translateY(6px); } 12% { opacity: 1; transform: none; } 88% { opacity: 1; } 100% { opacity: 0; } }
 @keyframes t-cap-last { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
 
@@ -89,7 +89,7 @@
 .play .a-elev      { animation: t-in .6s 15.3s both, t-dim .6s 18.2s forwards; }
 .play .a-slide     { animation: t-slide 2.2s 16.0s both ease-in-out; }
 .a-spin { transform-box: fill-box; transform-origin: center; }
-.play .a-spin      { animation: t-spin 2.2s 16.0s both ease-in-out; } /* 240 px út / (2π·28) ≈ 1,36 fordulat */
+.play .a-spin      { animation: t-spin 2.2s 16.0s both ease-in-out; } /* 200 egység út / (2π·15) ≈ 2,12 fordulat */
 .play .a-finale    { animation: t-in .6s 18.2s both; }
 
 .play .cap1 { animation: t-cap 3s 0s both; }
