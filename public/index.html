@@ -31,18 +31,9 @@
 
 <body>
 
-    <!-- Vékony fehér kontúr a logó piros betűi körül (a fehér szlogent nem vastagítja). A .logo-contour osztály használja. -->
-    <svg width="0" height="0" aria-hidden="true" style="position:absolute">
-        <filter id="logo-contour" x="-3%" y="-10%" width="106%" height="120%" color-interpolation-filters="sRGB">
-            <feColorMatrix in="SourceGraphic" type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  4 -4 0 0 0" result="piros"/>
-            <feMorphology in="piros" operator="dilate" radius="1" result="kontur"/>
-            <feMerge><feMergeNode in="kontur"/><feMergeNode in="SourceGraphic"/></feMerge>
-        </filter>
-    </svg>
-
     <!-- Navbar -->
     <nav class="navbar" id="navbar">
-        <a href="/" class="logo-link" aria-label="Roll’n’Door – kezdőlap"><img src="img/logo.webp" alt="Roll’n’Door – ajtó másképp" class="logo-img logo-contour" width="186" height="44"></a>
+        <a href="/" class="logo-link" aria-label="Roll’n’Door – kezdőlap"><img src="img/logo.webp" alt="Roll’n’Door – ajtó másképp" class="logo-img" width="186" height="44"></a>
         <ul class="nav-links">
             <li><a href="#hero">Kezdőlap</a></li>
             <li><a href="#products">Termékek</a></li>
@@ -480,7 +471,7 @@
     <!-- Footer -->
     <footer>
         <div class="footer-content">
-            <a href="/" class="logo-home" aria-label="Roll’n’Door – kezdőlap"><img src="img/logo.webp" alt="Roll’n’Door – ajtó másképp" class="footer-logo-img logo-contour" width="186" height="44" loading="lazy"></a>
+            <a href="/" class="logo-home" aria-label="Roll’n’Door – kezdőlap"><img src="img/logo.webp" alt="Roll’n’Door – ajtó másképp" class="footer-logo-img" width="186" height="44" loading="lazy"></a>
             <p>Egyedi tolóajtó vasalatok és ajtólapok gyártása kompromisszumok nélkül.</p>
             <div class="social-links">
                 <a href="https://www.facebook.com/rollndoor" aria-label="Facebook"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg></a>
