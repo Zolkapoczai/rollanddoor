@@ -363,77 +363,6 @@
         </div>
     </section>
 
-    <!-- Így készül az ajtód -->
-    <section class="steps-section" id="rendeles-menete">
-        <div class="section-header">
-            <h2>Így készül az ajtód</h2>
-            <p>Hét lépés. Végig tudod, hol tartunk.</p>
-        </div>
-        <ol class="steps">
-            <li><div><h3>Írsz nekünk</h3><p>Küldd el, mit szeretnél, akár pár sorban.</p></div></li>
-            <li><div><h3>Egyeztetünk</h3><p>Visszahívunk, és átbeszéljük a részleteket.</p></div></li>
-            <li><div><h3>Ajánlatot kapsz</h3><p>Az ajánlatot e-mailben küldjük el.</p></div></li>
-            <li><div><h3>Előleg</h3><p>Ha tetszik az ajánlat, előleget fizetsz, és indul a munka.</p></div></li>
-            <li><div><h3>3D látványterv</h3><p>Megmutatjuk, hogy fog kinézni az ajtód. Te hagyod jóvá.</p></div></li>
-            <li><div><h3>Gyártás</h3><p>Legyártjuk az ajtót. Ez kb. 4 hét.</p></div></li>
-            <li><div><h3>Beszerelés</h3><p>Nálad szereljük be, az egész országban.</p></div></li>
-        </ol>
-    </section>
-
-    <!-- Gallery Section -->
-    <section class="gallery-section" id="galeria">
-        <div class="section-header">
-            <h2>Referenciáink</h2>
-            <p>Inspirálódj korábbi munkáinkból! Kattints a képekre a nagyításhoz.</p>
-        </div>
-        <!-- A képek sorrendje és neve a landing.js galleryImages listájában van, a diákat a szkript építi fel. -->
-        <div class="gallery-carousel" id="gallery-carousel" role="region" aria-roledescription="carousel" aria-label="Referenciafotók">
-            <div class="gallery-stage"></div>
-            <p class="gallery-caption"></p>
-            <div class="gallery-controls">
-                <button type="button" class="gallery-btn gallery-prev" aria-label="Előző kép"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg></button>
-                <button type="button" class="gallery-btn gallery-play" aria-label="Automatikus lapozás megállítása"><svg class="icon icon-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z"/></svg><svg class="icon icon-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5l11 7-11 7z"/></svg></button>
-                <span class="gallery-count">1 / 80</span>
-                <button type="button" class="gallery-btn gallery-next" aria-label="Következő kép"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg></button>
-            </div>
-            <div class="gallery-live" aria-live="polite" aria-atomic="true"></div>
-        </div>
-    </section>
-
-    <!-- GYIK -->
-    <section class="faq-section" id="gyik">
-        <div class="section-header">
-            <h2>Gyakori kérdések</h2>
-        </div>
-        <div class="faq-list">
-            <details>
-                <summary>Alkalmas-e a nyílásom tolóajtóra?</summary>
-                <div class="faq-answer">Küldd el a nyílás méretét és 1-2 fotót, megmondjuk. A legtöbb fal megoldható.
-                    Az ajtólap legfeljebb 80 kg lehet.</div>
-            </details>
-            <details>
-                <summary>Mennyibe kerül?</summary>
-                <div class="faq-answer">Minden ajtó egyedi, ezért egyedi ajánlatot adunk. Az ajánlat ingyenes.</div>
-            </details>
-            <details>
-                <summary>Kérhetek egyedi színt?</summary>
-                <div class="faq-answer">Igen. Bármilyen RAL vagy NCS színt kérhetsz, vagy megadhatod egy gyártó konkrét
-                    termékét.</div>
-            </details>
-            <!-- TODO (Ricsi válaszára vár, utána ide kerülhet két kérdés):
-                 "Miből készülnek a görgők, mennyire tartósak?" és "Látszik-e a furat a falon szerelés után?" -->
-        </div>
-    </section>
-
-    <!-- Lightbox Modal -->
-    <div id="lightbox" class="lightbox" role="dialog" aria-modal="true" aria-label="Referenciafotó nagyítva">
-        <button type="button" class="close-lightbox" aria-label="Bezárás">&times;</button>
-        <button type="button" class="lightbox-prev" aria-label="Előző kép"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg></button>
-        <img class="lightbox-content" id="lightbox-img" alt="">
-        <button type="button" class="lightbox-next" aria-label="Következő kép"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg></button>
-        <div id="lightbox-caption"></div>
-    </div>
-
     <!-- Quote Form Section -->
     <section class="quote-section" id="quote">
         <div class="quote-container">
@@ -482,6 +411,77 @@
             </form>
         </div>
     </section>
+
+    <!-- Gallery Section -->
+    <section class="gallery-section" id="galeria">
+        <div class="section-header">
+            <h2>Referenciáink</h2>
+            <p>Inspirálódj korábbi munkáinkból! Kattints a képekre a nagyításhoz.</p>
+        </div>
+        <!-- A képek sorrendje és neve a landing.js galleryImages listájában van, a diákat a szkript építi fel. -->
+        <div class="gallery-carousel" id="gallery-carousel" role="region" aria-roledescription="carousel" aria-label="Referenciafotók">
+            <div class="gallery-stage"></div>
+            <p class="gallery-caption"></p>
+            <div class="gallery-controls">
+                <button type="button" class="gallery-btn gallery-prev" aria-label="Előző kép"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg></button>
+                <button type="button" class="gallery-btn gallery-play" aria-label="Automatikus lapozás megállítása"><svg class="icon icon-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z"/></svg><svg class="icon icon-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5l11 7-11 7z"/></svg></button>
+                <span class="gallery-count">1 / 80</span>
+                <button type="button" class="gallery-btn gallery-next" aria-label="Következő kép"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg></button>
+            </div>
+            <div class="gallery-live" aria-live="polite" aria-atomic="true"></div>
+        </div>
+    </section>
+
+    <!-- Így készül az ajtód -->
+    <section class="steps-section" id="rendeles-menete">
+        <div class="section-header">
+            <h2>Így készül az ajtód</h2>
+            <p>Hét lépés. Végig tudod, hol tartunk.</p>
+        </div>
+        <ol class="steps">
+            <li><div><h3>Írsz nekünk</h3><p>Küldd el, mit szeretnél, akár pár sorban.</p></div></li>
+            <li><div><h3>Egyeztetünk</h3><p>Visszahívunk, és átbeszéljük a részleteket.</p></div></li>
+            <li><div><h3>Ajánlatot kapsz</h3><p>Az ajánlatot e-mailben küldjük el.</p></div></li>
+            <li><div><h3>Előleg</h3><p>Ha tetszik az ajánlat, előleget fizetsz, és indul a munka.</p></div></li>
+            <li><div><h3>3D látványterv</h3><p>Megmutatjuk, hogy fog kinézni az ajtód. Te hagyod jóvá.</p></div></li>
+            <li><div><h3>Gyártás</h3><p>Legyártjuk az ajtót. Ez kb. 4 hét.</p></div></li>
+            <li><div><h3>Beszerelés</h3><p>Nálad szereljük be, az egész országban.</p></div></li>
+        </ol>
+    </section>
+
+    <!-- GYIK -->
+    <section class="faq-section" id="gyik">
+        <div class="section-header">
+            <h2>Gyakori kérdések</h2>
+        </div>
+        <div class="faq-list">
+            <details>
+                <summary>Alkalmas-e a nyílásom tolóajtóra?</summary>
+                <div class="faq-answer">Küldd el a nyílás méretét és 1-2 fotót, megmondjuk. A legtöbb fal megoldható.
+                    Az ajtólap legfeljebb 80 kg lehet.</div>
+            </details>
+            <details>
+                <summary>Mennyibe kerül?</summary>
+                <div class="faq-answer">Minden ajtó egyedi, ezért egyedi ajánlatot adunk. Az ajánlat ingyenes.</div>
+            </details>
+            <details>
+                <summary>Kérhetek egyedi színt?</summary>
+                <div class="faq-answer">Igen. Bármilyen RAL vagy NCS színt kérhetsz, vagy megadhatod egy gyártó konkrét
+                    termékét.</div>
+            </details>
+            <!-- TODO (Ricsi válaszára vár, utána ide kerülhet két kérdés):
+                 "Miből készülnek a görgők, mennyire tartósak?" és "Látszik-e a furat a falon szerelés után?" -->
+        </div>
+    </section>
+
+    <!-- Lightbox Modal -->
+    <div id="lightbox" class="lightbox" role="dialog" aria-modal="true" aria-label="Referenciafotó nagyítva">
+        <button type="button" class="close-lightbox" aria-label="Bezárás">&times;</button>
+        <button type="button" class="lightbox-prev" aria-label="Előző kép"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg></button>
+        <img class="lightbox-content" id="lightbox-img" alt="">
+        <button type="button" class="lightbox-next" aria-label="Következő kép"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg></button>
+        <div id="lightbox-caption"></div>
+    </div>
 
     <!-- Contact Section -->
     <section class="contact" id="kapcsolat">
