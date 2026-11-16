@@ -657,3 +657,14 @@ footer {
     transition: none;
   }
 }
+
+/* Lebegő felirat egérmozgásra / fókuszra */
+.has-tip { position: relative; display: inline-block; cursor: help; }
+.has-tip::after {
+  content: attr(data-tip);
+  position: absolute; left: 50%; top: 100%; transform: translate(-50%, 6px);
+  white-space: nowrap; padding: .5rem .9rem; border-radius: 6px;
+  background: var(--accent, #d4a373); color: #111; font-size: .95rem; font-weight: 600;
+  opacity: 0; pointer-events: none; transition: opacity .2s, transform .2s; z-index: 5;
+}
+.has-tip:hover::after { opacity: 1; transform: translate(-50%, 10px); }

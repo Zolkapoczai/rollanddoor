@@ -446,3 +446,56 @@ const galleryImages = [
     syncPlayButton();
     render();
 })();
+
+// --- Tolóajtó-típusok: kattintásra részletes ablak. VÁZLAT-szövegek, validálásra várnak. ---
+(function () {
+    const dlg = document.getElementById('type-dialog');
+    if (!dlg || typeof dlg.showModal !== 'function') return;
+    const TYPES = {
+        pajta: {
+            title: 'Pajtaajtó-vasalat látszó görgőkkel',
+            img: 'img/tipus-pajta.webp',
+            text: 'A klasszikus pajtaajtó: a fémsín és a görgők szándékosan látszanak, a vasalat a helyiség jellegzetes eleme lesz. Ipari, loft és vidéki stílushoz egyaránt jól illik.',
+            list: ['Látszó fémsín a fal előtt, görgőkkel és konzolokkal', 'Szín: RAL/NCS szerint festve', 'Az ajtólap kiegészíti a vasalatot, a kettő egy látványelem', 'Falra szerelhető: a fal teherbírását előre ellenőrizzük (TODO: pontos feltételek)']
+        },
+        rejtett: {
+            title: 'Rejtett, csapágyazott görgős vasalat',
+            img: 'img/tipus-rejtett.webp',
+            text: 'A csapágyazott görgők rejtett sínben futnak, így az ajtó csendesen és könnyen mozog, a vasalatból pedig alig látszik valami. Letisztult, modern terekhez.',
+            list: ['Csapágyazott görgők, halk és sima futás', 'A sín a mennyezetbe vagy a falba süllyesztve', 'Visszafogott megjelenés, az ajtólap kerül előtérbe', 'Beépítés előtt a helyszín felmérése szükséges (TODO: részletek)']
+        },
+        lebego: {
+            title: 'Lebegő, láthatatlan vasalat',
+            img: 'img/tipus-lebego.webp',
+            text: 'Az ajtólap mintha a levegőben lebegne: a vasalat a felső szerkezetben vagy a lap élében rejtőzik, így nincs látható sín vagy görgő. Prémium, minimalista hatás.',
+            list: ['A vasalat nem látszik, az ajtólap „úszik"', 'Tiszta vonalak, nincs látható sín', 'Szabott méret és felület az ajtólaphoz', 'Teherbírás, lapvastagság, méretkorlát: TODO (validálandó)']
+        },
+        falban: {
+            title: 'Falban futó ajtó',
+            img: 'img/tipus-falban.webp',
+            text: 'Nyitott állapotban az ajtó teljesen a falba csúszik, és nem látszik. Nem foglal helyet a szobában, és nem kell kitérni előle. Szűk terekhez és letisztult folyosókhoz ideális.',
+            list: ['Az ajtólap a falszerkezetben fut (zsebes megoldás)', 'Nyitva nincs útban az ajtó, helyet takarít meg', 'Beépítése falszerkezeti munkát igényel, érdemes a tervezés elején eldönteni', 'Falvastagság és szerkezeti feltételek: TODO (validálandó)']
+        }
+    };
+    let opener = null;
+    const imgEl = dlg.querySelector('.type-dialog-img');
+    document.querySelectorAll('.type-card').forEach((btn) => {
+        btn.addEventListener('click', () => {
+            const t = TYPES[btn.dataset.type];
+            if (!t) return;
+            opener = btn;
+            dlg.querySelector('#type-dialog-title').textContent = t.title;
+            dlg.querySelector('.type-dialog-text').textContent = t.text;
+            const ul = dlg.querySelector('.type-dialog-list');
+            ul.replaceChildren(...t.list.map((s) => { const li = document.createElement('li'); li.textContent = s; return li; }));
+            imgEl.style.backgroundImage = "url('" + t.img + "')";
+            imgEl.setAttribute('aria-label', t.title);
+            dlg.showModal();
+            document.body.style.overflow = 'hidden';
+        });
+    });
+    dlg.addEventListener('close', () => { document.body.style.overflow = ''; if (opener) opener.focus({ preventScroll: true }); });
+    dlg.querySelector('.type-dialog-close').addEventListener('click', () => dlg.close());
+    dlg.querySelector('.type-dialog-cta').addEventListener('click', () => dlg.close());
+    dlg.addEventListener('click', (e) => { if (e.target === dlg) dlg.close(); });
+})();

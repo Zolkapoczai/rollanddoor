@@ -100,7 +100,10 @@
         h('span', { class: 'p-item-meta', text: meta }),
       ]),
       badges.length ? h('div', { class: 'p-badges p-item-badges' }, badges) : null,
-      e.telefon ? h('a', { class: 'p-item-tel', href: 'tel:' + String(e.telefon).replace(/[^\d+]/g, ''), text: 'Hívás: ' + e.telefon }) : null,
+      (e.telefon || e.email) ? h('div', { class: 'p-item-contact' }, [
+        e.telefon ? h('a', { class: 'p-contact-btn', href: 'tel:' + String(e.telefon).replace(/[^\d+]/g, ''), text: '📞 ' + e.telefon }) : null,
+        e.email ? h('a', { class: 'p-contact-btn', href: 'mailto:' + e.email, text: '✉ ' + e.email }) : null,
+      ]) : null,
     ]);
   }
 

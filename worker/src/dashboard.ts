@@ -132,6 +132,7 @@ interface Sor {
   id: number;
   nev: string;
   telefon: string | null;
+  email: string | null;
   allomas: number;
   statusz: "aktiv" | "lezarva" | "nem_erdeklodik";
   leiratkozott: number;
@@ -148,7 +149,7 @@ interface Sor {
 type Csoport = "ram_var" | "keszul" | "ugyfelre_var";
 
 const SOR_SQL = `
-SELECT m.id, m.nev, m.telefon, m.allomas, m.statusz, m.leiratkozott, m.latvanyterv_jovahagyva, m.varhato_beszereles,
+SELECT m.id, m.nev, m.telefon, m.email, m.allomas, m.statusz, m.leiratkozott, m.latvanyterv_jovahagyva, m.varhato_beszereles,
        m.allomas_valtas_ideje, m.letrehozva, m.ricsi_token,
        (SELECT MAX(ido) FROM uzenet WHERE megrendeles_id = m.id AND irany = 'be') AS utolso_be,
        (SELECT szoveg FROM uzenet WHERE megrendeles_id = m.id AND irany = 'be' ORDER BY id DESC LIMIT 1) AS utolso_be_szoveg,
@@ -209,6 +210,7 @@ async function lista(request: Request, env: Env): Promise<Response> {
     id: s.id,
     nev: s.nev,
     telefon: s.telefon,
+    email: s.email,
     allomas: s.allomas,
     allomas_nev: nevek.get(s.allomas) ?? String(s.allomas),
     napja: napja(s.allomas_valtas_ideje ?? s.letrehozva, most),
