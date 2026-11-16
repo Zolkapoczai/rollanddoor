@@ -1,5 +1,5 @@
 // A TURNSTILE_SITEKEY a kozos.js-ben van (előbb töltődik be).
-// A navigációs és galéria rész a mintaoldal script.js-ével azonos; csak az ajánlatkérő űrlap lett valódi.
+// A navigációs rész a mintaoldal script.js-ével azonos; az ajánlatkérő űrlap valódi, a galéria körhinta lett.
 
 // Navbar scroll effect
 window.addEventListener('scroll', () => {
@@ -138,145 +138,311 @@ if (quoteForm) quoteForm.addEventListener('submit', async (e) => {
     }
 });
 
-// Lightbox Gallery Logic
+// Galéria: a képek sorrendje és neve egyetlen helyen, itt van (az index.html-ben nincs külön lista).
+// [fájlnév kiterjesztés nélkül, megjelenő név, 1 = vasalat-részletkép]
+// A típusnevek a docs/ajtomintaelnevezések.jpg ábráját követik. Ugyanannak a lakásnak a képei
+// legalább 12 hellyel távolabb vannak egymástól, a részletképek kb. minden 8. helyen jönnek.
 const galleryImages = [
-    { src: "img/referencia/ref-01-nappali-fa-ajto.webp", alt: "Fa tolóajtó fekete sínen egy nappaliban, pampafű és zöld bársony fotel mellett" },
-    { src: "img/referencia/ref-41-natur-teglafal-fenyfuzer.webp", alt: "Natúr fa tolóajtó téglafal és fényfüzér mellett" },
-    { src: "img/referencia/ref-02-feher-uveges-ketszarnyu.webp", alt: "Fehér, kopott festésű, üveges kétszárnyú tolóajtó fekete sínen, téglafal és tükör mellett" },
-    { src: "img/referencia/ref-42-uveges-par-teglafal.webp", alt: "Üveges, kopott festésű tolóajtópár téglafal és fényfüzér alatt" },
-    { src: "img/referencia/ref-03-fenyo-ajtopar-haloszoba.webp", alt: "Két natúr fenyő tolóajtó egy nappali és egy hálószoba között" },
-    { src: "img/referencia/ref-44-uveges-sarok-fotel.webp", alt: "Fehér, üveges tolóajtó egy sarokban, fotellel és pampafűvel" },
-    { src: "img/referencia/ref-04-szurkeszold-ketszarnyu.webp", alt: "Szürkészöld, Z-merevítéses kétszárnyú tolóajtó fekete sínen" },
-    { src: "img/referencia/ref-45-fenyo-marvanypadlo.webp", alt: "Natúr fenyő tolóajtók sötét márványpadlós folyosón" },
-    { src: "img/referencia/ref-38-logos-sinveg-gorgo.webp", alt: "Roll’n’Door logós sínvég és görgő közelről" },
-    { src: "img/referencia/ref-05-rusztikus-ajtopar.webp", alt: "Rusztikus, Z-mintás tolóajtópár egy hálószobában" },
-    { src: "img/referencia/ref-46-fenyo-z-sotet-fal.webp", alt: "Natúr fenyő, Z-merevítéses tolóajtó fekete sínen, sötét fal mellett" },
-    { src: "img/referencia/ref-06-konyha-fa-ajto.webp", alt: "Fa tolóajtó egy konyhában, kék konyhaszigettel" },
-    { src: "img/referencia/ref-47-feher-z-parketta.webp", alt: "Fehér, Z-merevítéses tolóajtó fekete sínen, parkettás szobában" },
-    { src: "img/referencia/ref-07-sotet-fal-fenyo.webp", alt: "Natúr fenyő tolóajtó sötét falon, hosszú fekete sínen" },
-    { src: "img/referencia/ref-48-fenyo-ketszarnyu-fa-mennyezet.webp", alt: "Natúr fenyő kétszárnyú tolóajtó fa mennyezetű szobában" },
-    { src: "img/referencia/ref-08-furdo-rusztikus.webp", alt: "Rusztikus fa tolóajtó egy fürdőszoba bejáratánál" },
-    { src: "img/referencia/ref-89-rozsdas-ipari.webp", alt: "Rozsdás, ipari hatású sín és görgő közelről, régi fa ajtólapon" },
-    { src: "img/referencia/ref-49-sotet-voros-deszkas.webp", alt: "Sötét vörösesbarna, deszkázott tolóajtó fekete sínen" },
-    { src: "img/referencia/ref-09-kandallo-z-ajto.webp", alt: "Z-merevítéses fa tolóajtó kandalló mellett" },
-    { src: "img/referencia/ref-51-sarga-fal-natur-fekete.webp", alt: "Natúr fa tolóajtók sárga falú szobában, az egyik fekete betéttel" },
-    { src: "img/referencia/ref-10-feher-x-ajto.webp", alt: "Fehér, X-merevítéses tolóajtó fekete sínen" },
-    { src: "img/referencia/ref-52-feher-matt-uveg-kopott.webp", alt: "Fehér, kopott festésű, matt üvegtáblás ajtó fekete sínen" },
-    { src: "img/referencia/ref-11-mentazold-furdo.webp", alt: "Mentazöld tolóajtó egy fürdőszobában" },
-    { src: "img/referencia/ref-53-feher-matt-uveg-parketta.webp", alt: "Fehér, matt üvegtáblás ajtó fekete sínen, halszálkás parkettán" },
-    { src: "img/referencia/ref-88-gorgo-akaszto-turkiz.webp", alt: "Görgő és akasztó közelről, türkiz ajtólapon" },
-    { src: "img/referencia/ref-12-turkiz-biciklis-lampa.webp", alt: "Türkizkék, deszkázott tolóajtó biciklis függőlámpa alatt" },
-    { src: "img/referencia/ref-54-feher-x-nyilhegy.webp", alt: "Fehér, kopott festésű, X-mintás tolóajtó nyílhegy alakú akasztókkal" },
-    { src: "img/referencia/ref-13-kek-gardrob.webp", alt: "Élénkkék, Z-merevítéses tolóajtó egy gardróbszobában" },
-    { src: "img/referencia/ref-55-halvanyzold-nyilhegy.webp", alt: "Halványzöld, Z-merevítéses tolóajtó nyílhegy alakú akasztókkal" },
-    { src: "img/referencia/ref-14-szurke-x-ketszarnyu.webp", alt: "Szürke, X-mintás kétszárnyú tolóajtó" },
-    { src: "img/referencia/ref-56-rusztikus-z-folyoso.webp", alt: "Rusztikus, deszkázott Z-ajtó fekete sínen egy folyosón" },
-    { src: "img/referencia/ref-15-feher-x-ketszarnyu.webp", alt: "Fehér, X-merevítéses kétszárnyú tolóajtó fa burkolatú falon" },
-    { src: "img/referencia/ref-85-rez-ajtolap-logos.webp", alt: "Rézszínű fém ajtólap logós görgős vasalattal" },
-    { src: "img/referencia/ref-57-szurkesbarna-z-konyha.webp", alt: "Szürkésbarna, Z-merevítéses tolóajtó fehér konyhai szekrények mellett" },
-    { src: "img/referencia/ref-16-uveges-nappali.webp", alt: "Üveges, fa keretes kétszárnyú tolóajtó egy nappaliban, kandalló mellett" },
-    { src: "img/referencia/ref-58-eloszoba-etkezo.webp", alt: "Natúr fenyő tolóajtó egy előszoba falán, a háttérben étkezővel" },
-    { src: "img/referencia/ref-17-fekete-osztasu-uveg.webp", alt: "Fa keretes, fekete osztású üveges tolóajtópár" },
-    { src: "img/referencia/ref-59-feher-fekete-ketszarnyu.webp", alt: "Fehér keretes, fekete betétes kétszárnyú tolóajtó fekete sínen" },
-    { src: "img/referencia/ref-18-rombuszos-uveges.webp", alt: "Régi ajtólapokból készült, rombusz díszes, üveges tolóajtópár" },
-    { src: "img/referencia/ref-60-feher-fekete-lepcso.webp", alt: "Fehér keretes, fekete betétes tolóajtó fekete sínen, lépcső mellett" },
-    { src: "img/referencia/ref-87-logos-sinveg-feher-fal.webp", alt: "Roll’n’Door logós sínvég és görgő közelről, fehér falon" },
-    { src: "img/referencia/ref-19-mertani-uveges.webp", alt: "Fehér keretes, mértani mintás üveges tolóajtópár" },
-    { src: "img/referencia/ref-61-feher-kazettas-folyoso.webp", alt: "Fehér, kazettás tolóajtó fekete sínen egy keskeny folyosón" },
-    { src: "img/referencia/ref-20-fekete-uveges-furdo.webp", alt: "Fekete osztású üveges tolóajtó, mögötte fürdőszoba" },
-    { src: "img/referencia/ref-62-feher-deszkas.webp", alt: "Fehér, deszkázott tolóajtó fekete sínen, fekete fogantyúval" },
-    { src: "img/referencia/ref-21-fekete-negyosztasu.webp", alt: "Fekete keretes, négyosztású üveges tolóajtó" },
-    { src: "img/referencia/ref-63-feher-kazettas-kanape.webp", alt: "Fehér, kazettás tolóajtó fekete sínen egy kis szobában, kanapé mellett" },
-    { src: "img/referencia/ref-22-fenykepes-nappali.webp", alt: "Fényképes mintával nyomtatott tolóajtó egy nappaliban" },
-    { src: "img/referencia/ref-84-lyukmintas-vilagito.webp", alt: "Lyukmintás, hátulról megvilágított fehér ajtólap szürke sínvasalattal" },
-    { src: "img/referencia/ref-64-feher-deszkas-furdo.webp", alt: "Fehér, deszkázott tolóajtó egy csempés fürdőszoba bejáratánál" },
-    { src: "img/referencia/ref-23-templomos-minta.webp", alt: "Templomot ábrázoló mintás fekete tolóajtó" },
-    { src: "img/referencia/ref-65-tukros-furdo.webp", alt: "Fehér keretes, tükrös tolóajtó egy fürdőszoba bejáratánál" },
-    { src: "img/referencia/ref-24-elfas-halo.webp", alt: "Élfás, természetes szélű fa tolóajtó egy hálószobában, lámpák alatt" },
-    { src: "img/referencia/ref-67-turkiz-z-gardrob.webp", alt: "Türkizkék, Z-merevítéses ajtólap egy gardrób előtt" },
-    { src: "img/referencia/ref-25-elfas-furdo.webp", alt: "Természetes erezetű, élfás fa ajtólap egy fürdőszoba bejáratánál" },
-    { src: "img/referencia/ref-68-szurkesfeher-z.webp", alt: "Szürkésfehér, deszkázott, Z-merevítéses tolóajtó fekete sínen" },
-    { src: "img/referencia/ref-39-sinrendszer-reszlet.webp", alt: "Sínrendszer és görgő közelről, fedett teraszon" },
-    { src: "img/referencia/ref-26-antik-diszes.webp", alt: "Régi, díszes, kopott ajtólap tolóajtóként felszerelve" },
-    { src: "img/referencia/ref-69-feher-kazettas-gorgo.webp", alt: "Fehér, kazettás tolóajtó felső görgős vasalattal" },
-    { src: "img/referencia/ref-27-kazettas-felujitott.webp", alt: "Felújított, kazettás fa ajtólap tolóajtóként" },
-    { src: "img/referencia/ref-70-natur-furdo-bejarat.webp", alt: "Natúr fa tolóajtó fekete sínen egy fürdőszoba bejáratánál" },
-    { src: "img/referencia/ref-28-zold-uveges.webp", alt: "Zöldre festett, üveges tolóajtó" },
-    { src: "img/referencia/ref-71-natur-deszkas-mosdo.webp", alt: "Natúr fa, deszkázott tolóajtó egy mosdó bejáratánál" },
-    { src: "img/referencia/ref-29-femburkolatu.webp", alt: "Fém burkolatú, szegecselt tolóajtó" },
-    { src: "img/referencia/ref-86-gorgo-szurke-fem.webp", alt: "Sínvasalat és görgő közelről, szürke fém kivitelben" },
-    { src: "img/referencia/ref-72-fenyo-deszka-gorgos.webp", alt: "Natúr fenyő deszkaajtó görgős vasalattal, fiókos szekrény mellett" },
-    { src: "img/referencia/ref-30-etterem-kek.webp", alt: "Kék tolóajtó egy étterem belső terében" },
-    { src: "img/referencia/ref-73-iroasztalos-sarok.webp", alt: "Natúr fenyő tolóajtó egy íróasztalos sarokban" },
-    { src: "img/referencia/ref-31-leces-zold-fal.webp", alt: "Léces, fa borítású tolóajtó zöld fal mellett" },
-    { src: "img/referencia/ref-74-regi-kazettas-rombusz.webp", alt: "Régi, kazettás, sötétre pácolt ajtólap tolóajtóként, rombusz díszes vasalattal" },
-    { src: "img/referencia/ref-32-sotetbarna-ketszarnyu.webp", alt: "Sötétbarna, deszkázott kétszárnyú tolóajtó" },
-    { src: "img/referencia/ref-80-z-ajto-kutyak.webp", alt: "Barnára pácolt, Z-merevítéses tolóajtó, előtte két kutya" },
-    { src: "img/referencia/ref-90-logos-sinveg-szott-fal.webp", alt: "Logós sínvég és görgő közelről, szőtt hatású falon" },
-    { src: "img/referencia/ref-33-sarga-uveges-ketszarnyu.webp", alt: "Sárgára pácolt, üveges kétszárnyú tolóajtó kék falon, díszes pántokkal" },
-    { src: "img/referencia/ref-82-hid-minta-biciklis.webp", alt: "Éjszakai hidat ábrázoló fényképmintás tolóajtó, felette biciklis dekoráció" },
-    { src: "img/referencia/ref-34-sarga-folyoso.webp", alt: "Sárga tolóajtók egy hosszú folyosón" },
-    { src: "img/referencia/ref-35-lezervagott-feher.webp", alt: "Lézerrel vágott mintás fehér tolóajtó" },
-    { src: "img/referencia/ref-36-kulteri-fa.webp", alt: "Kültéri, Z-merevítéses fa tolóajtó téglafal mellett, fedett teraszon" },
-    { src: "img/referencia/ref-37-konyha-z-ajto.webp", alt: "Z-merevítéses fa tolóajtó egy konyhában" },
-    { src: "img/referencia/ref-40-kreta-szerelem.webp", alt: "Fekete tolóajtó, rajta krétával: I ♥ Roll’n’Door" }
-];
+    ['ref-01-nappali-fa-ajto', 'Sima – natúr fa'],
+    ['ref-05-rusztikus-ajtopar', 'Dupla Z, kétszárnyú – natúr fa'],
+    ['ref-03-fenyo-ajtopar-haloszoba', 'Vízszintes osztó, kétszárnyú – natúr fa'],
+    ['ref-12-turkiz-biciklis-lampa', 'Átló – petrolzöld'],
+    ['ref-09-kandallo-z-ajto', 'Átló – mézbarna'],
+    ['ref-14-szurke-x-ketszarnyu', 'Dupla Z, kétszárnyú – szürkésbarna'],
+    ['ref-38-logos-sinveg-gorgo', 'Sínvég logóval – fekete', 1],
+    ['ref-08-furdo-rusztikus', 'Dupla Z – rusztikus barna'],
+    ['ref-37-konyha-z-ajto', 'Átló – mézbarna'],
+    ['ref-17-fekete-osztasu-uveg', 'Üveges, kétszárnyú – natúr fa'],
+    ['ref-67-turkiz-z-gardrob', 'Dupla Z – kék'],
+    ['ref-28-zold-uveges', 'Üveges – zöld'],
+    ['ref-80-z-ajto-kutyak', 'Dupla Z – mézbarna'],
+    ['ref-72-fenyo-deszka-gorgos', 'Sima – natúr fa'],
+    ['ref-39-sinrendszer-reszlet', 'Kültéri sín – fekete', 1],
+    ['ref-20-fekete-uveges-furdo', 'Üveges – fehér'],
+    ['ref-02-feher-uveges-ketszarnyu', 'Üveges, kétszárnyú – kopott fehér'],
+    ['ref-11-mentazold-furdo', 'Dupla Z – menta'],
+    ['ref-56-rusztikus-z-folyoso', 'Átló – mézbarna'],
+    ['ref-04-szurkeszold-ketszarnyu', 'Dupla Z, kétszárnyú – szürkészöld'],
+    ['ref-68-szurkesfeher-z', 'Átló – szürke'],
+    ['ref-87-logos-sinveg-feher-fal', 'Sínvég logóval – fekete', 1],
+    ['ref-07-sotet-fal-fenyo', 'Átló – natúr fa'],
+    ['ref-19-mertani-uveges', 'Üveges, kétszárnyú – kopott fehér'],
+    ['ref-73-iroasztalos-sarok', 'Vízszintes osztó – natúr fa'],
+    ['ref-51-sarga-fal-natur-fekete', 'Átló és fekete betétes, kétszárnyú – mézbarna'],
+    ['ref-55-halvanyzold-nyilhegy', 'Átló – világoszöld'],
+    ['ref-25-elfas-furdo', 'Szeletelt fatörzs – natúr fa'],
+    ['ref-36-kulteri-fa', 'Átló, kétszárnyú – mézbarna'],
+    ['ref-88-gorgo-akaszto-turkiz', 'Görgő közelről – türkiz ajtón', 1],
+    ['ref-49-sotet-voros-deszkas', 'Fejelőléces – sötétbarna'],
+    ['ref-23-templomos-minta', 'Fotónyomatos (szegedi dóm) – fekete'],
+    ['ref-06-konyha-fa-ajto', 'Átló – natúr fa'],
+    ['ref-44-uveges-sarok-fotel', 'Üveges – kopott fehér'],
+    ['ref-34-sarga-folyoso', 'Vízszintes osztó – sárga'],
+    ['ref-54-feher-x-nyilhegy', 'Dupla Z – kopott fehér'],
+    ['ref-46-fenyo-z-sotet-fal', 'Átló – natúr fa'],
+    ['ref-86-gorgo-szurke-fem', 'Görgő közelről – acél', 1],
+    ['ref-64-feher-deszkas-furdo', 'Alsó Z – kopott fehér'], // TODO Ricsi: nincs a 8 típus között (felül sima, alul átló)
+    ['ref-16-uveges-nappali', 'Üveges, kétszárnyú – natúr fa'],
+    ['ref-10-feher-x-ajto', 'Alsó X – fehér'], // TODO Ricsi: nincs a 8 típus között (az X alul van)
+    ['ref-13-kek-gardrob', 'Dupla Z – kék'],
+    ['ref-15-feher-x-ketszarnyu', 'Dupla Z, kétszárnyú – fehér'],
+    ['ref-32-sotetbarna-ketszarnyu', 'Fejelőléces, kétszárnyú – sötétbarna'], // TODO Ricsi: középen osztó is van
+    ['ref-45-fenyo-marvanypadlo', 'Vízszintes osztó – natúr fa'],
+    ['ref-60-feher-fekete-lepcso', 'Krétatáblás – fehér-fekete'],
+    ['ref-48-fenyo-ketszarnyu-fa-mennyezet', 'Dupla Z, kétszárnyú – natúr fa'],
+    ['ref-84-lyukmintas-vilagito', 'Sín lyukmintás ajtón – szürke', 1],
+    ['ref-57-szurkesbarna-z-konyha', 'Dupla Z – szürkésbarna'],
+    ['ref-41-natur-teglafal-fenyfuzer', 'Sima – natúr fa'],
+    ['ref-62-feher-deszkas', 'Vízszintes osztó – fehér'],
+    ['ref-27-kazettas-felujitott', 'Antik kazettás – natúr fa'],
+    ['ref-70-natur-furdo-bejarat', 'Átló – natúr fa'],
+    ['ref-52-feher-matt-uveg-kopott', 'Üveges – kopott fehér'],
+    ['ref-63-feher-kazettas-kanape', 'Kazettás – fehér'],
+    ['ref-40-kreta-szerelem', 'Krétatáblás – fekete'],
+    ['ref-85-rez-ajtolap-logos', 'Görgő logóval – acél', 1],
+    ['ref-69-feher-kazettas-gorgo', 'Vízszintes osztó – fehér'],
+    ['ref-24-elfas-halo', 'Szeletelt fatörzs – natúr fa'],
+    ['ref-74-regi-kazettas-rombusz', 'Antik kazettás – barna'],
+    ['ref-53-feher-matt-uveg-parketta', 'Üveges – fehér'],
+    ['ref-82-hid-minta-biciklis', 'Fotónyomatos (híd) – kék'],
+    ['ref-65-tukros-furdo', 'Tükrös – fehér'],
+    ['ref-30-etterem-kek', 'Dupla Z – kék'], // TODO Ricsi: a képen az ajtó csak részben látszik
+    ['ref-90-logos-sinveg-szott-fal', 'Sínvég logóval – fekete', 1],
+    ['ref-42-uveges-par-teglafal', 'Üveges, kétszárnyú – kopott fehér'],
+    ['ref-21-fekete-negyosztasu', 'Üveges – fekete'],
+    ['ref-26-antik-diszes', 'Antik, faragott – kopott patinás krémszín'],
+    ['ref-61-feher-kazettas-folyoso', 'Vízszintes osztó – fehér'],
+    ['ref-33-sarga-uveges-ketszarnyu', 'Üveges, kétszárnyú – sárga'],
+    ['ref-31-leces-zold-fal', 'Lécezett – natúr fa'],
+    ['ref-35-lezervagott-feher', 'Lézervágott, kétszárnyú – fehér'],
+    ['ref-89-rozsdas-ipari', 'Görgő közelről – rozsdás', 1],
+    ['ref-29-femburkolatu', 'Fém, szegecselt – acél'],
+    ['ref-18-rombuszos-uveges', 'Üveges, kétszárnyú – natúr és fekete'],
+    ['ref-22-fenykepes-nappali', 'Fotónyomatos – fehér'],
+    ['ref-47-feher-z-parketta', 'Átló – fehér'],
+    ['ref-71-natur-deszkas-mosdo', 'Fejelőléces – natúr fa'],
+    ['ref-59-feher-fekete-ketszarnyu', 'Krétatáblás, kétszárnyú – fehér-fekete'],
+    ['ref-58-eloszoba-etkezo', 'Vízszintes osztó – natúr fa']
+].map(([file, name, detail]) => ({
+    src: 'img/referencia/' + file + '.webp',
+    thumb: 'img/referencia/' + file + '-s.webp',
+    name,
+    alt: detail ? 'Tolóajtó-vasalat: ' + name : name + ' tolóajtó'
+}));
 
-// Galéria-sáv: nyilak (érintőképernyőn az ujjmozdulat elég), a szélén a nyíl eltűnik.
+// Galéria-körhinta: középen a nagy kép, két oldalt egy-egy kisebb szomszéd, magától lapoz.
+// Egyszerre csak az aktív kép, a két szomszéd és a következő néhány kép töltődik be.
 (function () {
-    const strip = document.getElementById('gallery-strip');
-    if (!strip) return;
-    const prev = document.querySelector('.gallery-prev');
-    const next = document.querySelector('.gallery-next');
-    const calm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const go = (dir) => strip.scrollBy({ left: dir * strip.clientWidth * 0.8, behavior: calm ? 'auto' : 'smooth' });
-    const sync = () => {
-        prev.disabled = strip.scrollLeft < 8;
-        next.disabled = strip.scrollLeft + strip.clientWidth >= strip.scrollWidth - 8;
-    };
-    prev.addEventListener('click', () => go(-1));
-    next.addEventListener('click', () => go(1));
-    strip.addEventListener('scroll', sync, { passive: true });
-    window.addEventListener('resize', sync);
-    sync();
+    const root = document.getElementById('gallery-carousel');
+    if (!root) return;
+
+    const AUTO_MS = 2000;        // ennyi ideig áll egy kép
+    const TOUCH_RESUME_MS = 2000; // érintés után ennyivel indul újra
+    const n = galleryImages.length;
+    const stage = root.querySelector('.gallery-stage');
+    const caption = root.querySelector('.gallery-caption');
+    const count = root.querySelector('.gallery-count');
+    const live = root.querySelector('.gallery-live');
+    const playBtn = root.querySelector('.gallery-play');
+    const calm = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const saveData = !!(navigator.connection && navigator.connection.saveData);
+
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImg = document.getElementById('lightbox-img');
+    const lightboxCaption = document.getElementById('lightbox-caption');
+    const lightboxClose = lightbox.querySelector('.close-lightbox');
+
+    let current = 0;
+    let timer = null;
+    let userPaused = false;   // a látogató megállította
+    let forced = false;       // a látogató kifejezetten elindította: a billentyűzet-fókusz sem állítja meg
+    let touchHold = false;
+    let touchTimer = null;
+    let onScreen = false;
+    let lightboxOpen = false;
+    let swiped = false;
+
+    const slides = galleryImages.map((item, i) => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'gallery-slide';
+        const blur = document.createElement('span');
+        blur.className = 'gallery-slide-blur';
+        blur.setAttribute('aria-hidden', 'true');
+        const img = document.createElement('img');
+        img.alt = item.alt;
+        img.decoding = 'async';
+        img.draggable = false;
+        btn.append(blur, img);
+        btn.addEventListener('click', () => {
+            if (swiped) return;
+            if (i === current) openLightbox(); else show(i, true);
+        });
+        stage.appendChild(btn);
+        return { btn, blur, img, loaded: false, full: false };
+    });
+
+    // Hány hellyel van a kép az aktívtól (körbeér: -n/2 … n/2).
+    const offset = (i) => ((i - current + n + Math.floor(n / 2)) % n) - Math.floor(n / 2);
+
+    function load(i) {
+        const s = slides[i];
+        if (s.loaded) return;
+        s.loaded = true;
+        s.img.src = galleryImages[i].thumb;
+        s.blur.style.backgroundImage = 'url("' + galleryImages[i].thumb + '")';
+    }
+
+    // Az aktív kép a kis változattal jelenik meg azonnal, majd élesebbre cserélődik.
+    function sharpen(i) {
+        const s = slides[i];
+        if (s.full || saveData) return;
+        s.full = true;
+        const hi = new Image();
+        hi.onload = () => { s.img.src = hi.src; };
+        hi.src = galleryImages[i].src;
+    }
+
+    const POS = { '-2': 'is-far-prev', '-1': 'is-prev', '0': 'is-active', '1': 'is-next', '2': 'is-far-next' };
+
+    function render() {
+        slides.forEach((s, i) => {
+            const d = offset(i);
+            const cls = POS[d] || '';
+            s.btn.className = 'gallery-slide' + (cls ? ' ' + cls : '');
+            const reachable = Math.abs(d) <= 1;
+            s.btn.tabIndex = reachable ? 0 : -1;
+            s.btn.inert = !reachable;
+            if (reachable) s.btn.removeAttribute('aria-hidden'); else s.btn.setAttribute('aria-hidden', 'true');
+            const name = galleryImages[i].name;
+            if (d === 0) s.btn.setAttribute('aria-label', 'Nagyítás: ' + name);
+            else if (d === -1) s.btn.setAttribute('aria-label', 'Előző kép: ' + name);
+            else if (d === 1) s.btn.setAttribute('aria-label', 'Következő kép: ' + name);
+            else s.btn.removeAttribute('aria-label');
+            if (d >= -1 && d <= 3) load(i);
+        });
+        sharpen(current);
+        caption.textContent = galleryImages[current].name;
+        count.textContent = (current + 1) + ' / ' + n;
+    }
+
+    function show(i, manual) {
+        current = ((i % n) + n) % n;
+        render();
+        if (manual) live.textContent = (current + 1) + ' / ' + n + ': ' + galleryImages[current].name;
+        if (lightboxOpen) updateLightbox();
+        schedule();
+    }
+    const step = (dir, manual) => show(current + dir, manual);
+
+    // --- Automatikus lapozás ---
+    function keyboardFocusInside() {
+        const a = document.activeElement;
+        return !!a && root.contains(a) && a.matches(':focus-visible');
+    }
+    function canPlay() {
+        if (calm.matches || userPaused || lightboxOpen || touchHold || !onScreen || document.hidden) return false;
+        // Az egér nem állítja meg (Zoli kérése): csak a billentyűzet-fókusz és a megállító gomb.
+        return forced || !keyboardFocusInside();
+    }
+    function schedule() {
+        clearTimeout(timer);
+        timer = null;
+        if (canPlay()) timer = setTimeout(() => step(1, false), AUTO_MS);
+    }
+    function syncPlayButton() {
+        playBtn.hidden = calm.matches;
+        playBtn.classList.toggle('is-paused', userPaused);
+        playBtn.setAttribute('aria-label', userPaused ? 'Automatikus lapozás indítása' : 'Automatikus lapozás megállítása');
+    }
+
+    playBtn.addEventListener('click', () => {
+        userPaused = !userPaused;
+        forced = !userPaused;
+        syncPlayButton();
+        schedule();
+    });
+    root.querySelector('.gallery-prev').addEventListener('click', () => step(-1, true));
+    root.querySelector('.gallery-next').addEventListener('click', () => step(1, true));
+
+    root.addEventListener('focusin', schedule);
+    root.addEventListener('focusout', () => setTimeout(schedule, 0));
+    document.addEventListener('visibilitychange', schedule);
+    calm.addEventListener('change', () => { syncPlayButton(); schedule(); });
+    new IntersectionObserver((entries) => {
+        onScreen = entries[0].isIntersecting;
+        schedule();
+    }, { threshold: 0.3 }).observe(stage);
+
+    // --- Érintés és húzás ---
+    let down = null;
+    root.addEventListener('pointerdown', (e) => {
+        if (e.pointerType === 'mouse') return;
+        touchHold = true;
+        clearTimeout(touchTimer);
+        schedule();
+    });
+    stage.addEventListener('pointerdown', (e) => { down = { x: e.clientX, y: e.clientY, id: e.pointerId }; });
+    function pointerEnd(e) {
+        if (e.pointerType !== 'mouse') {
+            clearTimeout(touchTimer);
+            touchTimer = setTimeout(() => { touchHold = false; schedule(); }, TOUCH_RESUME_MS);
+        }
+        if (!down || down.id !== e.pointerId) return;
+        const dx = e.clientX - down.x;
+        const dy = e.clientY - down.y;
+        down = null;
+        if (e.type === 'pointerup' && Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy) * 1.2) {
+            swiped = true; // a húzás végi kattintás ne nyisson nagyítót
+            setTimeout(() => { swiped = false; }, 350);
+            step(dx < 0 ? 1 : -1, true);
+        }
+    }
+    window.addEventListener('pointerup', pointerEnd);
+    window.addEventListener('pointercancel', pointerEnd);
+
+    // --- Nagyító ---
+    function updateLightbox() {
+        lightboxImg.src = galleryImages[current].src;
+        lightboxImg.alt = galleryImages[current].alt;
+        lightboxCaption.textContent = galleryImages[current].name;
+    }
+    function openLightbox() {
+        lightboxOpen = true;
+        lightbox.style.display = 'block';
+        updateLightbox();
+        document.body.style.overflow = 'hidden';
+        lightboxClose.focus();
+        schedule();
+    }
+    function closeLightbox() {
+        lightboxOpen = false;
+        lightbox.style.display = 'none';
+        document.body.style.overflow = '';
+        slides[current].btn.focus({ preventScroll: true });
+        schedule();
+    }
+    lightboxClose.addEventListener('click', closeLightbox);
+    lightbox.querySelector('.lightbox-prev').addEventListener('click', () => step(-1, true));
+    lightbox.querySelector('.lightbox-next').addEventListener('click', () => step(1, true));
+    lightbox.addEventListener('click', (e) => { if (e.target === lightbox) closeLightbox(); });
+
+    // --- Billentyűzet: nagyítóban mindig, egyébként ha a fókusz a galériában van (vagy sehol, és a galéria látszik) ---
+    document.addEventListener('keydown', (e) => {
+        if (e.altKey || e.ctrlKey || e.metaKey) return;
+        if (lightboxOpen) {
+            if (e.key === 'Escape') closeLightbox();
+            else if (e.key === 'ArrowRight') step(1, true);
+            else if (e.key === 'ArrowLeft') step(-1, true);
+            return;
+        }
+        const a = document.activeElement;
+        const here = root.contains(a) || ((!a || a === document.body) && onScreen);
+        if (!here) return;
+        if (e.key === 'ArrowRight') { e.preventDefault(); step(1, true); }
+        else if (e.key === 'ArrowLeft') { e.preventDefault(); step(-1, true); }
+    });
+
+    syncPlayButton();
+    render();
 })();
-
-let currentImageIndex = 0;
-const lightbox = document.getElementById('lightbox');
-const lightboxImg = document.getElementById('lightbox-img');
-const captionText = document.getElementById('lightbox-caption');
-
-function openLightbox(index) {
-    currentImageIndex = index;
-    lightbox.style.display = 'block';
-    updateLightboxImage();
-    document.body.style.overflow = 'hidden';
-}
-
-function closeLightbox() {
-    lightbox.style.display = 'none';
-    document.body.style.overflow = 'auto';
-}
-
-function changeImage(step) {
-    currentImageIndex += step;
-    if (currentImageIndex >= galleryImages.length) {
-        currentImageIndex = 0;
-    } else if (currentImageIndex < 0) {
-        currentImageIndex = galleryImages.length - 1;
-    }
-    updateLightboxImage();
-}
-
-function updateLightboxImage() {
-    lightboxImg.src = galleryImages[currentImageIndex].src;
-    captionText.textContent = galleryImages[currentImageIndex].alt;
-}
-
-document.addEventListener('keydown', function(event) {
-    if (lightbox && lightbox.style.display === 'block') {
-        if (event.key === "Escape") closeLightbox();
-        if (event.key === "ArrowRight") changeImage(1);
-        if (event.key === "ArrowLeft") changeImage(-1);
-    }
-});
