@@ -150,8 +150,6 @@
             </button>
         </div>
 
-        <img class="types-mood" src="img/tipusok-hangulat.webp" alt="Lebegő tolóajtó és a falba tolt ajtó egy letisztult nappaliban" loading="lazy">
-
         <dialog class="type-dialog" id="type-dialog" aria-labelledby="type-dialog-title">
             <button type="button" class="type-dialog-close" aria-label="Bezárás">×</button>
             <div class="type-dialog-img" role="img" aria-label=""></div>
@@ -162,6 +160,75 @@
                 <a href="#quote" class="btn-primary type-dialog-cta">Kérj ajánlatot</a>
             </div>
         </dialog>
+    </section>
+
+    <!-- Gallery Section -->
+    <section class="gallery-section" id="galeria">
+        <div class="section-header">
+            <h2>Referenciáink</h2>
+            <p>Inspirálódj korábbi munkáinkból! Kattints a képekre a nagyításhoz.</p>
+        </div>
+        <!-- A képek sorrendje és neve a landing.js galleryImages listájában van, a diákat a szkript építi fel. -->
+        <div class="gallery-carousel" id="gallery-carousel" role="region" aria-roledescription="carousel" aria-label="Referenciafotók">
+            <div class="gallery-stage"></div>
+            <p class="gallery-caption"></p>
+            <div class="gallery-controls">
+                <button type="button" class="gallery-btn gallery-prev" aria-label="Előző kép"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg></button>
+                <button type="button" class="gallery-btn gallery-play" aria-label="Automatikus lapozás megállítása"><svg class="icon icon-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z"/></svg><svg class="icon icon-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5l11 7-11 7z"/></svg></button>
+                <span class="gallery-count">1 / 80</span>
+                <button type="button" class="gallery-btn gallery-next" aria-label="Következő kép"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg></button>
+            </div>
+            <div class="gallery-live" aria-live="polite" aria-atomic="true"></div>
+        </div>
+    </section>
+
+    <!-- Quote Form Section -->
+    <section class="quote-section" id="quote">
+        <div class="quote-container">
+            <h2 style="font-family: var(--font-display); font-size: 2.2rem; margin-bottom: 2rem; text-align: center;">
+                Tervezzük meg együtt!</h2>
+            <div class="designer-cta">
+                <p>Szeretnéd lépésről lépésre megtervezni az ajtódat?</p>
+                <a href="tervezo.html" class="btn-primary">Ajtótervező indítása <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+                <span>6 rövid lépés, kb. 3 perc</span>
+            </div>
+            <p class="form-or">Vagy írj pár sort:</p>
+            <form id="quoteForm">
+                <div class="form-group">
+                    <label for="interest">Mire lenne szükséged?</label>
+                    <select id="interest" class="form-select">
+                        <option value="all">Vasalat + ajtólap + beszerelés</option>
+                        <option value="both">Vasalat szett és Ajtólap</option>
+                        <option value="hardware">Csak Vasalat szett</option>
+                        <option value="door">Csak Ajtólap</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="dimensions">Közelítő méretek (Szélesség × Magasság) <span style="font-size: 0.85em; font-weight: 400; color: #a3a3a3;">(Opcionális)</span></label>
+                    <input type="text" id="dimensions" class="form-control" placeholder="Pl: 90cm x 210cm">
+                </div>
+
+                <div class="form-group" style="display: flex; gap: 1rem;">
+                    <div style="flex: 1;">
+                        <label for="name">Név</label>
+                        <input type="text" id="name" class="form-control" placeholder="A Te neved" required>
+                    </div>
+                    <div style="flex: 1;">
+                        <label for="email">E-mail cím</label>
+                        <input type="email" id="email" class="form-control" placeholder="pelda@email.hu" required>
+                    </div>
+                </div>
+
+                <div class="cf-turnstile" id="quoteTurnstile"></div>
+                <div id="quoteError" class="form-error" role="alert" hidden></div>
+
+                <button type="submit" class="btn-primary" style="width: 100%; margin-top: 1rem; font-size: 1.1rem;">
+                    Ajánlat kérése
+                </button>
+            <p class="form-consent">Az ajánlatkéréssel elfogadod az <a href="adatkezeles.html">adatkezelési tájékoztatót</a>.</p>
+            </form>
+        </div>
     </section>
 
     <!-- Technológia: a dupla sín. VÁZLAT: a rögzítési adatok Ricsi jóváhagyására várnak (docs/TERV.md). -->
@@ -196,7 +263,7 @@
 
             <!-- ===== Rögzítés faltípusonként ===== -->
             <section class="tech-walls" id="rogzites">
-                <h3 class="tech-h">Rögzítés faltípusonként</h3>
+                <details class="tech-fold" id="rogzites-reszletek"><summary class="tech-fold-sum"><h3 class="tech-h">Rögzítés faltípusonként</h3></summary><div class="tech-fold-body">
                 <p class="tech-lead">A sín csak annyira stabil, amennyire a fal megtartja. Ezért minden falhoz más rögzítést választunk. Ha nem tudod, milyen a falad, küldj róla fotót, és megmondjuk.</p>
                 <p class="tech-draft" data-todo>VÁZLAT – a rögzítési adatok Ricsi jóváhagyására várnak. Élesítés előtt minden <code>TODO</code> pontot meg kell erősíteni vagy javítani.</p>
 
@@ -359,76 +426,8 @@
 
                 <p class="tech-lead">Bármilyen a falad, a rögzítést mindig mi választjuk ki a fotók és a méretek alapján. Az ajtólap legfeljebb 80 kg lehet.</p>
                 <a href="index.html#quote" class="btn-primary">Kérj ajánlatot</a>
+                </div></details>
             </section>
-        </div>
-    </section>
-
-    <!-- Quote Form Section -->
-    <section class="quote-section" id="quote">
-        <div class="quote-container">
-            <h2 style="font-family: var(--font-display); font-size: 2.2rem; margin-bottom: 2rem; text-align: center;">
-                Tervezzük meg együtt!</h2>
-            <div class="designer-cta">
-                <p>Szeretnéd lépésről lépésre megtervezni az ajtódat?</p>
-                <a href="tervezo.html" class="btn-primary">Ajtótervező indítása <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
-                <span>6 rövid lépés, kb. 3 perc</span>
-            </div>
-            <p class="form-or">Vagy írj pár sort:</p>
-            <form id="quoteForm">
-                <div class="form-group">
-                    <label for="interest">Mire lenne szükséged?</label>
-                    <select id="interest" class="form-select">
-                        <option value="all">Vasalat + ajtólap + beszerelés</option>
-                        <option value="both">Vasalat szett és Ajtólap</option>
-                        <option value="hardware">Csak Vasalat szett</option>
-                        <option value="door">Csak Ajtólap</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label for="dimensions">Közelítő méretek (Szélesség × Magasság) <span style="font-size: 0.85em; font-weight: 400; color: #a3a3a3;">(Opcionális)</span></label>
-                    <input type="text" id="dimensions" class="form-control" placeholder="Pl: 90cm x 210cm">
-                </div>
-
-                <div class="form-group" style="display: flex; gap: 1rem;">
-                    <div style="flex: 1;">
-                        <label for="name">Név</label>
-                        <input type="text" id="name" class="form-control" placeholder="A Te neved" required>
-                    </div>
-                    <div style="flex: 1;">
-                        <label for="email">E-mail cím</label>
-                        <input type="email" id="email" class="form-control" placeholder="pelda@email.hu" required>
-                    </div>
-                </div>
-
-                <div class="cf-turnstile" id="quoteTurnstile"></div>
-                <div id="quoteError" class="form-error" role="alert" hidden></div>
-
-                <button type="submit" class="btn-primary" style="width: 100%; margin-top: 1rem; font-size: 1.1rem;">
-                    Ajánlat kérése
-                </button>
-            <p class="form-consent">Az ajánlatkéréssel elfogadod az <a href="adatkezeles.html">adatkezelési tájékoztatót</a>.</p>
-            </form>
-        </div>
-    </section>
-
-    <!-- Gallery Section -->
-    <section class="gallery-section" id="galeria">
-        <div class="section-header">
-            <h2>Referenciáink</h2>
-            <p>Inspirálódj korábbi munkáinkból! Kattints a képekre a nagyításhoz.</p>
-        </div>
-        <!-- A képek sorrendje és neve a landing.js galleryImages listájában van, a diákat a szkript építi fel. -->
-        <div class="gallery-carousel" id="gallery-carousel" role="region" aria-roledescription="carousel" aria-label="Referenciafotók">
-            <div class="gallery-stage"></div>
-            <p class="gallery-caption"></p>
-            <div class="gallery-controls">
-                <button type="button" class="gallery-btn gallery-prev" aria-label="Előző kép"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg></button>
-                <button type="button" class="gallery-btn gallery-play" aria-label="Automatikus lapozás megállítása"><svg class="icon icon-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z"/></svg><svg class="icon icon-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5l11 7-11 7z"/></svg></button>
-                <span class="gallery-count">1 / 80</span>
-                <button type="button" class="gallery-btn gallery-next" aria-label="Következő kép"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg></button>
-            </div>
-            <div class="gallery-live" aria-live="polite" aria-atomic="true"></div>
         </div>
     </section>
 

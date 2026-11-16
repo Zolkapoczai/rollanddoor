@@ -52,3 +52,12 @@
   }, { threshold: 0.5 });
   io.observe(fig);
 })();
+
+// Ha valaki közvetlenül a #rogzites címre érkezik, nyíljon ki a faltípusos rész.
+(function () {
+    const fold = document.getElementById('rogzites-reszletek');
+    if (!fold) return;
+    const open = () => { if (location.hash === '#rogzites') fold.open = true; };
+    open();
+    window.addEventListener('hashchange', open);
+})();

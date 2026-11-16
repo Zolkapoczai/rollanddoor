@@ -112,3 +112,13 @@
 
 @media (min-width: 720px) { .wall-grid { grid-template-columns: 1fr 1fr; } }
 @media (min-width: 1040px) { .wall-grid { grid-template-columns: repeat(3, 1fr); } }
+
+/* Rögzítés faltípusonként: alapból összecsukva, kinyitható (details) */
+.tech-fold { background: var(--bg-glass); border: 1px solid var(--border-color); border-radius: 16px; }
+.tech-fold-sum { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 64px; padding: 16px 20px; cursor: pointer; list-style: none; }
+.tech-fold-sum::-webkit-details-marker { display: none; }
+.tech-fold-sum .tech-h { margin: 0; font-size: clamp(1.25rem, 3.5vw, 1.75rem); }
+.tech-fold-sum::after { content: "Részletek ▾"; flex: none; color: var(--accent); font-weight: 600; }
+.tech-fold[open] .tech-fold-sum::after { content: "Elrejtés ▴"; }
+.tech-fold-sum:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 16px; }
+.tech-fold-body { padding: 0 20px 24px; }
