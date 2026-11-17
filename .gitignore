@@ -1,7 +1,8 @@
 node_modules/
 .wrangler/
 .dev.vars
-forras-kepek/
+forras-kepek/*
+!forras-kepek/ajto_kepek/
 *.zip
 
 # Kulcs-exportok (API-kulcsot tartalmazhatnak): soha nem kerülhetnek a repóba
