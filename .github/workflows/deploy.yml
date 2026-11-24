@@ -1,0 +1,39 @@
+# Automatikus telepítés: minden push a main ágra élesbe megy (Cloudflare Worker).
+# Kell hozzá két repó-secret: CLOUDFLARE_API_TOKEN és CLOUDFLARE_ACCOUNT_ID (lásd worker/README.md).
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# Egyszerre csak egy telepítés fusson; ha közben új push jön, a régebbi várakozó kimarad.
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Típusellenőrzés
+        run: npx tsc --noEmit -p .
+
+      - name: Telepítés (wrangler deploy)
+        run: npx wrangler deploy
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}

@@ -27,6 +27,7 @@ Eltérések a briefhez képest: (1) a `_redirects` támogatott, ezért nincs red
 7. Resend webhook: esemény `email.received`, URL `https://rollndoor.hu/api/bejovo-level`; a kapott `whsec_...` titok megy a `RESEND_WEBHOOK_SECRET`-be.
 8. Turnstile: widget létrehozása a dashboardon; a site key a form HTML-be, a secret az 5. lépésbe.
 9. `wrangler.jsonc` `vars`: ellenőrizd `SITE_URL`, `RICSI_EMAIL`, `REPLY_DOMAIN`. Deploy: `npx wrangler deploy`.
+10. Automatikus telepítés (`.github/workflows/deploy.yml`): minden push a `main`-re típusellenőrzés után élesbe megy, kézzel is indítható (Actions → Deploy → Run workflow). Két repó-secret kell: `CLOUDFLARE_API_TOKEN` (Cloudflare → My Profile → API Tokens → „Edit Cloudflare Workers” sablon, plusz D1 Edit jog) és `CLOUDFLARE_ACCOUNT_ID` (`wrangler whoami` mutatja). A Worker titkait (Resend, Turnstile) a deploy nem érinti. A Cloudflare saját Git-buildjét (Workers Builds) ne kapcsold be mellé, különben minden push kétszer telepít.
 
 ## Helyi fejlesztés
 
