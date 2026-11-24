@@ -68,6 +68,7 @@ Irányított igényfelvétel, **nem** árkalkulátor. Hat lépés: elrendezés �
 - A tervező célja a helyszíni felmérés kiváltása; a méretért az ügyfél felel.
 - Képek alatt: „Szemléltető kép. A pontos látványtervet megrendelés után kapod.”
 - API: `POST /api/igeny`, `multipart/form-data`; mezők és az `igeny_json` formátuma a `worker/src/igeny.ts`-ben.
+- 2026-11-25: a 2. lépésben új, nem kötelező mező: „Mennyi szabad fal van a nyílás mellett?” (`szabad_fal_cm`). A 3D előnézet ebből jelzi, ha a nyitott ajtónak kevés a hely. A szükséges hely becslése (lapszélesség + 3–5 cm) Ricsi megerősítésére vár (TODO).
 
 ## 6. Állapot
 

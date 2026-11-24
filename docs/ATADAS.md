@@ -17,7 +17,7 @@ Utolsó frissítés: 2026-11-25
 | Ajtólap- és vasalattípus-kártyák, részletes felugró ablakkal | kész; a vasalatoknál diavetítés (lent) |
 | Ajtótervező (6 lépés, fotófeltöltés) → `POST /api/igeny` | kész |
 | Fotóillesztés a tervező 6. lépésében (az ajtó az ügyfél saját fotóján) | **prototípus**, élesben (workers.dev), valódi telefonon még nem kipróbálva |
-| 3D előnézet a tervező 6. lépésében (Three.js) | **prototípus**, élesben a valósághűbb 2. változat; Zoli telefonon kipróbálta, működik (2026-11-25) |
+| 3D előnézet a tervező 6. lépésében (Three.js) | **prototípus**; élesben a 2. változat (Zoli telefonon kipróbálta, működik). A 3. változat (élő váltás, szoba, méretek, szabad fal, bypass, kép mentése, AR, fotóminőség sugárkövetéssel) helyben kipróbálva, nincs élesítve |
 | Technológia (dupla sín) a főoldalon | **kikerült** 2026-11-25-én (Zoli): sem a szakasz, sem a „Technológia” menüpont nincs a főoldalon. A `technologia.html`, a `technologia.css`/`.js` és a `public/video/` a repóban maradt, de semmi nem hivatkozik rájuk. A dupla sín továbbra is szerepel a hero-sorban és az első kártyán. |
 | „Így készül az ajtód” a főoldalon | 2026-11-25 óta idővonal ikonokkal (nem kártyalista): 1180 px felett 7 oszlop összekötő vonallal, 700–1179 px között 4 + 3, telefonon függőleges. HTML: `index.html` `#rendeles-menete`, stílus: `landing.css` (`.steps`, `.step-ik`). |
 | Világos, otthonosabb főoldal – **PRÓBAVÁLTOZAT** | csak a `/?tema=vilagos` címmel jelenik meg, az alap (sötét) oldal változatlan. Krém/homok háttér, sötétebb karamell kiemelőszín (`#9c6842`, világos alapon is olvasható), lakásfotós hero (`ref-01`, tükrözve), lekerekített kártyák és gombok, lágy árnyékok, meleg sötétbarna lábléc, világos alapra színezett logó (`img/logo-vilagos.webp`). Fájl: `public/landing-vilagos.css`, kapcsoló: egy sor az `index.html` fejében. A többi oldal (tervező, blog) nem kapja meg. **Ricsi döntésére vár**; ha jóváhagyja, a változókat a `landing.css`-be kell átvezetni, és a kapcsolót törölni. |
@@ -43,19 +43,21 @@ Utolsó frissítés: 2026-11-25
 - Felirat: „Szemléltető kép. A pontos látványtervet megrendelés után kapod.” **Ricsinek tudnia kell róla**, hogy az ügyfél ezt ne vegye ígéretnek.
 - Korlátok: a nyomatos lapon mintakép van (a szegedi dóm), nem az ügyfél grafikája. Az üveg és a fém keretes üveg rajzolt, nem fotós. Fekvő fotón keskeny nyílásnál a pöttyök közel kerülnek egymáshoz. Valódi telefonon még nincs kipróbálva.
 
-### 3D előnézet a tervezőben (2026-11-25, 2. változat)
+### 3D előnézet a tervezőben (2026-11-25, 3. változat)
 
-- A 6. lépésben a „Nézd meg 3D-ben” lenyíló doboz a választásokból épít egy körbeforgatható jelenetet. Szoba: vakolt fal a megadott méretű nyílással, lábazat, tölgy parketta (rajzolt textúra), mennyezet, a nyíláson át a szomszéd szoba ablakkal és beeső fénnyel. Ajtólap: lekerekített élű lap a választott anyaggal (lakkozott fa, fém, nyomat, antik, valódi üveg, fém keretes üveg) és színnel. Vasalat:
-  - pajta: dupla sín (belső a falon, távtartók és csavarfejek, előtte a külső sín), sínvégi ütközők, küllős görgők tengellyel, pántok csavarokkal;
-  - rejtett: falszínű takarólemez a sín előtt;
-  - lebegő: nincs látható vasalat, a lap a padló fölött lebeg;
-  - falban futó: tok és takaróléc, kagylófogantyú, a lap a falba csúszik.
-  Ezen kívül rúdfogantyú távtartókkal, alsó megvezető. Fények: szoba-környezet (RoomEnvironment) tükröződéssel, lágy árnyékot vető fő fény, ACES színkezelés.
-- Kezelés: húzással körbeforgatható (kb. ±77°, fentről és alulról is kicsit), két ujjal vagy görgővel nagyítható, „Nyisd ki” / „Csukd be”, „Alapnézet”. Telefonon a vászon fölött az ujj a jelenetet forgatja; a lap a vásznon kívül görgethető.
-- Csak akkor rajzol folyamatosan, ha a nézet látszik (akkumulátor).
-- Kód: `public/elonezet3d.js` (ES-modul), csak a doboz kinyitásakor töltődik be (`import()` a `tervezo.js`-ből). three.js 0.187.0 (MIT) + RoomEnvironment + OrbitControls egy fájlban: `public/vendor/three/three.bundle.min.js` (771 KB, tömörítve kb. 196 KB). Az előállítás módja: `public/vendor/three/README.txt`. Anyagképek: `public/img/illesztes/`.
+- A 6. lépésben a „Nézd meg 3D-ben” doboz a választásokból épít egy körbeforgatható, valósághű jelenetet (fények, tükröződés, lakkozott fa, fém, üveg, berendezett szoba, a nyíláson át a szomszéd szoba).
+- **Élő váltás:** a jelenet alatti gombokkal váltható az ajtólap, a szín, a vasalat típusa és színe (matt fekete, inox, antik bronz, fehér), az elrendezés (egyszárnyú, kétszárnyú, egymás előtt) és a nyitás iránya. Ezek **visszaíródnak a tervező mezőibe** (a `tervezo.js` `beallit3d` függvénye), így az összegzésbe és az ajánlatkérésbe is bekerülnek. A vasalat nem fekete színe „Egyéb: Inox” stb. formában kerül a `vasalatEgyeb` mezőbe.
+- **Szoba (csak a nézethez, nem kerül az ajánlatkérésbe):** fal (fehér, bézs, szürke, sötét, látszó tégla), padló (világos vagy sötét parketta, járólap). A választás a böngészőben megmarad (`localStorage`: `rnd_3d_szoba`).
+- **Méretek:** méretvonal a nyílás szélességén és magasságán, ki-be kapcsolható.
+- **Szabad fal:** új, nem kötelező mező a tervező 2. lépésében (`szabadFal`, cm; az ajánlatkérésben `szabad_fal_cm`, és az összegzés sorai között is). Ha meg van adva, a 3D-ben sarokfal áll ennyire a nyílástól a nyitás oldalán (kétszárnyúnál mindkét oldalon), zöld vagy piros méretvonallal és szöveges jelzéssel. A szükséges hely becslése: a lap szélessége + 3 cm (falban futónál + 5 cm). **TODO Ricsi:** erősítse meg, mennyi szabad fal kell valójában (ráhagyás, ütköző, fogantyú).
+- **Egymás előtt futó (bypass):** két lap két sínen, nyitáskor az elülső a hátsó elé csúszik; pajtánál két külső sín.
+- **Fotóminőség (sugárkövetés, 2026-11-25):** ha a nézet áll, a `three-gpu-pathtracer` (WebGLPathTracer) képkockáról képkockára fotórealisztikus képet számol (valódi visszaverődés, lágy árnyék, üvegen át jövő fény); mozgatás vagy nyitás közben a gyors, valós idejű kép látszik. Az első ~150 mintánál zajszűrő simít. A gomb melletti számláló mutatja a mintaszámot, 1500 mintánál megáll. Kikapcsolható („Fotóminőség: ki”). Ha a grafikus kártya leállítja a számítást (elveszett WebGL-kontextus), szöveges jelzés jön.
+  - **Buktatók (ha a jelenetet bővíted):** a sugárkövető (1) nem ismeri a `bumpMap`-et, ezért normal térképet rajzolunk a textúrából (`normalTerkep`), ehhez tangens kell (`computeTangents`); (2) **nem kezeli a többanyagú tárgyakat** (anyagtömb, csoportok): elcsúsznak az anyagok, hibás szín és árnyék lesz. Minden tárgy egyetlen anyagú legyen (az ajtólap ezért doboz + két felület), az egyanyagú dobozok csoportjait töröljük; (3) a mennyezet valódi tárgyként elvenné a fényt, ezért nincs; (4) a kockatérképes környezetet a saját átalakítója a three.js 0.187-tel nem tudja feldolgozni, ezért equirect adattextúrát készítünk (`equirectKockabol`); (5) az extrudált (lekerekített élű) geometria hibás árnyékot vetett, ezért nem használjuk.
+  - Sebesség: a fejlesztői gépen (Intel UHD) kb. 1–6 minta/s; 50–100 mintától kellemes a kép.
+- **Kép mentése:** JPG-letöltés a jelenetről (fotóminőségben, ha az már elkészült).
+- **AR (kísérleti, csak érintőképernyőn látszik a gomb):** 1. érintésre az ajtó modellje (lapok + vasalat, zárt helyzetben) GLB-be exportálódik, és betöltődik a model-viewer; 2. érintésre indul az AR falra helyezéssel. Androidon WebXR, iPhone-on Quick Look (a USDZ-t a model-viewer készíti). A Scene Viewer nincs bekapcsolva, mert a böngészőben készült (`blob:`) modellt nem tudja megnyitni. Ha a készülék nem támogatja, szöveges jelzés jön. **Valódi telefonon még nincs kipróbálva.**
+- Kód: `public/elonezet3d.js`; three.js 0.187.0 + RoomEnvironment + OrbitControls + GLTFExporter + RectAreaLightUniformsLib + three-gpu-pathtracer 0.0.28 + three-mesh-bvh 0.10.0 egy fájlban (`public/vendor/three/three.bundle.min.js`, kb. 372 KB tömörítve); `@google/model-viewer` 4.4.0 (Apache-2.0, `public/vendor/model-viewer/`, kb. 290 KB tömörítve, csak az AR-gombra töltődik be). Részletek a két `README.txt`-ben.
 - Ha a böngésző nem tud WebGL-t, a doboz ezt kiírja, az ajánlatkérés működik tovább.
-- Korlátok: a bypass (egymás előtt futó) elrendezés egyszárnyúként jelenik meg. Valódi telefonon kipróbálva (Zoli, 2026-11-25): működik.
 
 ## Telepítés
 
