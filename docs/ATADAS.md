@@ -17,7 +17,7 @@ Utolsó frissítés: 2026-11-25
 | Ajtólap- és vasalattípus-kártyák, részletes felugró ablakkal | kész; a vasalatoknál diavetítés (lent) |
 | Ajtótervező (6 lépés, fotófeltöltés) → `POST /api/igeny` | kész |
 | Fotóillesztés a tervező 6. lépésében (az ajtó az ügyfél saját fotóján) | **prototípus**, élesben (workers.dev), valódi telefonon még nem kipróbálva |
-| 3D előnézet a tervező 6. lépésében (Three.js) | **prototípus**, élesben (1. változat, telefonon is működött); a valósághűbb 2. változat helyben kipróbálva, nincs élesítve |
+| 3D előnézet a tervező 6. lépésében (Three.js) | **prototípus**, élesben a valósághűbb 2. változat; Zoli telefonon kipróbálta, működik (2026-11-25) |
 | Technológia (dupla sín) a főoldalon | **kikerült** 2026-11-25-én (Zoli): sem a szakasz, sem a „Technológia” menüpont nincs a főoldalon. A `technologia.html`, a `technologia.css`/`.js` és a `public/video/` a repóban maradt, de semmi nem hivatkozik rájuk. A dupla sín továbbra is szerepel a hero-sorban és az első kártyán. |
 | „Így készül az ajtód” a főoldalon | 2026-11-25 óta idővonal ikonokkal (nem kártyalista): 1180 px felett 7 oszlop összekötő vonallal, 700–1179 px között 4 + 3, telefonon függőleges. HTML: `index.html` `#rendeles-menete`, stílus: `landing.css` (`.steps`, `.step-ik`). |
 | Megrendelés 7 állomása, automatikus levelek, cron | backend kész, élesben végigpróbálva |
@@ -54,7 +54,7 @@ Utolsó frissítés: 2026-11-25
 - Csak akkor rajzol folyamatosan, ha a nézet látszik (akkumulátor).
 - Kód: `public/elonezet3d.js` (ES-modul), csak a doboz kinyitásakor töltődik be (`import()` a `tervezo.js`-ből). three.js 0.187.0 (MIT) + RoomEnvironment + OrbitControls egy fájlban: `public/vendor/three/three.bundle.min.js` (771 KB, tömörítve kb. 196 KB). Az előállítás módja: `public/vendor/three/README.txt`. Anyagképek: `public/img/illesztes/`.
 - Ha a böngésző nem tud WebGL-t, a doboz ezt kiírja, az ajánlatkérés működik tovább.
-- Korlátok: a bypass (egymás előtt futó) elrendezés egyszárnyúként jelenik meg. A 2. változat valódi telefonon még nincs kipróbálva (az 1. igen, Zoli szerint működött).
+- Korlátok: a bypass (egymás előtt futó) elrendezés egyszárnyúként jelenik meg. Valódi telefonon kipróbálva (Zoli, 2026-11-25): működik.
 
 ## Telepítés
 
