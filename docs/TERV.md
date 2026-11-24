@@ -143,6 +143,7 @@ Fizetős Gemini az ajánlat megírásához, ~~ajtó ráillesztése az ügyfél f
 
 ### Technológia a főoldalon (`/#technologia`), 2026-11-15, VÁZLAT, helyben kipróbálva
 
+- **2026-11-25, takarítás:** a `technologia.html/.css/.js`, a `public/video/` és a `tools/video-felvetel.mjs` törölve a repóból (visszaállítható a `7b19bc8` commitból). Az alábbiak előzményként maradnak.
 - **2026-11-25, Zoli döntése (2. kör):** a teljes szakasz és a „Technológia” menüpont is kikerült a főoldalról; a dupla sín a hero-sorban és az első kártyán marad.
 - **2026-11-25, Zoli döntése:** a főoldalról kikerült a videó és a „Rögzítés faltípusonként” rész. Csak a „Így működik a dupla sín” cím és a bevezető szöveg maradt. Az alábbiak előzményként maradnak itt; a `technologia.html`, a `technologia.js` és a `public/video/` fájlok a repóban vannak, de a főoldal nem használja őket. Ezzel megszűnt a faltípusos rész élesítési kockázata is.
 
