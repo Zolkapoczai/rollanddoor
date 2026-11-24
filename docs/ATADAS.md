@@ -27,6 +27,7 @@ Utolsó frissítés: 2026-11-25
 - A képek montázsok, nem MI-generálások: az eredeti `public/img/tipus-*.webp` jelenet pixelre megmarad, csak az ajtólap felülete cserélődik a saját fotóinkból. Újragyártás: `python tools/ajtolap-montazs.py`. Az ajtólap maszkja a kimért sarkokból rajzolt, élsimított sokszög. A sötét, szürke vasalat (pánt, fogantyú) kimarad belőle, a barnás lapél viszont cserélődik (2026-11-25: így tűnt el a lebegő képek cakkos széle, a foltja és a barna élsávja).
 - **Falban futó (2026-11-25):** az ajtó félig nyitva látszik, a lap elülső éle a nyílás közepén van. Az alapképen szinte teljesen a falban volt, ezért itt a lapot mi rajzoljuk be (`falban_felig()`). A tömörfa anyagot és a fogantyút a rejtett-kép adja, mert ugyanaz a jelenet.
 - Az ablak 2026-11-25 óta 25%-kal nagyobb (max. 1125 px széles).
+- **Ajtólap-ablakok (tömörfa, nyomatos, fém, antik), 2026-11-25:** a kép levágás nélkül, teljes egészében látszik, mögötte a saját elmosott változata (`.td-blur`, `.td-fit`, ugyanúgy, mint a galériában). A nyomatos ablak képe az izlandi fotónyomatos ajtó (`ref-22-fenykepes-nappali`), Zoli kérésére.
 - Az animációk SVG + CSS rajzok. Újragyártás: `python tools/vasalat-animaciok.py`. Kód: `public/landing.js` (a típusablak része), stílus: `public/landing.css` (`.td-*`).
 - **Ricsi nézze át:** a rejtett és a lebegő vasalat szerkezetét a felugró ablak szövegéből rajzoltuk, nem valódi műszaki rajzból.
 

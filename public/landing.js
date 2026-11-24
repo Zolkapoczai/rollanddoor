@@ -461,7 +461,7 @@ const galleryImages = [
         },
         nyomatos: {
             title: 'Nyomatos ajtólapok',
-            img: 'img/referencia/ref-23-templomos-minta.webp',
+            img: 'img/referencia/ref-22-fenykepes-nappali.webp', // izlandi fotónyomat (Zoli, 2026-11-25)
             text: 'Egyedi grafika, fotó vagy minta prémium minőségben – az ajtód az otthonod központi dizájneleme lesz. Bármelyik vasalatunkkal kérheted.',
             list: []
         },
@@ -517,11 +517,26 @@ const galleryImages = [
     const svgCache = {};
     let show = null;
     function stopShow() {
+        imgEl.classList.remove('is-fit');
+        if (!show) imgEl.replaceChildren();
         if (!show) return;
         clearTimeout(show.timer);
         show = null;
         imgEl.classList.remove('is-slides');
         imgEl.replaceChildren();
+    }
+    // Ajtólapoknál egy kép, levágás nélkül; a maradék helyet a saját elmosott változata tölti ki (mint a galériában).
+    function showFit(src) {
+        imgEl.style.backgroundImage = 'none';
+        imgEl.classList.add('is-fit');
+        const blur = document.createElement('div');
+        blur.className = 'td-blur';
+        blur.style.backgroundImage = "url('" + src + "')";
+        const im = document.createElement('img');
+        im.className = 'td-fit';
+        im.src = src;
+        im.alt = '';
+        imgEl.append(blur, im);
     }
     function startShow(kind, title) {
         stopShow();
@@ -589,12 +604,12 @@ const galleryImages = [
             stopShow();
             imgEl.setAttribute('aria-label', t.title);
             if (t.slides) startShow(t.slides, t.title);
-            else imgEl.style.backgroundImage = "url('" + t.img + "')";
+            else showFit(t.img);
             dlg.showModal();
             document.body.style.overflow = 'hidden';
         });
     });
-    dlg.addEventListener('close', () => { stopShow(); document.body.style.overflow = ''; if (opener) opener.focus({ preventScroll: true }); });
+    dlg.addEventListener('close', () => { if (dlg.open) return; /* késve érkező esemény, már új ablak nyílt */ stopShow(); document.body.style.overflow = ''; if (opener) opener.focus({ preventScroll: true }); });
     dlg.querySelector('.type-dialog-close').addEventListener('click', () => dlg.close());
     dlg.querySelector('.type-dialog-cta').addEventListener('click', () => dlg.close());
     dlg.addEventListener('click', (e) => { if (e.target === dlg) dlg.close(); });
