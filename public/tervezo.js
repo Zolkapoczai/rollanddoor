@@ -119,7 +119,7 @@
         byId('tzNow').textContent = String(n);
         byId('tzBarFill').style.width = (n / TOTAL * 100) + '%';
         byId('tzBar').setAttribute('aria-valuenow', String(n));
-        if (n === TOTAL) { fromSummary = false; renderSummary(); ensureTurnstile(); renderIllesztes(); }
+        if (n === TOTAL) { fromSummary = false; renderSummary(); ensureTurnstile(); renderIllesztes(); render3d(); }
         updateButtons();
         if (opts.push) {
             try { history.pushState({ step: n }, '', '#lepes-' + n); } catch (e) { /* nem baj */ }
@@ -315,6 +315,23 @@
             lap: v.lap, szin: v.szin, vasalatTipus: v.vasalatTipus, tipus: v.tipus, irany: v.irany, fogantyu: !!v.fogantyu
         });
     }
+    /* ---------- 3D előnézet (elonezet3d.js + three.js), csak kinyitáskor töltődik be ---------- */
+    var d3Modul = null;
+    function render3d() {
+        var box = byId('d3Box');
+        if (!box || !box.open) { return; }
+        var v = readForm();
+        var o = {
+            lap: v.lap, szin: v.szin, vasalatTipus: v.vasalatTipus, tipus: v.tipus, irany: v.irany,
+            fogantyu: !!v.fogantyu, szelesseg: v.szelesseg, magassag: v.magassag
+        };
+        d3Modul = d3Modul || import('./elonezet3d.js');
+        d3Modul.then(function (m) { m.render(byId('elonezet3d'), o); }).catch(function () {
+            byId('elonezet3d').textContent = 'A 3D előnézet most nem tölthető be. Az ajánlatkérést ez nem érinti.';
+        });
+    }
+    if (byId('d3Box')) { byId('d3Box').addEventListener('toggle', render3d); }
+
     if (byId('fiBox')) {
         byId('fiBox').addEventListener('toggle', renderIllesztes);
         byId('fiToStep2').addEventListener('click', function (e) {
