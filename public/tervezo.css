@@ -705,13 +705,8 @@ footer {
 .d3-pont[hidden] { display: none; }
 .d3-pont:hover, .d3-pont[aria-expanded="true"] { background: var(--accent, #d4a373); color: #121212; }
 .d3-pont:focus-visible { outline: 3px solid var(--accent, #d4a373); outline-offset: 3px; }
-.d3-pont-meret {
-  width: auto; height: 36px; border-radius: 999px; padding: 0 0.85rem;
-  font-size: 0.9rem; font-weight: 600; white-space: nowrap;
-  background: rgba(255, 255, 255, 0.94); color: #2d2520; border-color: rgba(156, 104, 66, 0.6);
-}
-.d3-pont-meret:hover { background: #fff; color: #2d2520; border-color: #9c6842; }
-.d3-pontok:not(.ismert) .d3-pont:not(.d3-pont-meret) { animation: d3-pulzal 2.2s ease-in-out infinite; }
+/* a pontokat és a felugró ablakot a fotóillesztés is ezekkel az osztályokkal használja (valaszto.js) */
+.d3-pontok:not(.ismert) .d3-pont { animation: d3-pulzal 2.2s ease-in-out infinite; }
 @keyframes d3-pulzal {
   0%, 100% { box-shadow: 0 2px 10px rgba(0, 0, 0, 0.35), 0 0 0 0 rgba(212, 163, 115, 0.6); }
   50% { box-shadow: 0 2px 10px rgba(0, 0, 0, 0.35), 0 0 0 12px rgba(212, 163, 115, 0); }

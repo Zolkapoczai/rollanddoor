@@ -313,8 +313,14 @@
         if (!box.open) { return; } // csak kinyitva rajzolunk
         var v = readForm();
         window.FotoIllesztes.render(byId('fotoIllesztes'), van ? photos[0] : null, {
-            lap: v.lap, szin: v.szin, vasalatTipus: v.vasalatTipus, tipus: v.tipus, irany: v.irany, fogantyu: !!v.fogantyu
-        });
+            lap: v.lap, szin: v.szin, vasalatTipus: v.vasalatTipus, tipus: v.tipus, irany: v.irany, fogantyu: !!v.fogantyu,
+            vasalatSzin: v.vasalatSzin, vasalatEgyeb: v.vasalatEgyeb, szelesseg: v.szelesseg, magassag: v.magassag
+        }, { beallit: beallitFoto });
+    }
+    // A fotón választott érték: a tervező mezője, az összegzés, a fotó, és ha nyitva van, a 3D is frissül.
+    function beallitFoto(nev, ertek) {
+        beallit3d(nev, ertek);
+        render3d();
     }
     /* ---------- 3D előnézet (elonezet3d.js + three.js), csak kinyitáskor töltődik be ---------- */
     var d3Modul = null;
@@ -328,7 +334,7 @@
             fogantyu: !!v.fogantyu, megvezeto: !!v.megvezeto, szelesseg: v.szelesseg, magassag: v.magassag
         };
         d3Modul = d3Modul || import('./elonezet3d.js');
-        d3Modul.then(function (m) { m.render(byId('elonezet3d'), o, { beallit: beallit3d, meret: meret3d }); }).catch(function () {
+        d3Modul.then(function (m) { m.render(byId('elonezet3d'), o, { beallit: beallit3d }); }).catch(function () {
             byId('elonezet3d').textContent = 'A 3D előnézet most nem tölthető be. Az ajánlatkérést ez nem érinti.';
         });
     }
@@ -346,11 +352,6 @@
             el.dispatchEvent(new Event('change', { bubbles: true }));
         }
         if (S.step === TOTAL) { renderSummary(); renderIllesztes(); }
-    }
-    // A 3D méretpontja: a méret a 3D-ben nem írható át (mért adat), a 2. lépésre visz, onnan vissza az összegzéshez.
-    function meret3d() {
-        fromSummary = true;
-        show(2, { push: true });
     }
     if (byId('d3Box')) { byId('d3Box').addEventListener('toggle', render3d); }
 
