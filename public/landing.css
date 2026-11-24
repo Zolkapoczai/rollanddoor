@@ -952,6 +952,11 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 /* Tolóajtó-típusok (VÁZLAT) */
 .types-section { background-color: var(--bg-primary); }
 .types-grid { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+.slabs-grid { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; }
+.types-section + .types-section { padding-top: 0; }
+.types-cta { text-align: center; margin-top: 3rem; }
+.types-cta p { color: var(--text-primary); font-size: 1.1rem; max-width: 640px; margin: 0 auto 1.2rem; }
+.type-dialog-list:empty { display: none; }
 .type-card {
   display: block; text-align: left; font: inherit; color: inherit; padding: 0; width: 100%;
 }

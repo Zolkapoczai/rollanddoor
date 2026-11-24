@@ -451,7 +451,38 @@ const galleryImages = [
 (function () {
     const dlg = document.getElementById('type-dialog');
     if (!dlg || typeof dlg.showModal !== 'function') return;
+    // Ajtólapoknál Ricsi kérésére nincs részletes lista, csak nagy kép és rövid szöveg.
     const TYPES = {
+        tomorfa: {
+            title: 'Tömörfa ajtólapok',
+            img: 'img/galeria-02-loft-tomorfa.webp',
+            text: 'Természetes erezet, időtálló tartás és valódi fa karakter, egyedi méretre és színre szabva. Bármelyik vasalatunkkal kérheted.',
+            list: []
+        },
+        nyomatos: {
+            title: 'Nyomatos ajtólapok',
+            img: 'img/referencia/ref-23-templomos-minta.webp',
+            text: 'Egyedi grafika, fotó vagy minta prémium minőségben – az ajtód az otthonod központi dizájneleme lesz. Bármelyik vasalatunkkal kérheted.',
+            list: []
+        },
+        fem: {
+            title: 'Fém ajtólapok',
+            img: 'img/ajtolap-fem.webp',
+            text: 'Letisztult, indusztriális megjelenés és masszív szerkezet modern vagy loft terekbe tervezve. Bármelyik vasalatunkkal kérheted.',
+            list: []
+        },
+        antik: {
+            title: 'Antik ajtólapok',
+            img: 'img/galeria-06-antik-diszes-ajto.webp',
+            text: 'Különleges, patinás és rusztikus darabok egyedi történettel, modern dupla sínes működésre hangolva. Bármelyik vasalatunkkal kérheted.',
+            list: []
+        },
+        uveg: {
+            title: 'Üvegbetétes ajtólapok',
+            img: 'img/galeria-09-feher-uveges-ajto.webp',
+            text: 'Az üvegbetét átengedi a fényt, így a tér nyitottabb és világosabb marad. Bármelyik vasalatunkkal kérheted.',
+            list: []
+        },
         pajta: {
             title: 'Pajtaajtó-vasalat látszó görgőkkel',
             img: 'img/tipus-pajta.webp',

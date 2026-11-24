@@ -9,7 +9,7 @@
     var PHONE_HREF = 'tel:+36205650661';
     var NINCS = 'Nincs megadva';
 
-    var RADIOS = ['tipus', 'fal', 'irany', 'lap', 'szin', 'vasalatSzin', 'beszereles'];
+    var RADIOS = ['tipus', 'fal', 'irany', 'lap', 'szin', 'vasalatTipus', 'vasalatSzin', 'beszereles'];
     var CHECKS = ['fotoKesobb', 'fogantyu', 'lagyZaras', 'zar', 'megvezeto', 'felelos', 'adatkezeles'];
     var TEXTS = ['szelesseg', 'magassag', 'lapLeiras', 'szinEgyeb', 'vasalatEgyeb', 'nev', 'email', 'telefon', 'megjegyzes'];
 
@@ -260,6 +260,7 @@
         if (v.lapLeiras.trim()) { add('Elképzelés', v.lapLeiras.trim(), 3); }
         var szin = checkedLabel('szin');
         add('Szín', v.szin === 'egyeb' && v.szinEgyeb.trim() ? 'Egyéb: ' + v.szinEgyeb.trim() : szin, 4);
+        add('Vasalat típusa', checkedLabel('vasalatTipus'), 5);
         var vsz = checkedLabel('vasalatSzin');
         add('Vasalat színe', v.vasalatSzin === 'egyeb' && v.vasalatEgyeb.trim() ? 'Egyéb: ' + v.vasalatEgyeb.trim() : vsz, 5);
         var extra = ['fogantyu', 'lagyZaras', 'zar', 'megvezeto'].filter(function (n) { return v[n]; })
@@ -356,6 +357,7 @@
             ajtolap_leiras: v.lapLeiras.trim() || null,
             szin: v.szin || null,
             szin_egyeb: v.szin === 'egyeb' ? (v.szinEgyeb.trim() || null) : null,
+            vasalat_tipus: v.vasalatTipus || null,
             vasalat_szin: v.vasalatSzin || null,
             vasalat_szin_egyeb: v.vasalatSzin === 'egyeb' ? (v.vasalatEgyeb.trim() || null) : null,
             fogantyu: !!v.fogantyu,

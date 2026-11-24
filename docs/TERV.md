@@ -129,6 +129,12 @@ Irányított igényfelvétel, **nem** árkalkulátor. Hat lépés: elrendezés �
 
 Fizetős Gemini az ajánlat megírásához, ajtó ráillesztése az ügyfél fotójára, „mi nem megy együtt” szabályok, ár vagy „-tól” ár, új logó, Analytics bekötése, heti D1-mentés.
 
+### Ajtólap- és vasalattípusok a főoldalon (`/#ajtolapok`, `/#tipusok`), 2026-11-24
+
+- Két egymást követő kártyasor a „Miért a Roll’n’Door?” és a „Referenciáink” között. Az 1. lépés az ajtólap (tömörfa, nyomatos, fém, antik, üvegbetétes), a 2. lépés a vasalat (pajta, rejtett, lebegő, falban futó). Alatta egy gomb az Ajtótervezőre.
+- **Ricsi döntése (2026-11-24):** alapvetően minden ajtólap mehet minden vasalattal. Az üvegbetétes ajtólap kell, fém ajtólap önállóan is készül. Ajtólaponként nem kell részletes lista. A fém kártya képe Ricsi fotója (`img/ajtolap-fem*.webp`).
+- A tervező ezt követi: a 3. lépésben nyomatos, fém és antik ajtólap is választható (az „Üveg” neve „Üvegbetétes” lett), az 5. lépésben vasalattípus (`vasalat_tipus`: pajta / rejtett / lebego / falban / nem_tudom). A Worker változatlan, a válaszokat és az összegzést általánosan tárolja.
+
 ### Technológia a főoldalon (`/#technologia`), 2026-11-15, VÁZLAT, helyben kipróbálva
 
 - A főoldalon a „Miért a Roll’n’Door?” után, menüpont: Technológia. Benne: a 20 mp-es videó és a 6 faltípus. Ricsi itt nézi át és itt válaszol a `TODO`-kra.

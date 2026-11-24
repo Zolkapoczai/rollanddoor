@@ -115,39 +115,85 @@
         </div>
     </section>
 
-    <!-- Tolóajtó-típusok. VÁZLAT: a szövegek és képek helyőrzők, Ricsi/Zoli validálja (docs/TERV.md). -->
+    <!-- Ajtólaptípusok. Ricsi 2026-11-24: minden ajtólap minden vasalattal mehet, üvegbetétes is kell. -->
+    <section class="features types-section" id="ajtolapok">
+        <div class="section-header">
+            <h2>1. lépés: Válaszd ki az ajtólapot</h2>
+            <p>Öt stílus, végtelen lehetőség. Bármelyik ajtólapot választod, szabadon párosíthatod a lenti
+                vasalatok bármelyikével.</p>
+        </div>
+
+        <div class="grid types-grid slabs-grid">
+            <button type="button" class="card type-card" data-type="tomorfa">
+                <span class="card-img-wrapper"><span class="card-img" style="background-image: url('img/galeria-02-loft-tomorfa-s.webp');"></span></span>
+                <span class="card-content"><h3>Tömörfa ajtólapok</h3>
+                    <p>Természetes erezet, időtálló tartás és valódi fa karakter, egyedi méretre és színre szabva.</p>
+                    <span class="type-more">Részletek →</span></span>
+            </button>
+            <button type="button" class="card type-card" data-type="nyomatos">
+                <span class="card-img-wrapper"><span class="card-img" style="background-image: url('img/referencia/ref-23-templomos-minta-s.webp');"></span></span>
+                <span class="card-content"><h3>Nyomatos ajtólapok</h3>
+                    <p>Egyedi grafika, fotó vagy minta prémium minőségben – az ajtód az otthonod központi dizájneleme lesz.</p>
+                    <span class="type-more">Részletek →</span></span>
+            </button>
+            <button type="button" class="card type-card" data-type="fem">
+                <span class="card-img-wrapper"><span class="card-img" style="background-image: url('img/ajtolap-fem-s.webp');"></span></span>
+                <span class="card-content"><h3>Fém ajtólapok</h3>
+                    <p>Letisztult, indusztriális megjelenés és masszív szerkezet modern vagy loft terekbe tervezve.</p>
+                    <span class="type-more">Részletek →</span></span>
+            </button>
+            <button type="button" class="card type-card" data-type="antik">
+                <span class="card-img-wrapper"><span class="card-img" style="background-image: url('img/galeria-06-antik-diszes-ajto-s.webp');"></span></span>
+                <span class="card-content"><h3>Antik ajtólapok</h3>
+                    <p>Különleges, patinás és rusztikus darabok egyedi történettel, modern dupla sínes működésre hangolva.</p>
+                    <span class="type-more">Részletek →</span></span>
+            </button>
+            <button type="button" class="card type-card" data-type="uveg">
+                <span class="card-img-wrapper"><span class="card-img" style="background-image: url('img/galeria-09-feher-uveges-ajto-s.webp');"></span></span>
+                <span class="card-content"><h3>Üvegbetétes ajtólapok</h3>
+                    <p>Az üvegbetét átengedi a fényt, így a tér nyitottabb és világosabb marad.</p>
+                    <span class="type-more">Részletek →</span></span>
+            </button>
+        </div>
+    </section>
+
+    <!-- Vasalattípusok. VÁZLAT: a részletes szövegek validálásra várnak (docs/TERV.md). -->
     <section class="features types-section" id="tipusok">
         <div class="section-header">
-            <h2>Négy tolóajtó, négy karakter</h2>
-            <p>Nem tömegcikket árulunk. Válaszd ki, hogyan fusson az ajtód: látszó vasalattal, rejtve, lebegve
-                vagy teljesen a falban.</p>
+            <h2>2. lépés: Válaszd ki a vasalatot</h2>
+            <p>A fenti ajtólapok bármelyike kérhető látszó, rejtett, lebegő vagy falban futó rendszerrel is.</p>
         </div>
 
         <div class="grid types-grid">
             <button type="button" class="card type-card" data-type="pajta">
                 <span class="card-img-wrapper"><span class="card-img" style="background-image: url('img/tipus-pajta.webp');"></span></span>
                 <span class="card-content"><h3>Pajtaajtó-vasalat</h3>
-                    <p>Fémsín és látszó görgők: a vasalat maga a dizájn.</p>
+                    <p>Fémsín és látszó görgők: a vasalat maga a dizájn – tömörfa, antik, fém, nyomatos és üvegbetétes ajtólapokhoz is.</p>
                     <span class="type-more">Részletek →</span></span>
             </button>
             <button type="button" class="card type-card" data-type="rejtett">
                 <span class="card-img-wrapper"><span class="card-img" style="background-image: url('img/tipus-rejtett.webp');"></span></span>
                 <span class="card-content"><h3>Rejtett sínes</h3>
-                    <p>Csapágyazott görgők, a sín a mennyezetben vagy a falban fut.</p>
+                    <p>Csapágyazott görgők, a sín a mennyezetben vagy a falban fut – bármelyik ajtólapstílushoz illeszkedik.</p>
                     <span class="type-more">Részletek →</span></span>
             </button>
             <button type="button" class="card type-card" data-type="lebego">
                 <span class="card-img-wrapper"><span class="card-img" style="background-image: url('img/tipus-lebego.webp');"></span></span>
                 <span class="card-content"><h3>Lebegő</h3>
-                    <p>Láthatatlan vasalat: az ajtó mintha a levegőben úszna.</p>
+                    <p>Láthatatlan vasalat: az ajtó mintha a levegőben úszna – akár egy karakteres tömörfa vagy antik ajtólappal is.</p>
                     <span class="type-more">Részletek →</span></span>
             </button>
             <button type="button" class="card type-card" data-type="falban">
                 <span class="card-img-wrapper"><span class="card-img" style="background-image: url('img/tipus-falban.webp');"></span></span>
                 <span class="card-content"><h3>Falban futó</h3>
-                    <p>Nyitott állapotban az ajtó egyáltalán nem látszik.</p>
+                    <p>Nyitott állapotban az ajtó egyáltalán nem látszik – szabadon választható bármelyik ajtólaptípusunkhoz.</p>
                     <span class="type-more">Részletek →</span></span>
             </button>
+        </div>
+
+        <div class="types-cta">
+            <p>Megvan a tökéletes párosításod? Például antik ajtólap lebegő vasalattal, vagy nyomatos ajtó pajtaajtó-sínnel?</p>
+            <a href="tervezo.html" class="btn-primary">Állítsd össze az Ajtótervezőben <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
         </div>
 
         <dialog class="type-dialog" id="type-dialog" aria-labelledby="type-dialog-title">
