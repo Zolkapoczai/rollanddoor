@@ -480,30 +480,103 @@ const galleryImages = [
         pajta: {
             title: 'Pajtaajtó-vasalat látszó görgőkkel',
             img: 'img/tipus-pajta.webp',
+            slides: 'pajta',
             text: 'A klasszikus pajtaajtó: a fémsín és a görgők szándékosan látszanak, a vasalat a helyiség jellegzetes eleme lesz. Ipari, loft és vidéki stílushoz egyaránt jól illik.',
             list: ['Látszó fémsín a fal előtt, görgőkkel és konzolokkal', 'Szín: RAL/NCS szerint festve', 'Az ajtólap kiegészíti a vasalatot, a kettő egy látványelem', 'Falra szerelhető: a fal teherbírását előre ellenőrizzük (TODO: pontos feltételek)']
         },
         rejtett: {
             title: 'Rejtett, csapágyazott görgős vasalat',
             img: 'img/tipus-rejtett.webp',
+            slides: 'rejtett',
             text: 'A csapágyazott görgők rejtett sínben futnak, így az ajtó csendesen és könnyen mozog, a vasalatból pedig alig látszik valami. Letisztult, modern terekhez.',
             list: ['Csapágyazott görgők, halk és sima futás', 'A sín a mennyezetbe vagy a falba süllyesztve', 'Visszafogott megjelenés, az ajtólap kerül előtérbe', 'Beépítés előtt a helyszín felmérése szükséges (TODO: részletek)']
         },
         lebego: {
             title: 'Lebegő, láthatatlan vasalat',
             img: 'img/tipus-lebego.webp',
+            slides: 'lebego',
             text: 'Az ajtólap mintha a levegőben lebegne: a vasalat a felső szerkezetben vagy a lap élében rejtőzik, így nincs látható sín vagy görgő. Prémium, minimalista hatás.',
             list: ['A vasalat nem látszik, az ajtólap „úszik"', 'Tiszta vonalak, nincs látható sín', 'Szabott méret és felület az ajtólaphoz', 'Teherbírás, lapvastagság, méretkorlát: TODO (validálandó)']
         },
         falban: {
             title: 'Falban futó ajtó',
             img: 'img/tipus-falban.webp',
+            slides: 'falban',
             text: 'Nyitott állapotban az ajtó teljesen a falba csúszik, és nem látszik. Nem foglal helyet a szobában, és nem kell kitérni előle. Szűk terekhez és letisztult folyosókhoz ideális.',
             list: ['Az ajtólap a falszerkezetben fut (zsebes megoldás)', 'Nyitva nincs útban az ajtó, helyet takarít meg', 'Beépítése falszerkezeti munkát igényel, érdemes a tervezés elején eldönteni', 'Falvastagság és szerkezeti feltételek: TODO (validálandó)']
         }
     };
     let opener = null;
     const imgEl = dlg.querySelector('.type-dialog-img');
+
+    // Vasalatoknál diavetítés: ugyanaz a jelenet négy ajtólappal (lassú áttűnés), 5.-ként a működés animációja.
+    // A képek: tools/ajtolap-montazs.py, az animációk: tools/vasalat-animaciok.py.
+    const LAPOK = [['tomorfa', 'Tömörfa'], ['nyomatos', 'Nyomatos'], ['fem', 'Fém'], ['antik', 'Antik']];
+    const KEP_MP = 4500, ANIM_MP = 15500;
+    const lassit = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const svgCache = {};
+    let show = null;
+    function stopShow() {
+        if (!show) return;
+        clearTimeout(show.timer);
+        show = null;
+        imgEl.classList.remove('is-slides');
+        imgEl.replaceChildren();
+    }
+    function startShow(kind, title) {
+        stopShow();
+        imgEl.style.backgroundImage = 'none';
+        imgEl.classList.add('is-slides');
+        const layers = LAPOK.map(([k, nev]) => {
+            const im = document.createElement('img');
+            im.className = 'td-slide';
+            im.src = 'img/vasalat/' + kind + '-' + k + '.webp';
+            im.alt = title + ' – ' + nev.toLowerCase() + ' ajtólappal';
+            im.decoding = 'async';
+            return im;
+        });
+        const anim = document.createElement('div');
+        anim.className = 'td-slide td-anim';
+        layers.push(anim);
+        const chip = document.createElement('span');
+        chip.className = 'td-chip';
+        const dots = document.createElement('div');
+        dots.className = 'td-dots';
+        const names = LAPOK.map((l) => l[1]).concat('Működés');
+        const btns = names.map((n, i) => {
+            const b = document.createElement('button');
+            b.type = 'button';
+            b.className = 'td-dot';
+            b.setAttribute('aria-label', n);
+            b.addEventListener('click', () => go(i));
+            return b;
+        });
+        dots.append(...btns);
+        imgEl.append(...layers, chip, dots);
+        const s = show = { i: -1, timer: 0 };
+        function playAnim() {
+            const url = 'img/vasalat/' + kind + '-animacio.svg';
+            const put = (txt) => { if (show === s) anim.innerHTML = txt; }; // friss beillesztés = elölről indul
+            if (svgCache[url]) put(svgCache[url]);
+            else fetch(url).then((r) => r.text()).then((t) => { svgCache[url] = t; put(t); }).catch(() => {});
+        }
+        function go(i) {
+            if (show !== s) return;
+            clearTimeout(s.timer);
+            if (s.i >= 0) { layers[s.i].classList.remove('on'); btns[s.i].removeAttribute('aria-current'); }
+            s.i = i;
+            layers[i].classList.add('on');
+            btns[i].setAttribute('aria-current', 'true');
+            chip.textContent = i === 4 ? '' : names[i] + ' ajtólap'; // az animációnak saját felirata van
+            if (i === 4) playAnim();
+            else if (anim.firstChild) setTimeout(() => { if (show === s && s.i !== 4) anim.replaceChildren(); }, 1800);
+            // csökkentett mozgásnál nincs automatikus lapozás, csak a pöttyökkel
+            if (!lassit.matches) s.timer = setTimeout(() => go((i + 1) % layers.length), i === 4 ? ANIM_MP : KEP_MP);
+        }
+        go(0);
+    }
+
+
     document.querySelectorAll('.type-card').forEach((btn) => {
         btn.addEventListener('click', () => {
             const t = TYPES[btn.dataset.type];
@@ -513,13 +586,15 @@ const galleryImages = [
             dlg.querySelector('.type-dialog-text').textContent = t.text;
             const ul = dlg.querySelector('.type-dialog-list');
             ul.replaceChildren(...t.list.map((s) => { const li = document.createElement('li'); li.textContent = s; return li; }));
-            imgEl.style.backgroundImage = "url('" + t.img + "')";
+            stopShow();
             imgEl.setAttribute('aria-label', t.title);
+            if (t.slides) startShow(t.slides, t.title);
+            else imgEl.style.backgroundImage = "url('" + t.img + "')";
             dlg.showModal();
             document.body.style.overflow = 'hidden';
         });
     });
-    dlg.addEventListener('close', () => { document.body.style.overflow = ''; if (opener) opener.focus({ preventScroll: true }); });
+    dlg.addEventListener('close', () => { stopShow(); document.body.style.overflow = ''; if (opener) opener.focus({ preventScroll: true }); });
     dlg.querySelector('.type-dialog-close').addEventListener('click', () => dlg.close());
     dlg.querySelector('.type-dialog-cta').addEventListener('click', () => dlg.close());
     dlg.addEventListener('click', (e) => { if (e.target === dlg) dlg.close(); });
