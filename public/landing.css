@@ -870,40 +870,73 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 .steps-section { background-color: var(--bg-primary); }
 .faq-section { background-color: var(--bg-secondary); }
 
+/* Idővonal (2026-11-25): telefonon függőleges, széles képernyőn 7 oszlopos vízszintes, összekötő vonallal. */
 .steps {
   list-style: none;
   counter-reset: step;
-  max-width: 760px;
+  max-width: 1280px;
   margin: 0 auto;
   display: grid;
-  gap: 1rem;
+  gap: 1.6rem;
+  position: relative;
 }
 .steps li {
   counter-increment: step;
-  display: flex;
-  gap: 1.2rem;
-  align-items: flex-start;
-  background: var(--bg-secondary);
-  border: 1px solid var(--border-color);
-  border-radius: 8px;
-  padding: 1.2rem 1.4rem;
+  position: relative;
+  display: grid;
+  grid-template-columns: 64px 1fr;
+  gap: 1.1rem;
+  align-items: start;
 }
-.steps li::before {
-  content: counter(step);
-  flex: 0 0 48px;
-  height: 48px;
+/* összekötő vonal (telefonon függőleges, a körök közepén) */
+.steps li:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  left: 31px; top: 64px; bottom: -1.6rem;
+  width: 2px;
+  background: linear-gradient(var(--accent), rgba(212, 163, 115, 0.25));
+}
+.step-ik {
+  position: relative;
+  width: 64px; height: 64px;
   border-radius: 50%;
-  background: var(--accent);
-  color: var(--bg-primary);
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 1.4rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: grid; place-items: center;
+  background: var(--bg-secondary);
+  border: 2px solid var(--accent);
+  color: var(--accent);
+  font-size: 1.7rem;
+  box-shadow: 0 0 0 6px var(--bg-primary);
+  z-index: 1;
 }
-.steps h3 { font-size: 1.25rem; margin-bottom: 0.2rem; }
-.steps p { color: var(--text-secondary); }
+/* sorszám a kör szélén */
+.step-ik::after {
+  content: counter(step);
+  position: absolute; right: -6px; top: -6px;
+  width: 26px; height: 26px; border-radius: 50%;
+  background: var(--accent); color: var(--bg-primary);
+  font: 700 0.9rem/26px var(--font-display);
+  text-align: center;
+}
+.steps h3 { font-size: 1.2rem; margin: 0.35rem 0 0.25rem; }
+.steps p { color: var(--text-secondary); font-size: 0.98rem; line-height: 1.5; }
+
+@media (min-width: 700px) {
+  .steps { grid-template-columns: repeat(7, 1fr); gap: 1rem; }
+  .steps li { grid-template-columns: 1fr; justify-items: center; text-align: center; gap: 1rem; }
+  .steps li:not(:last-child)::after {
+    left: calc(50% + 32px); right: calc(-50% + 32px - 1rem); top: 31px; bottom: auto;
+    width: auto; height: 2px;
+    background: linear-gradient(90deg, var(--accent), rgba(212, 163, 115, 0.35));
+  }
+  .step-ik { width: 72px; height: 72px; font-size: 1.9rem; }
+  .steps li:not(:last-child)::after { top: 35px; left: calc(50% + 36px); right: calc(-50% + 36px - 1rem); }
+  .steps h3 { font-size: 1.15rem; }
+  .steps p { font-size: 0.95rem; max-width: 20ch; margin: 0 auto; }
+}
+@media (min-width: 700px) and (max-width: 1179px) {
+  .steps { grid-template-columns: repeat(4, 1fr); row-gap: 2.5rem; max-width: 900px; }
+  .steps li:nth-child(4)::after { display: none; }
+}
 
 .faq-list { max-width: 800px; margin: 0 auto; display: grid; gap: 0.8rem; }
 .faq-list details {

@@ -17,8 +17,9 @@ Utolsó frissítés: 2026-11-25
 | Ajtólap- és vasalattípus-kártyák, részletes felugró ablakkal | kész; a vasalatoknál diavetítés (lent) |
 | Ajtótervező (6 lépés, fotófeltöltés) → `POST /api/igeny` | kész |
 | Fotóillesztés a tervező 6. lépésében (az ajtó az ügyfél saját fotóján) | **prototípus**, élesben (workers.dev), valódi telefonon még nem kipróbálva |
-| 3D előnézet a tervező 6. lépésében (Three.js) | **prototípus**, helyben kipróbálva, nincs élesítve |
+| 3D előnézet a tervező 6. lépésében (Three.js) | **prototípus**, élesben (1. változat, telefonon is működött); a valósághűbb 2. változat helyben kipróbálva, nincs élesítve |
 | Technológia (dupla sín) a főoldalon | **kikerült** 2026-11-25-én (Zoli): sem a szakasz, sem a „Technológia” menüpont nincs a főoldalon. A `technologia.html`, a `technologia.css`/`.js` és a `public/video/` a repóban maradt, de semmi nem hivatkozik rájuk. A dupla sín továbbra is szerepel a hero-sorban és az első kártyán. |
+| „Így készül az ajtód” a főoldalon | 2026-11-25 óta idővonal ikonokkal (nem kártyalista): 1180 px felett 7 oszlop összekötő vonallal, 700–1179 px között 4 + 3, telefonon függőleges. HTML: `index.html` `#rendeles-menete`, stílus: `landing.css` (`.steps`, `.step-ik`). |
 | Megrendelés 7 állomása, automatikus levelek, cron | backend kész, élesben végigpróbálva |
 | Ricsi dashboardja (`/dashboard`) | kész, **átmenetileg belépés nélkül nyitott** |
 | Saját domain (`rollndoor.hu`) | **nincs átállítva**, a régi WordPress fut rajta |
@@ -41,12 +42,19 @@ Utolsó frissítés: 2026-11-25
 - Felirat: „Szemléltető kép. A pontos látványtervet megrendelés után kapod.” **Ricsinek tudnia kell róla**, hogy az ügyfél ezt ne vegye ígéretnek.
 - Korlátok: a nyomatos lapon mintakép van (a szegedi dóm), nem az ügyfél grafikája. Az üveg és a fém keretes üveg rajzolt, nem fotós. Fekvő fotón keskeny nyílásnál a pöttyök közel kerülnek egymáshoz. Valódi telefonon még nincs kipróbálva.
 
-### 3D előnézet a tervezőben (2026-11-25, prototípus)
+### 3D előnézet a tervezőben (2026-11-25, 2. változat)
 
-- A 6. lépésben a „Nézd meg 3D-ben” lenyíló doboz a választásokból épít egy forgatható jelenetet: fal a megadott méretű nyílással, padló, ajtólap(ok) a választott anyaggal és színnel, vasalat (pajta: két sín, görgők, pántok; rejtett: falszínű takaróléc; lebegő: semmi; falban futó: a lap a falba csúszik), fogantyú. A „Nyisd ki” gombbal az ajtó a megadott irányba kinyílik, a „Szemből” gomb visszaállítja a nézetet. Ujjal vagy egérrel vízszintesen forgatható, függőleges húzással a lap görgethető marad.
-- Kód: `public/elonezet3d.js` (ES-modul), csak a doboz kinyitásakor töltődik be (`import()` a `tervezo.js`-ből). three.js 0.187.0 (MIT): `public/vendor/three/three.module.min.js`, egyszer esbuild-del egy fájlba tömörítve (749 KB, tömörítve kb. 190 KB). Részletek: `public/vendor/three/README.txt`. Anyagképek: ugyanazok, mint a fotóillesztésnél (`public/img/illesztes/`).
+- A 6. lépésben a „Nézd meg 3D-ben” lenyíló doboz a választásokból épít egy körbeforgatható jelenetet. Szoba: vakolt fal a megadott méretű nyílással, lábazat, tölgy parketta (rajzolt textúra), mennyezet, a nyíláson át a szomszéd szoba ablakkal és beeső fénnyel. Ajtólap: lekerekített élű lap a választott anyaggal (lakkozott fa, fém, nyomat, antik, valódi üveg, fém keretes üveg) és színnel. Vasalat:
+  - pajta: dupla sín (belső a falon, távtartók és csavarfejek, előtte a külső sín), sínvégi ütközők, küllős görgők tengellyel, pántok csavarokkal;
+  - rejtett: falszínű takarólemez a sín előtt;
+  - lebegő: nincs látható vasalat, a lap a padló fölött lebeg;
+  - falban futó: tok és takaróléc, kagylófogantyú, a lap a falba csúszik.
+  Ezen kívül rúdfogantyú távtartókkal, alsó megvezető. Fények: szoba-környezet (RoomEnvironment) tükröződéssel, lágy árnyékot vető fő fény, ACES színkezelés.
+- Kezelés: húzással körbeforgatható (kb. ±77°, fentről és alulról is kicsit), két ujjal vagy görgővel nagyítható, „Nyisd ki” / „Csukd be”, „Alapnézet”. Telefonon a vászon fölött az ujj a jelenetet forgatja; a lap a vásznon kívül görgethető.
+- Csak akkor rajzol folyamatosan, ha a nézet látszik (akkumulátor).
+- Kód: `public/elonezet3d.js` (ES-modul), csak a doboz kinyitásakor töltődik be (`import()` a `tervezo.js`-ből). three.js 0.187.0 (MIT) + RoomEnvironment + OrbitControls egy fájlban: `public/vendor/three/three.bundle.min.js` (771 KB, tömörítve kb. 196 KB). Az előállítás módja: `public/vendor/three/README.txt`. Anyagképek: `public/img/illesztes/`.
 - Ha a böngésző nem tud WebGL-t, a doboz ezt kiírja, az ajánlatkérés működik tovább.
-- Korlátok: egyszerű modell (sín, görgő, pánt sematikus), a bypass (egymás előtt futó) elrendezés egyszárnyúként jelenik meg, a fém keretes üveg rajzolt. Valódi telefonon még nincs kipróbálva.
+- Korlátok: a bypass (egymás előtt futó) elrendezés egyszárnyúként jelenik meg. A 2. változat valódi telefonon még nincs kipróbálva (az 1. igen, Zoli szerint működött).
 
 ## Telepítés
 
