@@ -9,6 +9,7 @@ Először olvasd el a `docs/TERV.md` fájlt: az a döntések és az aktuális á
 - Üzleti tényt (ár, határidő, anyag, garancia) ne találj ki. Ami nincs megerősítve, jelöld `TODO`-val.
 - A szlogen „ajtó másképp", a név Roll’n’Door. A landing a mintaoldal (`forras-kepek/mintaoldal`) szövegét és kinézetét követi, a kiegészítések listája a `docs/TERV.md` 6. pontjában van.
 - Titkot (API-kulcs, `.dev.vars`) ne írj ki és ne commitolj. Commitolni és pusholni csak kérésre.
+- **Átadási dokumentáció mindig naprakész:** minden változtatással ugyanabban a commitban frissítsd a `docs/ATADAS.md`-t (állapot, telepítés, nyitott teendők, buktatók). Ha döntés született, a `docs/TERV.md`-t is. Ha a struktúra vagy a futtatás módja változik, a `README.md`-t is.
 
 ## Windows
 

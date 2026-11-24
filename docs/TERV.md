@@ -133,6 +133,7 @@ Fizetős Gemini az ajánlat megírásához, ajtó ráillesztése az ügyfél fot
 
 - Két egymást követő kártyasor a „Miért a Roll’n’Door?” és a „Referenciáink” között. Az 1. lépés az ajtólap (tömörfa, nyomatos, fém, antik), a 2. lépés a vasalat (pajta, rejtett, lebegő, falban futó). Alatta egy gomb az Ajtótervezőre.
 - **Ricsi döntése (2026-11-24):** alapvetően minden ajtólap mehet minden vasalattal. Fém ajtólap önállóan is készül. Üvegbetétes külön típusként nem kell (2026-11-24). Ajtólaponként nem kell részletes lista. A fém kártya képe Ricsi fotója (`img/ajtolap-fem*.webp`).
+- **Vasalatablakok diavetítése (Zoli kérésére, 2026-11-24):** a 4 vasalat felugró ablakában ugyanaz a jelenet 4 ajtólappal, lassú áttűnéssel, 5.-ként a működés animációja (metszet → kizoomolt elölnézet). Az azonos perspektíva miatt montázs, nem MI-kép (`tools/ajtolap-montazs.py`, `tools/vasalat-animaciok.py`). A rejtett és a lebegő szerkezetét Ricsinek jóvá kell hagynia. Részletek: `docs/ATADAS.md`.
 - A tervező ezt követi: a 3. lépésben nyomatos, fém és antik ajtólap is választható, az 5. lépésben vasalattípus (`vasalat_tipus`: pajta / rejtett / lebego / falban / nem_tudom). A Worker változatlan, a válaszokat és az összegzést általánosan tárolja.
 
 ### Technológia a főoldalon (`/#technologia`), 2026-11-15, VÁZLAT, helyben kipróbálva
