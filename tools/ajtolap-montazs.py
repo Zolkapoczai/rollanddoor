@@ -20,12 +20,12 @@ FORRAS = {
     "fem": ("ajtolap-fem.webp", [(241, 200), (870, 200), (848, 1522), (283, 1545)]),
     "nyomatos": ("referencia/ref-23-templomos-minta.webp", [(172, 187), (770, 180), (703, 1515), (180, 1345)]),
     # az antik lap teteje a forrásképen a görgők alatt kezdődik (a díszes oromzat alja marad)
-    "antik": ("galeria-06-antik-diszes-ajto.webp", [(152, 262), (624, 262), (598, 1275), (177, 1235)]),
+    "antik": ("galeria-06-antik-diszes-ajto.webp", [(152, 262), (614, 262), (589, 1275), (177, 1235)]),
 }
 # A textúrán eltakarandó (vasalattal fedett) részek, a kiegyenesített lap arányában: x0, y0, x1, y1.
 TAKARAS = {
     "fem": [],
-    "nyomatos": [(0.0, 0.0, 1.0, 0.035), (0.0, 0.0, 0.08, 0.24), (0.9, 0.0, 1.0, 0.24)],
+    "nyomatos": [(0.0, 0.0, 1.0, 0.035), (0.0, 0.0, 0.12, 0.28), (0.85, 0.0, 1.0, 0.27)],
     "antik": [],
 }
 # A forrásfotó saját fogantyúja: a jelenet adja a fogantyút, ezt lefoltozzuk.
@@ -41,10 +41,8 @@ ALAP = {
     "pajta": [(47.5, 145.2), (258.5, 131.0), (258.5, 131.0 + 457), (47.5, 145.2 + 457)],
     "rejtett": [(58.5, 136.2), (252.8, 121.8), (252.8, 121.8 + 421), (58.5, 136.2 + 421)],
     "lebego": [(58.5, 134.2), (253.5, 119.8), (253.5, 119.8 + 423), (58.5, 134.2 + 423)],
-    # Falban futó: csak a lap falból kilógó széle látszik; ez a lap jobb szélének felel meg.
-    "falban": [(155.0, 145.5), (178.0, 143.6), (178.0, 143.6 + 421), (155.0, 145.5 + 421)],
 }
-FALBAN_SAV = 0.12  # a lap jobb szélének ekkora része látszik a falban futónál
+DEBUG = os.environ.get('MONTAZS_DEBUG') == '1'
 
 
 def textura(nev):
@@ -78,28 +76,36 @@ def textura(nev):
 
 
 def maszk(alap, nev):
-    """Az alapkép ajtólapjának pixelei (fa színű, összefüggő terület) – a vasalat és a fogantyú kimarad."""
+    """Az ajtólap pixelei: a kimért sarkokból rajzolt, élsimított sokszög, a sötét vasalat és fogantyú nélkül.
+    (A színalapú maszk az árnyékos lapszélen cakkos volt.) A falban futót a falban_felig() készíti."""
     hsv = cv2.cvtColor(alap, cv2.COLOR_BGR2HSV).astype(int)
     h, s, v = hsv[..., 0], hsv[..., 1], hsv[..., 2]
-    fa = ((h >= 6) & (h <= 26) & (s > 60) & (v > 55)).astype(np.uint8)
     q = np.float32(ALAP[nev]) * UP
-    poly = np.zeros(fa.shape, np.uint8)
-    cv2.fillConvexPoly(poly, np.int32(np.round(q)), 1)
-    poly = cv2.dilate(poly, np.ones((5, 5), np.uint8))
-    fa &= poly
-    n, lab, st, _ = cv2.connectedComponentsWithStats(fa)
-    fo = 1 + int(np.argmax(st[1:, cv2.CC_STAT_AREA]))
-    m = (lab == fo).astype(np.uint8)
-    # apró lyukak (sötétebb erezet) befoltozása, de a fekete vasalat kimarad
-    zart = cv2.morphologyEx(m, cv2.MORPH_CLOSE, np.ones((5, 5), np.uint8))
-    m = np.where((zart > 0) & (v > 45), 1, m).astype(np.uint8)
-    if nev == "falban":  # soronként kitöltjük a keskeny sávot
-        for y in range(m.shape[0]):
-            xs = np.nonzero(m[y])[0]
-            if len(xs) > 2:
-                m[y, xs.min():xs.max() + 1] = 1
-    a = cv2.GaussianBlur(m.astype(np.float32), (0, 0), 0.9)
-    return np.clip(a * 1.15, 0, 1)
+    # élsimított sokszög 4× túlmintavételezéssel; kicsit kifelé tolva, hogy az eredeti fa lap széle ne villanjon ki
+    k = q.mean(axis=0)
+    q = q + np.sign(q - k) * np.float32([1.6, 1.4]) * UP / 2
+    q[[1, 2], 0] += 2 * UP  # jobb oldalt a lap éle (vastagsága) is az új anyagot kapja
+    H, W = alap.shape[:2]
+    nagy = np.zeros((H * 4, W * 4), np.uint8)
+    cv2.fillConvexPoly(nagy, np.int32(np.round(q * 4)), 255)
+    poly = cv2.resize(nagy, (W, H), interpolation=cv2.INTER_AREA).astype(np.float32) / 255
+    fa = (h >= 6) & (h <= 26) & (s > 60) & (v > 55)
+    # vasalat (pánt, görgő, fogantyú) a lapon: nem fa színű, összefüggő, sötét foltok – ezeknél marad az eredeti
+    nemfa = ((~fa) & (poly > 0.5)).astype(np.uint8)
+    nemfa = cv2.morphologyEx(nemfa, cv2.MORPH_CLOSE, np.ones((5, 5), np.uint8))
+    n, lab, st, _ = cv2.connectedComponentsWithStats(nemfa)
+    vas = np.zeros_like(nemfa)
+    belso = cv2.erode((poly > 0.5).astype(np.uint8), np.ones((9, 9), np.uint8))
+    for i in range(1, n):
+        px = alap[lab == i].astype(int)  # BGR
+        barna = (px[:, 2] - px[:, 0]).mean()  # a sötét, barnás lapél nem vasalat; a fekete pánt/fogantyú szürke
+        szelen = bool((lab == i)[belso == 0].any())  # a lap peremén ér
+        if st[i, cv2.CC_STAT_AREA] >= 60 * UP and v[lab == i].mean() < 58 and (barna < 22 or not szelen):
+            vas[lab == i] = 1
+        if DEBUG and st[i, cv2.CC_STAT_AREA] >= 60 * UP:
+            print(nev, i, st[i, cv2.CC_STAT_AREA], round(v[lab == i].mean()), round(barna))
+    vas = cv2.GaussianBlur(vas.astype(np.float32), (0, 0), 0.7)
+    return np.clip(poly * (1 - vas), 0, 1)
 
 
 def arnyek(alap, a):
@@ -123,22 +129,74 @@ def main():
         Hh, Ww = alap.shape[:2]
         cv2.imwrite(os.path.join(OUT, f"{nev}-tomorfa.webp"), alap, [cv2.IMWRITE_WEBP_QUALITY, 86])
         for k, t in tex.items():
-            if nev == "falban":
-                x0 = int(TW * (1 - FALBAN_SAV))
-                t = cv2.resize(t[:, x0:], (TW, TH), interpolation=cv2.INTER_CUBIC)
             H = cv2.getPerspectiveTransform(np.float32([(0, 0), (TW, 0), (TW, TH), (0, TH)]), q)
             w = cv2.warpPerspective(t, H, (Ww, Hh), flags=cv2.INTER_AREA, borderMode=cv2.BORDER_REPLICATE)
             w = cv2.GaussianBlur(w, (0, 0), 0.6)  # a jelenet lágyságához
             lum = w.mean(axis=2)[a > 0.5].mean()
             cel = FENY[k] if FENY[k] is not None else lum
-            if nev == "falban" and FENY[k] is not None:
-                cel *= falum / 140.0  # árnyékosabb sáv
             w = w * (cel / max(lum, 1)) * S[..., None]
             w = w * np.float32([0.95, 1.0, 1.04])  # meleg szobafény (BGR)
             out = alap.astype(np.float32) * (1 - a[..., None]) + w * a[..., None]
             cv2.imwrite(os.path.join(OUT, f"{nev}-{k}.webp"), np.clip(out, 0, 255).astype(np.uint8),
                         [cv2.IMWRITE_WEBP_QUALITY, 86])
         print(nev, "kész")
+    falban_felig(tex)
+
+
+def falban_felig(tex):
+    """Falban futó, félig nyitva: az alapképen az ajtó szinte teljesen a falban van, ezért a lapot
+    mi húzzuk ki a nyílás közepéig. A tömörfa anyagot és a fogantyút a rejtett-kép (ugyanaz a jelenet) adja."""
+    kicsi = cv2.imread(os.path.join(IMG, "tipus-falban.webp"))
+    alap = cv2.resize(kicsi, None, fx=UP, fy=UP, interpolation=cv2.INTER_LANCZOS4).astype(np.float32)
+    Hh, Ww = alap.shape[:2]
+    # a nyílás felső éle (alapkép-pixel): y = 143.6 - 0.066·(x - 176); bal oldalt a zseb szája x = 150
+    fent = lambda x: 143.6 - 0.066 * (x - 176) + 1.0
+    X_ZSEB, X_EL, SZEL, MAG = 150.0, 244.5, 150.0, 325.0  # a lap elülső éle a nyílás közepén
+    xb = X_EL - SZEL
+    q = np.float32([(xb, fent(xb)), (X_EL, fent(X_EL)), (X_EL, fent(X_EL) + MAG), (xb, fent(xb) + MAG)]) * UP
+    # maszk: a lap sokszöge, de csak a zseb szájától jobbra látszik
+    nagy = np.zeros((Hh * 4, Ww * 4), np.uint8)
+    cv2.fillConvexPoly(nagy, np.int32(np.round(q * 4)), 255)
+    a = cv2.resize(nagy, (Ww, Hh), interpolation=cv2.INTER_AREA).astype(np.float32) / 255
+    a[:, :int(X_ZSEB * UP)] = 0
+    # fény: a nyílásban kicsit árnyékosabb, fent a szemöldök, bal oldalt a zseb szája sötétít
+    yy, xx = np.mgrid[0:Hh, 0:Ww].astype(np.float32)
+    S = 0.9 * (1 - 0.35 * np.exp(-(yy - fent(xx / UP) * UP) / (4 * UP))).clip(0.5, 1)
+    S *= 1 - 0.3 * np.exp(-(xx - X_ZSEB * UP) / (6 * UP)).clip(0, 1)
+    # tömörfa: a rejtett-kép fa lapja kiegyenesítve (ugyanaz a jelenet, ugyanaz a fa)
+    rejt = cv2.resize(cv2.imread(os.path.join(IMG, "tipus-rejtett.webp")), None, fx=UP, fy=UP,
+                      interpolation=cv2.INTER_LANCZOS4).astype(np.float32)
+    Hr = cv2.getPerspectiveTransform(np.float32(ALAP["rejtett"]) * UP, np.float32([(0, 0), (TW, 0), (TW, TH), (0, TH)]))
+    fa = cv2.warpPerspective(rejt, Hr, (TW, TH), flags=cv2.INTER_AREA, borderMode=cv2.BORDER_REPLICATE)
+    # A rejtett-képen a lap alja kilóg a képből, és lent ott a fogantyú: csak a felső, tiszta részt használjuk,
+    # lefelé tükrözve folytatjuk (függőleges deszkaerezet, a tükrözés nem feltűnő).
+    jo = fa[:int(TH * 0.58)]
+    fa = np.concatenate([jo, jo[::-1], jo])[:TH]
+    # a rejtett-kép fogantyúja (sötét pixelei) a lap elülső élétől ugyanakkora távolságra
+    rv = cv2.cvtColor(np.clip(rejt, 0, 255).astype(np.uint8), cv2.COLOR_BGR2HSV)[..., 2]
+    y0, y1, x0, x1 = 380 * UP, 442 * UP, 222 * UP, 242 * UP
+    fog = rejt[y0:y1, x0:x1]
+    fa_alpha = cv2.GaussianBlur((rv[y0:y1, x0:x1] < 58).astype(np.float32), (0, 0), 0.7)
+    dx = int(round((X_EL - ALAP["rejtett"][1][0]) * UP))  # rejtett lap jobb éle → elülső él
+    dy = int(round((fent(X_EL) - ALAP["rejtett"][1][1]) * UP))
+    anyagok = {"tomorfa": fa, **tex}
+    for k, t in anyagok.items():
+        H = cv2.getPerspectiveTransform(np.float32([(0, 0), (TW, 0), (TW, TH), (0, TH)]), q)
+        w = cv2.warpPerspective(t, H, (Ww, Hh), flags=cv2.INTER_AREA, borderMode=cv2.BORDER_REPLICATE)
+        w = cv2.GaussianBlur(w, (0, 0), 0.6)
+        lum = w.mean(axis=2)[a > 0.5].mean()
+        cel = lum if k == "tomorfa" or FENY[k] is None else FENY[k]
+        w = w * (cel / max(lum, 1)) * S[..., None]
+        if k != "tomorfa":
+            w = w * np.float32([0.95, 1.0, 1.04])
+        out = alap * (1 - a[..., None]) + w * a[..., None]
+        ty0, tx0 = y0 + dy, x0 + dx
+        h_, w_ = min(fog.shape[0], Hh - ty0), fog.shape[1]
+        al = fa_alpha[:h_, :, None] * a[ty0:ty0 + h_, tx0:tx0 + w_, None]
+        out[ty0:ty0 + h_, tx0:tx0 + w_] = out[ty0:ty0 + h_, tx0:tx0 + w_] * (1 - al) + fog[:h_] * al
+        cv2.imwrite(os.path.join(OUT, f"falban-{k}.webp"), np.clip(out, 0, 255).astype(np.uint8),
+                    [cv2.IMWRITE_WEBP_QUALITY, 86])
+    print("falban kész (félig nyitva)")
 
 
 if __name__ == "__main__":
