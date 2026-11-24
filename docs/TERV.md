@@ -131,9 +131,9 @@ Fizetős Gemini az ajánlat megírásához, ajtó ráillesztése az ügyfél fot
 
 ### Ajtólap- és vasalattípusok a főoldalon (`/#ajtolapok`, `/#tipusok`), 2026-11-24
 
-- Két egymást követő kártyasor a „Miért a Roll’n’Door?” és a „Referenciáink” között. Az 1. lépés az ajtólap (tömörfa, nyomatos, fém, antik, üvegbetétes), a 2. lépés a vasalat (pajta, rejtett, lebegő, falban futó). Alatta egy gomb az Ajtótervezőre.
-- **Ricsi döntése (2026-11-24):** alapvetően minden ajtólap mehet minden vasalattal. Az üvegbetétes ajtólap kell, fém ajtólap önállóan is készül. Ajtólaponként nem kell részletes lista. A fém kártya képe Ricsi fotója (`img/ajtolap-fem*.webp`).
-- A tervező ezt követi: a 3. lépésben nyomatos, fém és antik ajtólap is választható (az „Üveg” neve „Üvegbetétes” lett), az 5. lépésben vasalattípus (`vasalat_tipus`: pajta / rejtett / lebego / falban / nem_tudom). A Worker változatlan, a válaszokat és az összegzést általánosan tárolja.
+- Két egymást követő kártyasor a „Miért a Roll’n’Door?” és a „Referenciáink” között. Az 1. lépés az ajtólap (tömörfa, nyomatos, fém, antik), a 2. lépés a vasalat (pajta, rejtett, lebegő, falban futó). Alatta egy gomb az Ajtótervezőre.
+- **Ricsi döntése (2026-11-24):** alapvetően minden ajtólap mehet minden vasalattal. Fém ajtólap önállóan is készül. Üvegbetétes külön típusként nem kell (2026-11-24). Ajtólaponként nem kell részletes lista. A fém kártya képe Ricsi fotója (`img/ajtolap-fem*.webp`).
+- A tervező ezt követi: a 3. lépésben nyomatos, fém és antik ajtólap is választható, az 5. lépésben vasalattípus (`vasalat_tipus`: pajta / rejtett / lebego / falban / nem_tudom). A Worker változatlan, a válaszokat és az összegzést általánosan tárolja.
 
 ### Technológia a főoldalon (`/#technologia`), 2026-11-15, VÁZLAT, helyben kipróbálva
 

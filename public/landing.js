@@ -477,12 +477,6 @@ const galleryImages = [
             text: 'Különleges, patinás és rusztikus darabok egyedi történettel, modern dupla sínes működésre hangolva. Bármelyik vasalatunkkal kérheted.',
             list: []
         },
-        uveg: {
-            title: 'Üvegbetétes ajtólapok',
-            img: 'img/galeria-09-feher-uveges-ajto.webp',
-            text: 'Az üvegbetét átengedi a fényt, így a tér nyitottabb és világosabb marad. Bármelyik vasalatunkkal kérheted.',
-            list: []
-        },
         pajta: {
             title: 'Pajtaajtó-vasalat látszó görgőkkel',
             img: 'img/tipus-pajta.webp',
