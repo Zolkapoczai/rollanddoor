@@ -688,3 +688,9 @@ footer {
 .fi-btns { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 0.9rem; }
 .fi-btn { min-height: 48px; }
 .fi-msg:empty { display: none; }
+
+/* 3D előnézet (elonezet3d.js) */
+.d3-wrap { width: 100%; }
+.d3-canvas { display: block; width: 100%; border-radius: 8px; cursor: grab; }
+.d3-canvas:active { cursor: grabbing; }
+.d3-meret { align-self: center; color: var(--text-secondary, #a0a0a0); font-size: 0.95rem; }

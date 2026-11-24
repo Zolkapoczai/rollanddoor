@@ -16,8 +16,9 @@ Utolsó frissítés: 2026-11-25
 | Főoldal (mintaoldal-másolat, galéria 80 valódi fotóval, GYIK, ajánlatkérő) | kész, workers.dev-en fut |
 | Ajtólap- és vasalattípus-kártyák, részletes felugró ablakkal | kész; a vasalatoknál diavetítés (lent) |
 | Ajtótervező (6 lépés, fotófeltöltés) → `POST /api/igeny` | kész |
-| Fotóillesztés a tervező 6. lépésében (az ajtó az ügyfél saját fotóján) | **prototípus**, helyben kipróbálva, nincs élesítve |
-| Technológia a főoldalon: „Így működik a dupla sín” cím és bevezető szöveg | kész. A videó és a faltípusos rögzítés 2026-11-25-én kikerült (Zoli). A `technologia.html` oldal és a `public/video/` fájlok a repóban maradtak, de a főoldal nem hivatkozik rájuk. |
+| Fotóillesztés a tervező 6. lépésében (az ajtó az ügyfél saját fotóján) | **prototípus**, élesben (workers.dev), valódi telefonon még nem kipróbálva |
+| 3D előnézet a tervező 6. lépésében (Three.js) | **prototípus**, helyben kipróbálva, nincs élesítve |
+| Technológia (dupla sín) a főoldalon | **kikerült** 2026-11-25-én (Zoli): sem a szakasz, sem a „Technológia” menüpont nincs a főoldalon. A `technologia.html`, a `technologia.css`/`.js` és a `public/video/` a repóban maradt, de semmi nem hivatkozik rájuk. A dupla sín továbbra is szerepel a hero-sorban és az első kártyán. |
 | Megrendelés 7 állomása, automatikus levelek, cron | backend kész, élesben végigpróbálva |
 | Ricsi dashboardja (`/dashboard`) | kész, **átmenetileg belépés nélkül nyitott** |
 | Saját domain (`rollndoor.hu`) | **nincs átállítva**, a régi WordPress fut rajta |
@@ -39,6 +40,13 @@ Utolsó frissítés: 2026-11-25
 - A fotó és a sarkok nem hagyják el a böngészőt, a szerverre csak a megszokott ajánlatkérés megy. „Kép mentése”: JPG-letöltés az ügyfél gépére.
 - Felirat: „Szemléltető kép. A pontos látványtervet megrendelés után kapod.” **Ricsinek tudnia kell róla**, hogy az ügyfél ezt ne vegye ígéretnek.
 - Korlátok: a nyomatos lapon mintakép van (a szegedi dóm), nem az ügyfél grafikája. Az üveg és a fém keretes üveg rajzolt, nem fotós. Fekvő fotón keskeny nyílásnál a pöttyök közel kerülnek egymáshoz. Valódi telefonon még nincs kipróbálva.
+
+### 3D előnézet a tervezőben (2026-11-25, prototípus)
+
+- A 6. lépésben a „Nézd meg 3D-ben” lenyíló doboz a választásokból épít egy forgatható jelenetet: fal a megadott méretű nyílással, padló, ajtólap(ok) a választott anyaggal és színnel, vasalat (pajta: két sín, görgők, pántok; rejtett: falszínű takaróléc; lebegő: semmi; falban futó: a lap a falba csúszik), fogantyú. A „Nyisd ki” gombbal az ajtó a megadott irányba kinyílik, a „Szemből” gomb visszaállítja a nézetet. Ujjal vagy egérrel vízszintesen forgatható, függőleges húzással a lap görgethető marad.
+- Kód: `public/elonezet3d.js` (ES-modul), csak a doboz kinyitásakor töltődik be (`import()` a `tervezo.js`-ből). three.js 0.187.0 (MIT): `public/vendor/three/three.module.min.js`, egyszer esbuild-del egy fájlba tömörítve (749 KB, tömörítve kb. 190 KB). Részletek: `public/vendor/three/README.txt`. Anyagképek: ugyanazok, mint a fotóillesztésnél (`public/img/illesztes/`).
+- Ha a böngésző nem tud WebGL-t, a doboz ezt kiírja, az ajánlatkérés működik tovább.
+- Korlátok: egyszerű modell (sín, görgő, pánt sematikus), a bypass (egymás előtt futó) elrendezés egyszárnyúként jelenik meg, a fém keretes üveg rajzolt. Valódi telefonon még nincs kipróbálva.
 
 ## Telepítés
 
