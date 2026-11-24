@@ -141,6 +141,31 @@ def main():
                         [cv2.IMWRITE_WEBP_QUALITY, 86])
         print(nev, "kész")
     falban_felig(tex)
+    texturak_mentese(tex)
+
+
+def fa_textura():
+    """Tömörfa textúra: a rejtett-kép fa lapja kiegyenesítve (ugyanaz a jelenet, ugyanaz a fa)."""
+    rejt = cv2.resize(cv2.imread(os.path.join(IMG, "tipus-rejtett.webp")), None, fx=UP, fy=UP,
+                      interpolation=cv2.INTER_LANCZOS4).astype(np.float32)
+    Hr = cv2.getPerspectiveTransform(np.float32(ALAP["rejtett"]) * UP, np.float32([(0, 0), (TW, 0), (TW, TH), (0, TH)]))
+    fa = cv2.warpPerspective(rejt, Hr, (TW, TH), flags=cv2.INTER_AREA, borderMode=cv2.BORDER_REPLICATE)
+    # A rejtett-képen a lap alja kilóg a képből, és lent ott a fogantyú: csak a felső, tiszta részt használjuk,
+    # lefelé tükrözve folytatjuk (függőleges deszkaerezet, a tükrözés nem feltűnő).
+    jo = fa[:int(TH * 0.58)]
+    return np.concatenate([jo, jo[::-1], jo])[:TH]
+
+
+def texturak_mentese(tex):
+    """A tervező fotóillesztéséhez: kiegyenesített, egyenletes fényű ajtólap-textúrák (public/img/illesztes/)."""
+    cel = os.path.join(IMG, "illesztes")
+    os.makedirs(cel, exist_ok=True)
+    for k, t in {"tomorfa": fa_textura(), **tex}.items():
+        if FENY.get(k):
+            t = t * (FENY[k] / max(t.mean(), 1))
+        kicsi = cv2.resize(np.clip(t, 0, 255).astype(np.uint8), (360, 780), interpolation=cv2.INTER_AREA)
+        cv2.imwrite(os.path.join(cel, f"{k}.webp"), kicsi, [cv2.IMWRITE_WEBP_QUALITY, 82])
+    print("illesztési textúrák kész")
 
 
 def falban_felig(tex):
@@ -163,15 +188,9 @@ def falban_felig(tex):
     yy, xx = np.mgrid[0:Hh, 0:Ww].astype(np.float32)
     S = 0.9 * (1 - 0.35 * np.exp(-(yy - fent(xx / UP) * UP) / (4 * UP))).clip(0.5, 1)
     S *= 1 - 0.3 * np.exp(-(xx - X_ZSEB * UP) / (6 * UP)).clip(0, 1)
-    # tömörfa: a rejtett-kép fa lapja kiegyenesítve (ugyanaz a jelenet, ugyanaz a fa)
     rejt = cv2.resize(cv2.imread(os.path.join(IMG, "tipus-rejtett.webp")), None, fx=UP, fy=UP,
                       interpolation=cv2.INTER_LANCZOS4).astype(np.float32)
-    Hr = cv2.getPerspectiveTransform(np.float32(ALAP["rejtett"]) * UP, np.float32([(0, 0), (TW, 0), (TW, TH), (0, TH)]))
-    fa = cv2.warpPerspective(rejt, Hr, (TW, TH), flags=cv2.INTER_AREA, borderMode=cv2.BORDER_REPLICATE)
-    # A rejtett-képen a lap alja kilóg a képből, és lent ott a fogantyú: csak a felső, tiszta részt használjuk,
-    # lefelé tükrözve folytatjuk (függőleges deszkaerezet, a tükrözés nem feltűnő).
-    jo = fa[:int(TH * 0.58)]
-    fa = np.concatenate([jo, jo[::-1], jo])[:TH]
+    fa = fa_textura()
     # a rejtett-kép fogantyúja (sötét pixelei) a lap elülső élétől ugyanakkora távolságra
     rv = cv2.cvtColor(np.clip(rejt, 0, 255).astype(np.uint8), cv2.COLOR_BGR2HSV)[..., 2]
     y0, y1, x0, x1 = 380 * UP, 442 * UP, 222 * UP, 242 * UP

@@ -361,6 +361,14 @@
                     <h3 class="sum-title">Ezt adtad meg</h3>
                     <ul class="summary" id="summary"></ul>
 
+                    <details class="fi" id="fiBox">
+                        <summary class="fi-sum">Nézd meg az ajtót a saját fotódon</summary>
+                        <div class="fi-body">
+                            <p class="fi-nofoto" id="fiNoFoto" hidden>Ehhez a 2. lépésben tölts fel egy fotót a nyílásról. <a href="#lepes-2" id="fiToStep2">Fotó feltöltése</a></p>
+                            <div id="fotoIllesztes" hidden></div>
+                        </div>
+                    </details>
+
                     <div class="form-group" data-field="nev">
                         <label for="nev">Név</label>
                         <input type="text" id="nev" name="nev" class="form-control" autocomplete="name" maxlength="120"
@@ -441,6 +449,7 @@
     </footer>
 
     <script src="kozos.js" defer></script>
+    <script src="fotoillesztes.js" defer></script>
     <script src="tervezo.js" defer></script>
     <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" defer></script>
 </body>

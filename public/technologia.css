@@ -4,6 +4,9 @@
 /* Főoldali szakasz (#technologia) */
 .tech-section { padding: 8rem 5%; background-color: var(--bg-primary); }
 .tech-section .tech { padding: 0; }
+/* 2026-11-25 óta csak a cím és a bevezető marad (videó és faltípusok nélkül): ne maradjon alatta üres sáv */
+.tech-section .section-header { margin-bottom: 0; }
+.tech-section { padding-bottom: 4rem; }
 /* Bevezető szöveg: sorkizárt, 30%-kal nagyobb betű (1rem → 1.3rem), a szélesség is arányosan nő. */
 .tech-section .section-header p { font-size: 1.3rem; max-width: 780px; text-align: justify; hyphens: auto; }
 .tech-h { font-size: clamp(1.6rem, 4.5vw, 2.25rem); margin-bottom: 12px; }

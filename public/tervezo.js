@@ -119,7 +119,7 @@
         byId('tzNow').textContent = String(n);
         byId('tzBarFill').style.width = (n / TOTAL * 100) + '%';
         byId('tzBar').setAttribute('aria-valuenow', String(n));
-        if (n === TOTAL) { fromSummary = false; renderSummary(); ensureTurnstile(); }
+        if (n === TOTAL) { fromSummary = false; renderSummary(); ensureTurnstile(); renderIllesztes(); }
         updateButtons();
         if (opts.push) {
             try { history.pushState({ step: n }, '', '#lepes-' + n); } catch (e) { /* nem baj */ }
@@ -300,6 +300,27 @@
                 li.appendChild(a);
             }
             ul.appendChild(li);
+        });
+    }
+
+    /* ---------- Fotóillesztés: az ajtó az ügyfél saját fotóján (fotoillesztes.js) ---------- */
+    function renderIllesztes() {
+        var box = byId('fiBox');
+        if (!box || !window.FotoIllesztes) { if (box) { box.hidden = true; } return; }
+        var van = photos.length > 0;
+        byId('fiNoFoto').hidden = van;
+        if (!box.open) { return; } // csak kinyitva rajzolunk
+        var v = readForm();
+        window.FotoIllesztes.render(byId('fotoIllesztes'), van ? photos[0] : null, {
+            lap: v.lap, szin: v.szin, vasalatTipus: v.vasalatTipus, tipus: v.tipus, irany: v.irany, fogantyu: !!v.fogantyu
+        });
+    }
+    if (byId('fiBox')) {
+        byId('fiBox').addEventListener('toggle', renderIllesztes);
+        byId('fiToStep2').addEventListener('click', function (e) {
+            e.preventDefault();
+            fromSummary = true;
+            show(2, { push: true });
         });
     }
 

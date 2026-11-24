@@ -127,7 +127,7 @@ Irányított igényfelvétel, **nem** árkalkulátor. Hat lépés: elrendezés �
 
 ### Később
 
-Fizetős Gemini az ajánlat megírásához, ajtó ráillesztése az ügyfél fotójára, „mi nem megy együtt” szabályok, ár vagy „-tól” ár, új logó, Analytics bekötése, heti D1-mentés.
+Fizetős Gemini az ajánlat megírásához, ~~ajtó ráillesztése az ügyfél fotójára~~ (2026-11-25: prototípus a tervező 6. lépésében, lásd `docs/ATADAS.md`; Zoli döntése: előbb ez, a Three.js 3D előnézet csak utána), „mi nem megy együtt” szabályok, ár vagy „-tól” ár, új logó, Analytics bekötése, heti D1-mentés.
 
 ### Ajtólap- és vasalattípusok a főoldalon (`/#ajtolapok`, `/#tipusok`), 2026-11-24
 
@@ -137,6 +137,8 @@ Fizetős Gemini az ajánlat megírásához, ajtó ráillesztése az ügyfél fot
 - A tervező ezt követi: a 3. lépésben nyomatos, fém és antik ajtólap is választható, az 5. lépésben vasalattípus (`vasalat_tipus`: pajta / rejtett / lebego / falban / nem_tudom). A Worker változatlan, a válaszokat és az összegzést általánosan tárolja.
 
 ### Technológia a főoldalon (`/#technologia`), 2026-11-15, VÁZLAT, helyben kipróbálva
+
+- **2026-11-25, Zoli döntése:** a főoldalról kikerült a videó és a „Rögzítés faltípusonként” rész. Csak a „Így működik a dupla sín” cím és a bevezető szöveg maradt. Az alábbiak előzményként maradnak itt; a `technologia.html`, a `technologia.js` és a `public/video/` fájlok a repóban vannak, de a főoldal nem használja őket. Ezzel megszűnt a faltípusos rész élesítési kockázata is.
 
 - A főoldalon a „Miért a Roll’n’Door?” után, menüpont: Technológia. Benne: a 20 mp-es videó és a 6 faltípus. Ricsi itt nézi át és itt válaszol a `TODO`-kra.
 - Videó: telefonon az álló (9:16), szélesebb képernyőn a négyzetes (1:1) változat, hang nélkül, ismétlődve. Csak a közelébe görgetve töltődik le, látható állapotban magától indul, eltűnve megáll; csökkentett mozgásnál lejátszógombokkal jelenik meg. Fájlok: `public/video/dupla-sin-*.mp4` + poszterkép (`.jpg`), a logika a `public/technologia.js`-ben. A feliratok szövege rejtett listaként a felolvasóknak és a keresőknek.
