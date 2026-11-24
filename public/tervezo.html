@@ -185,6 +185,13 @@
                         <label class="opt"><input type="radio" name="irany" value="mindegy"><span class="opt-body"><span class="opt-txt">Mindegy / nem tudom</span></span></label>
                     </fieldset>
 
+                    <div class="form-group" data-field="szabadFal">
+                        <label for="szabadFal">Mennyi szabad fal van a nyílás mellett? <span class="optional">(nem kötelező, cm)</span></label>
+                        <input type="number" id="szabadFal" name="szabadFal" class="form-control" inputmode="numeric"
+                            step="1" min="0" placeholder="pl. 100" aria-describedby="szabadFal-hint">
+                        <span class="form-hint" id="szabadFal-hint">Arra az oldalra, amerre az ajtó tolódik: a nyílás szélétől a legközelebbi akadályig (sarok, szekrény, ablak, konnektor). A tolóajtó nyitva itt áll, ezért nagyjából az ajtó szélességének megfelelő hely kell.</span>
+                    </div>
+
                     <div class="form-group" data-field="foto">
                         <label for="fotok">Fotó a nyílásról</label>
                         <input type="file" id="fotok" class="form-control" accept="image/*" multiple

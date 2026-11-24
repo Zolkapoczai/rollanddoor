@@ -11,7 +11,7 @@
 
     var RADIOS = ['tipus', 'fal', 'irany', 'lap', 'szin', 'vasalatTipus', 'vasalatSzin', 'beszereles'];
     var CHECKS = ['fotoKesobb', 'fogantyu', 'lagyZaras', 'zar', 'megvezeto', 'felelos', 'adatkezeles'];
-    var TEXTS = ['szelesseg', 'magassag', 'lapLeiras', 'szinEgyeb', 'vasalatEgyeb', 'nev', 'email', 'telefon', 'megjegyzes'];
+    var TEXTS = ['szelesseg', 'magassag', 'szabadFal', 'lapLeiras', 'szinEgyeb', 'vasalatEgyeb', 'nev', 'email', 'telefon', 'megjegyzes'];
 
     var form = document.getElementById('tzForm');
     if (!form) { return; }
@@ -255,6 +255,7 @@
         add('Nyílás magassága', v.magassag !== '' ? v.magassag + ' cm' : '', 2);
         add('Fal anyaga', checkedLabel('fal'), 2);
         add('Tolás iránya', checkedLabel('irany'), 2);
+        if (v.szabadFal !== '') { add('Szabad fal a nyílás mellett', v.szabadFal + ' cm', 2); }
         add('Fotó', photos.length ? photos.length + ' db' : (v.fotoKesobb ? 'később küldi' : ''), 2);
         add('Ajtólap', checkedLabel('lap'), 3);
         if (v.lapLeiras.trim()) { add('Elképzelés', v.lapLeiras.trim(), 3); }
@@ -323,12 +324,28 @@
         var v = readForm();
         var o = {
             lap: v.lap, szin: v.szin, vasalatTipus: v.vasalatTipus, tipus: v.tipus, irany: v.irany,
-            fogantyu: !!v.fogantyu, szelesseg: v.szelesseg, magassag: v.magassag
+            vasalatSzin: v.vasalatSzin, vasalatEgyeb: v.vasalatEgyeb, szabadFal: v.szabadFal,
+            fogantyu: !!v.fogantyu, megvezeto: !!v.megvezeto, szelesseg: v.szelesseg, magassag: v.magassag
         };
         d3Modul = d3Modul || import('./elonezet3d.js');
-        d3Modul.then(function (m) { m.render(byId('elonezet3d'), o); }).catch(function () {
+        d3Modul.then(function (m) { m.render(byId('elonezet3d'), o, { beallit: beallit3d }); }).catch(function () {
             byId('elonezet3d').textContent = 'A 3D előnézet most nem tölthető be. Az ajánlatkérést ez nem érinti.';
         });
+    }
+    // A 3D előnézetben választott értéket visszaírja a tervező mezőjébe (így az ajánlatkérésbe is bekerül).
+    function beallit3d(nev, ertek) {
+        var el = form.elements[nev];
+        if (!el) { return; }
+        if (el.length !== undefined && el[0] && el[0].type === 'radio') {
+            var r = form.querySelector('input[name="' + nev + '"][value="' + ertek + '"]');
+            if (!r) { return; }
+            r.checked = true;
+            r.dispatchEvent(new Event('change', { bubbles: true }));
+        } else {
+            el.value = ertek;
+            el.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+        if (S.step === TOTAL) { renderSummary(); renderIllesztes(); }
     }
     if (byId('d3Box')) { byId('d3Box').addEventListener('toggle', render3d); }
 
@@ -389,6 +406,7 @@
             magassag_cm: num(v.magassag),
             fal: v.fal || null,
             irany: v.irany || null,
+            szabad_fal_cm: v.szabadFal !== '' ? num(v.szabadFal) : null,
             foto_db: photos.length,
             foto_kesobb: !!v.fotoKesobb && photos.length === 0,
             ajtolap: v.lap || null,

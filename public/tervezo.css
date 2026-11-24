@@ -694,3 +694,23 @@ footer {
 .d3-canvas { display: block; width: 100%; border-radius: 8px; cursor: grab; }
 .d3-canvas:active { cursor: grabbing; }
 .d3-meret { align-self: center; color: var(--text-secondary, #a0a0a0); font-size: 0.95rem; }
+
+/* 3D előnézet: élő választók, figyelmeztetés, AR-elem */
+.d3-panel { display: grid; gap: 0.7rem; margin-top: 1rem; }
+.d3-sor { display: grid; gap: 0.35rem; }
+.d3-cim { font-size: 0.85rem; font-weight: 600; color: var(--text-secondary, #a0a0a0); text-transform: uppercase; letter-spacing: 0.04em; }
+.d3-chipek { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.d3-chip {
+  min-height: 44px; padding: 0 0.95rem; border-radius: 999px; cursor: pointer;
+  border: 1px solid var(--border-color, rgba(255,255,255,0.18)); background: transparent;
+  color: var(--text-primary, #f5f5f5); font: 500 0.95rem var(--font-primary, sans-serif);
+}
+.d3-chip:hover { border-color: var(--accent, #d4a373); }
+.d3-chip[aria-pressed="true"] { background: var(--accent, #d4a373); border-color: var(--accent, #d4a373); color: #121212; font-weight: 600; }
+.d3-chip:focus-visible { outline: 2px solid var(--accent, #d4a373); outline-offset: 2px; }
+.d3-figy { margin: 0.8rem 0 0; padding: 0.7rem 0.9rem; border-radius: 10px; font-size: 1rem; line-height: 1.45; }
+.d3-figy.jo { background: rgba(46, 125, 79, 0.15); border: 1px solid rgba(46, 125, 79, 0.5); }
+.d3-figy.keves { background: rgba(192, 57, 43, 0.14); border: 1px solid rgba(192, 57, 43, 0.55); }
+.fi-btns [hidden] { display: none; }
+/* a model-viewer csak az AR indításához kell, a lapon nem látszik */
+.d3-ar { position: fixed; left: 0; bottom: 0; width: 2px; height: 2px; opacity: 0; pointer-events: none; }
