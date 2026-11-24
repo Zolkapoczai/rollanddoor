@@ -128,7 +128,7 @@ Irányított igényfelvétel, **nem** árkalkulátor. Hat lépés: elrendezés �
 
 ### Később
 
-Fizetős Gemini az ajánlat megírásához, ~~ajtó ráillesztése az ügyfél fotójára~~ (2026-11-25: prototípus a tervező 6. lépésében, lásd `docs/ATADAS.md`; Zoli döntése: előbb ez, a Three.js 3D előnézet csak utána; 2026-11-25: a 3D előnézet is elkészült prototípusként, lásd `docs/ATADAS.md`), „mi nem megy együtt” szabályok, ár vagy „-tól” ár, új logó, Analytics bekötése, heti D1-mentés.
+Fizetős Gemini az ajánlat megírásához, ~~ajtó ráillesztése az ügyfél fotójára~~ (2026-11-25: prototípus a tervező 6. lépésében, lásd `docs/ATADAS.md`; Zoli döntése: előbb ez, a Three.js 3D előnézet csak utána; 2026-11-25: a 3D előnézet is elkészült prototípusként, lásd `docs/ATADAS.md`; 2026-11-25, Zoli döntése: a 3D-ben a választás a tárgyakon ülő pontokkal és felugró ablakkal történik, nem gombsorral és nem félkör alakú színtárcsával; a méret a 3D-ben csak látszik, módosítani a 2. lépésben lehet; a szoba (fal, padló) a „Továbbiak” menübe került; a fotóillesztés ugyanezt a következő körben kapja meg), „mi nem megy együtt” szabályok, ár vagy „-tól” ár, új logó, Analytics bekötése, heti D1-mentés.
 
 ### Világos téma próbaváltozat (2026-11-25)
 

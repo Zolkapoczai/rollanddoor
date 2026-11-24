@@ -690,7 +690,59 @@ footer {
 .fi-msg:empty { display: none; }
 
 /* 3D előnézet (elonezet3d.js) */
-.d3-wrap { width: 100%; }
+.d3-wrap { width: 100%; position: relative; }
+
+/* 3D előnézet: pontok a tárgyakon és a felugró választó */
+.d3-pontok { position: absolute; inset: 0; pointer-events: none; overflow: hidden; border-radius: 8px; }
+.d3-pont {
+  position: absolute; left: 0; top: 0; pointer-events: auto; cursor: pointer;
+  width: 40px; height: 40px; border-radius: 50%; padding: 0;
+  border: 2px solid #fff; background: rgba(156, 104, 66, 0.92); color: #fff;
+  font: 600 1.35rem/1 var(--font-primary, sans-serif);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
+  display: flex; align-items: center; justify-content: center;
+}
+.d3-pont[hidden] { display: none; }
+.d3-pont:hover, .d3-pont[aria-expanded="true"] { background: var(--accent, #d4a373); color: #121212; }
+.d3-pont:focus-visible { outline: 3px solid var(--accent, #d4a373); outline-offset: 3px; }
+.d3-pont-meret {
+  width: auto; height: 36px; border-radius: 999px; padding: 0 0.85rem;
+  font-size: 0.9rem; font-weight: 600; white-space: nowrap;
+  background: rgba(255, 255, 255, 0.94); color: #2d2520; border-color: rgba(156, 104, 66, 0.6);
+}
+.d3-pont-meret:hover { background: #fff; color: #2d2520; border-color: #9c6842; }
+.d3-pontok:not(.ismert) .d3-pont:not(.d3-pont-meret) { animation: d3-pulzal 2.2s ease-in-out infinite; }
+@keyframes d3-pulzal {
+  0%, 100% { box-shadow: 0 2px 10px rgba(0, 0, 0, 0.35), 0 0 0 0 rgba(212, 163, 115, 0.6); }
+  50% { box-shadow: 0 2px 10px rgba(0, 0, 0, 0.35), 0 0 0 12px rgba(212, 163, 115, 0); }
+}
+@media (prefers-reduced-motion: reduce) { .d3-pontok .d3-pont { animation: none !important; } }
+.d3-pop {
+  position: absolute; z-index: 6; width: min(360px, calc(100% - 16px));
+  display: grid; gap: 0.7rem; padding: 0.9rem 1rem 1rem;
+  background: var(--bg-secondary, #1c1c1c); color: var(--text-primary, #f5f5f5);
+  border: 1px solid var(--border-color, rgba(255,255,255,0.18)); border-radius: 14px;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.45);
+}
+.d3-pop[hidden] { display: none; }
+.d3-pop-fej { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; }
+.d3-pop-cim { font-weight: 600; font-size: 1.05rem; }
+.d3-pop-x {
+  width: 44px; height: 44px; margin: -0.5rem -0.6rem -0.5rem 0; border: 0; background: transparent; cursor: pointer;
+  color: var(--text-secondary, #a0a0a0); font-size: 1.6rem; line-height: 1; border-radius: 50%;
+}
+.d3-pop-x:hover { color: var(--text-primary, #f5f5f5); }
+.d3-pop-x:focus-visible { outline: 2px solid var(--accent, #d4a373); }
+@media (max-width: 699px) {
+  /* telefonon alulról felcsúszó panel, a ragadós gombsáv fölött */
+  .d3-pop {
+    position: fixed; left: 0; right: 0; bottom: 0; top: auto; width: auto; z-index: 60;
+    max-height: 55vh; overflow-y: auto; border-radius: 16px 16px 0 0;
+    padding-bottom: calc(1rem + env(safe-area-inset-bottom));
+  }
+}
+.d3-tobb { margin-top: 0.4rem; }
+.d3-tobb[hidden] { display: none; }
 .d3-canvas { display: block; width: 100%; border-radius: 8px; cursor: grab; }
 .d3-canvas:active { cursor: grabbing; }
 .d3-meret { align-self: center; color: var(--text-secondary, #a0a0a0); font-size: 0.95rem; }
