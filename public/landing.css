@@ -982,6 +982,10 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
   position: absolute; top: 0.6rem; right: 0.8rem; z-index: 1; width: 2.2rem; height: 2.2rem;
   border-radius: 50%; border: 0; background: rgba(0, 0, 0, 0.6); color: #fff; font-size: 1.5rem; cursor: pointer;
 }
+/* Ajtólapoknál: a teljes kép látszik, mögötte a saját elmosott változata */
+.type-dialog-img.is-fit { position: relative; overflow: hidden; background: #141414; }
+.td-blur { position: absolute; inset: -24px; background-size: cover; background-position: center; filter: blur(20px) brightness(0.55); }
+.td-fit { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; }
 /* Vasalatoknál diavetítés: 4 ajtólap lassú áttűnéssel + működési animáció */
 .type-dialog-img.is-slides { position: relative; overflow: hidden; background: #141414; min-height: min(575px, 80vh); }
 .td-slide { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center top; opacity: 0; transition: opacity 1.6s ease-in-out; }
@@ -1004,4 +1008,5 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
   .type-dialog-img { min-height: 220px; }
   .type-dialog-img.is-slides { min-height: 0; aspect-ratio: 600 / 700; }
   .td-dots { right: auto; left: 0.5rem; } /* jobbra a bezárógomb van */
+  .type-dialog-img.is-fit { min-height: 0; aspect-ratio: 1 / 1; } /* telefonon is elég nagy legyen a kép */
 }
