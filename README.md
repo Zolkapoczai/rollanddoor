@@ -13,7 +13,6 @@ Egy Cloudflare Worker szolgálja ki a statikus oldalt (`public/`) és az API-t (
 | Backend telepítése, Resend, Turnstile, D1/R2 | [`worker/README.md`](worker/README.md) |
 | Főoldal (landing) | `public/index.html`, `landing.css`, `landing.js` |
 | Ajtótervező (irányított igényfelvétel) | `public/tervezo.*`, fotóillesztés: `public/fotoillesztes.js`, 3D előnézet: `public/elonezet3d.js` + `public/vendor/three/` (three.js, MIT) és `public/vendor/model-viewer/` (AR, Apache-2.0) |
-| Technológia (dupla sín animáció, videó): a főoldalon nem szerepel, tartalékban | `public/technologia.*`, videó: `public/video/` |
 | Ügyfél / Ricsi megrendelés-oldala, leiratkozás | `public/r.*`, `public/m.*`, `public/le.*` |
 | Ricsi dashboardja | `public/dashboard.*`, `worker/src/dashboard.ts` |
 | API, levelek, cron | `worker/src/` |

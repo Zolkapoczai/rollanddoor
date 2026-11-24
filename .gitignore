@@ -1,8 +1,8 @@
 node_modules/
 .wrangler/
 .dev.vars
-forras-kepek/*
-!forras-kepek/ajto_kepek/
+# Nyers forrásképek: a fájlnevekben ügyfélnevek vannak, a repó nyilvános – soha nem kerülhetnek fel
+forras-kepek/
 *.zip
 
 # Kulcs-exportok (API-kulcsot tartalmazhatnak): soha nem kerülhetnek a repóba
@@ -11,5 +11,3 @@ forras-kepek/*
 *.key
 *.pem
 
-# Videófelvétel kimenete (tools/video-felvetel.mjs)
-tools/kimenet/

@@ -1,4 +1,4 @@
-# A vasalattípus-ablakok 5. diája: technológiai animáció (SVG + CSS), a /technologia dupla sínes rajzának stílusában.
+# A vasalattípus-ablakok 5. diája: technológiai animáció (SVG + CSS), a korábbi (azóta törölt) dupla sínes animáció stílusában.
 # Menete: közeli metszet épül fel → kizoomol a teljes elölnézetre (a metszet kis ablakba húzódik) → az ajtó kinyílik és visszacsúszik.
 # Futtatás:  python tools/vasalat-animaciok.py   →   public/img/vasalat/<vasalat>-animacio.svg
 # Szemléltető rajzok, nem méretarányosak; konkrét méretet, terhelést nem állítanak.

@@ -17,8 +17,8 @@ Utolsó frissítés: 2026-11-25
 | Ajtólap- és vasalattípus-kártyák, részletes felugró ablakkal | kész; a vasalatoknál diavetítés (lent) |
 | Ajtótervező (6 lépés, fotófeltöltés) → `POST /api/igeny` | kész |
 | Fotóillesztés a tervező 6. lépésében (az ajtó az ügyfél saját fotóján) | **prototípus**, élesben (workers.dev), valódi telefonon még nem kipróbálva |
-| 3D előnézet a tervező 6. lépésében (Three.js) | **prototípus**; élesben a 2. változat (Zoli telefonon kipróbálta, működik). A 3. változat (élő váltás, szoba, méretek, szabad fal, bypass, kép mentése, AR, fotóminőség sugárkövetéssel) helyben kipróbálva, nincs élesítve |
-| Technológia (dupla sín) a főoldalon | **kikerült** 2026-11-25-én (Zoli): sem a szakasz, sem a „Technológia” menüpont nincs a főoldalon. A `technologia.html`, a `technologia.css`/`.js` és a `public/video/` a repóban maradt, de semmi nem hivatkozik rájuk. A dupla sín továbbra is szerepel a hero-sorban és az első kártyán. |
+| 3D előnézet a tervező 6. lépésében (Three.js) | **prototípus**, élesben a 3. változat (élő váltás, szoba, méretek, szabad fal, bypass, kép mentése, AR, fotóminőség sugárkövetéssel). Asztali gépen kipróbálva; az AR és a sugárkövetés valódi telefonon még nem |
+| Technológia (dupla sín) | **törölve** 2026-11-25-én (Zoli): a főoldalon nincs, és a `technologia.html/.css/.js`, a `public/video/` és a `tools/video-felvetel.mjs` is kikerült a repóból. Visszaállítható a `7b19bc8` commitból (`git checkout 7b19bc8 -- public/technologia.html …`). A dupla sín a hero-sorban és az első kártyán szerepel. |
 | „Így készül az ajtód” a főoldalon | 2026-11-25 óta idővonal ikonokkal (nem kártyalista): 1180 px felett 7 oszlop összekötő vonallal, 700–1179 px között 4 + 3, telefonon függőleges. HTML: `index.html` `#rendeles-menete`, stílus: `landing.css` (`.steps`, `.step-ik`). |
 | Világos, otthonosabb főoldal – **PRÓBAVÁLTOZAT** | csak a `/?tema=vilagos` címmel jelenik meg, az alap (sötét) oldal változatlan. Krém/homok háttér, sötétebb karamell kiemelőszín (`#9c6842`, világos alapon is olvasható), lakásfotós hero (`ref-01`, tükrözve), lekerekített kártyák és gombok, lágy árnyékok, meleg sötétbarna lábléc, világos alapra színezett logó (`img/logo-vilagos.webp`). Fájl: `public/landing-vilagos.css`, kapcsoló: egy sor az `index.html` fejében. A többi oldal (tervező, blog) nem kapja meg. **Ricsi döntésére vár**; ha jóváhagyja, a változókat a `landing.css`-be kell átvezetni, és a kapcsolót törölni. |
 | Megrendelés 7 állomása, automatikus levelek, cron | backend kész, élesben végigpróbálva |
@@ -59,6 +59,16 @@ Utolsó frissítés: 2026-11-25
 - Kód: `public/elonezet3d.js`; three.js 0.187.0 + RoomEnvironment + OrbitControls + GLTFExporter + RectAreaLightUniformsLib + three-gpu-pathtracer 0.0.28 + three-mesh-bvh 0.10.0 egy fájlban (`public/vendor/three/three.bundle.min.js`, kb. 372 KB tömörítve); `@google/model-viewer` 4.4.0 (Apache-2.0, `public/vendor/model-viewer/`, kb. 290 KB tömörítve, csak az AR-gombra töltődik be). Részletek a két `README.txt`-ben.
 - Ha a böngésző nem tud WebGL-t, a doboz ezt kiírja, az ajánlatkérés működik tovább.
 
+## Folytatás új sessionben – nyitott teendők (2026-11-25)
+
+Minden munka a `main` ágban van és élesben fut a workers.dev próbacímen; nincs félbehagyott ág vagy commitolatlan módosítás.
+
+1. **Ricsi döntései:** a világos téma (`/?tema=vilagos`) legyen-e az alap (ha igen: a változókat a `landing.css`-be átvezetni, a kapcsolót törölni, a tervezőt és a blogot is átszínezni); mennyi szabad fal kell a nyitott ajtónak (most lapszélesség + 3–5 cm); a rejtett és a lebegő vasalat rajza helyes-e; a `TODO`-k a típusablakokban, a GYIK-ban és a galérianevekben.
+2. **Telefonos próba:** az AR („Nézd meg a szobádban”) és a 3D fotóminőség valódi telefonon.
+3. **GitHub-deploy:** a `CLOUDFLARE_API_TOKEN` és a `CLOUDFLARE_ACCOUNT_ID` secret beállítása (addig kézi deploy, lásd lent).
+4. **Domainváltás** a lenti „Élesítés előtt kötelező” lista szerint.
+5. Ismert apróság: a `public/script.js` (csak az adatkezelési és az impresszum oldal tölti be) még tartalmaz egy régi, használaton kívüli galérialistát a `galeria-*` képekkel.
+
 ## Telepítés
 
 - A `main` ágra pusholt commitokat a GitHub Actions élesítené, de **a repóból hiányzik a `CLOUDFLARE_API_TOKEN` és a `CLOUDFLARE_ACCOUNT_ID` secret**, ezért ezek a futások elbuknak. Amíg ez nincs beállítva, kézzel kell telepíteni a `main` ágról: `node node_modules/wrangler/bin/wrangler.js deploy`. A secret beállítása: `worker/README.md`, 10. pont.
@@ -77,4 +87,4 @@ Utolsó frissítés: 2026-11-25
 - **Windows, `&` a mappanévben:** az `npm run` és az `npx` nem működik, közvetlenül hívd a `node node_modules/...` formát.
 - **Titkok:** `.dev.vars` és az API-kulcs-exportok (`*api-keys*.csv`) gitignore-ban vannak. Soha ne commitold őket.
 - **Fotók:** a forrásfájlnevekben ügyfélnevek vannak. Feldolgozáskor töröld az EXIF/GPS adatokat, és adj névmentes fájlnevet.
-- A `forras-kepek/` nagy része nincs a gitben, csak helyben van meg.
+- A `forras-kepek/` (nyers fotók, logók, a mintaoldal és a régi oldal) **teljesen gitignore-ban van**: a fájlnevekben ügyfélnevek vannak, a repó nyilvános. Csak Zoli gépén van meg; a feldolgozott, névtelenített képek a `public/img/` alatt vannak.
