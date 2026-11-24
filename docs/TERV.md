@@ -129,6 +129,10 @@ Irányított igényfelvétel, **nem** árkalkulátor. Hat lépés: elrendezés �
 
 Fizetős Gemini az ajánlat megírásához, ~~ajtó ráillesztése az ügyfél fotójára~~ (2026-11-25: prototípus a tervező 6. lépésében, lásd `docs/ATADAS.md`; Zoli döntése: előbb ez, a Three.js 3D előnézet csak utána; 2026-11-25: a 3D előnézet is elkészült prototípusként, lásd `docs/ATADAS.md`), „mi nem megy együtt” szabályok, ár vagy „-tól” ár, új logó, Analytics bekötése, heti D1-mentés.
 
+### Világos téma próbaváltozat (2026-11-25)
+
+- Zoli kérésére (sok női látogató várható) egy világosabb, otthonosabb főoldal-változat készült, amely csak a `/?tema=vilagos` címen látszik. A landing a mintaoldal másolata (Ricsi döntése, 2026-11-14), ezért az alap kinézet csak **Ricsi jóváhagyásával** változhat. Szándékosan nincs benne rózsaszín, pasztell, kézírásos betű vagy virágminta. Részletek: `docs/ATADAS.md`.
+
 ### Ajtólap- és vasalattípusok a főoldalon (`/#ajtolapok`, `/#tipusok`), 2026-11-24
 
 - Két egymást követő kártyasor a „Miért a Roll’n’Door?” és a „Referenciáink” között. Az 1. lépés az ajtólap (tömörfa, nyomatos, fém, antik), a 2. lépés a vasalat (pajta, rejtett, lebegő, falban futó). Alatta egy gomb az Ajtótervezőre.

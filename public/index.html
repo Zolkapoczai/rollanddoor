@@ -26,6 +26,18 @@
     <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Alkalmas-e a nyílásom tolóajtóra?","acceptedAnswer":{"@type":"Answer","text":"Küldd el a nyílás méretét és 1-2 fotót, megmondjuk. A legtöbb fal megoldható. Az ajtólap legfeljebb 80 kg lehet."}},{"@type":"Question","name":"Mennyibe kerül?","acceptedAnswer":{"@type":"Answer","text":"Minden ajtó egyedi, ezért egyedi ajánlatot adunk. Az ajánlat ingyenes."}},{"@type":"Question","name":"Kérhetek egyedi színt?","acceptedAnswer":{"@type":"Answer","text":"Igen. Bármilyen RAL vagy NCS színt kérhetsz, vagy megadhatod egy gyártó konkrét termékét."}}]}</script>
     <!-- Custom CSS -->
     <link rel="stylesheet" href="landing.css">
+    <!-- PRÓBAVÁLTOZAT: világos téma, csak a ?tema=vilagos címmel (landing-vilagos.css). Ricsi jóváhagyásáig nem alap. -->
+    <link rel="stylesheet" href="landing-vilagos.css">
+    <script>
+        if (/[?&]tema=vilagos(&|$)/.test(location.search)) {
+            document.documentElement.setAttribute('data-tema', 'vilagos');
+            // világos alapon a logó fehér részei (aposztrófok, szlogen) sötétbarnák
+            document.addEventListener('DOMContentLoaded', function () {
+                var l = document.querySelector('.navbar .logo-img');
+                if (l) { l.src = 'img/logo-vilagos.webp'; }
+            });
+        }
+    </script>
 </head>
 
 <body>

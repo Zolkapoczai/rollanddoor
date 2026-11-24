@@ -1,0 +1,81 @@
+/* PRÓBAVÁLTOZAT (2026-11-25): világos, melegebb, otthonosabb főoldal. Csak a ?tema=vilagos címmel kapcsol be
+   (az index.html fejében egy sor beállítja a <html data-tema="vilagos"> jelzőt). Az alap sötét oldal változatlan.
+   Ricsi jóváhagyása után ez lehet az alap; addig minden szabály a [data-tema="vilagos"] alatt van. */
+
+:root[data-tema="vilagos"] {
+  --bg-primary: #f8f3ec;          /* meleg törtfehér */
+  --bg-secondary: #f1e8dd;        /* homok */
+  --bg-glass: rgba(248, 243, 236, 0.82);
+  --bg-glass-hover: rgba(241, 232, 221, 0.95);
+  --text-primary: #2d2520;        /* meleg sötétbarna, nem fekete */
+  --text-secondary: #6b5d52;
+  --accent: #9c6842;              /* sötétebb karamell: világos alapon is olvasható (kb. 4,6:1) */
+  --accent-hover: #b47e56;
+  --border-color: rgba(70, 45, 25, 0.12);
+  --vil-arnyek: 0 10px 30px rgba(90, 60, 30, 0.10);
+  --vil-sarok: 18px;
+}
+
+/* Fejléc: világos üveg, a gomb szövege a világos alapszín */
+[data-tema="vilagos"] .navbar { border-bottom-color: var(--border-color); }
+[data-tema="vilagos"] .nav-links a.btn-primary { color: var(--bg-primary) !important; }
+
+/* Gombok: lágyabb, lekerekített */
+[data-tema="vilagos"] .btn-primary { border-radius: 12px; color: var(--bg-primary); }
+[data-tema="vilagos"] .btn-primary:hover { color: #fff; box-shadow: 0 6px 18px rgba(156, 104, 66, 0.28); }
+
+/* Hero: lakásfotó teljes fényben, bal oldalt krémszínű átmenet a szöveg alatt, sötét betűk */
+[data-tema="vilagos"] .hero-bg {
+  background-image: url('img/referencia/ref-01-nappali-fa-ajto.webp') !important;
+  filter: none;
+  transform: scaleX(-1.02) scaleY(1.02);
+  animation: vil-zoom 18s infinite alternate ease-in-out;
+}
+/* tükrözve: az ajtó jobbra kerül (jól látszik), a szöveg alá a fotel */
+@keyframes vil-zoom { from { transform: scaleX(-1.02) scaleY(1.02); } to { transform: scaleX(-1.07) scaleY(1.07); } }
+[data-tema="vilagos"] .hero::after {
+  content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background: linear-gradient(90deg, rgba(248, 243, 236, 0.95) 0%, rgba(248, 243, 236, 0.86) 38%, rgba(248, 243, 236, 0.2) 70%, rgba(248, 243, 236, 0) 100%);
+}
+[data-tema="vilagos"] .hero h1 { font-weight: 600; letter-spacing: -0.5px; }
+[data-tema="vilagos"] .hero h2 { color: var(--text-secondary) !important; }
+[data-tema="vilagos"] .hero-subtitle { color: var(--accent); }
+@media (max-width: 768px) {
+  /* telefonon a szöveg az egész képet takarja: egyenletes, áttetsző krém réteg */
+  [data-tema="vilagos"] .hero::after { background: rgba(248, 243, 236, 0.82); }
+  [data-tema="vilagos"] .hero-bg { background-position: 25% center; }
+}
+@media (prefers-reduced-motion: reduce) { [data-tema="vilagos"] .hero-bg { animation: none; } }
+
+/* Kártyák: nagyobb lekerekítés, lágy árnyék, több levegő */
+[data-tema="vilagos"] .card {
+  border-radius: var(--vil-sarok);
+  background: #fffdfa;
+  box-shadow: var(--vil-arnyek);
+}
+[data-tema="vilagos"] .card:hover { box-shadow: 0 16px 40px rgba(90, 60, 30, 0.16); }
+[data-tema="vilagos"] .card-img { background-color: #e9e0d4; }
+[data-tema="vilagos"] .section-header h2 { font-weight: 600; }
+
+/* Idővonal, GYIK, űrlap: világos kártyák */
+[data-tema="vilagos"] .step-ik { background: #fffdfa; }
+[data-tema="vilagos"] .faq-list details,
+[data-tema="vilagos"] .contact-card,
+[data-tema="vilagos"] .quote-form,
+[data-tema="vilagos"] .form-control {
+  border-radius: 14px;
+}
+[data-tema="vilagos"] .form-control,
+[data-tema="vilagos"] .form-select { background-color: #fffdfa; color: var(--text-primary); border-color: rgba(70, 45, 25, 0.2); border-radius: 14px; }
+[data-tema="vilagos"] .form-select option { background-color: #fffdfa; }
+
+/* Típusablak: világos háttér, a kép mögött marad a sötét keret (fotók, animáció) */
+[data-tema="vilagos"] .type-dialog { border-radius: var(--vil-sarok); box-shadow: 0 30px 80px rgba(40, 25, 10, 0.35); }
+
+/* Lábléc: a sötét csak kiemelésként – meleg sötétbarna */
+[data-tema="vilagos"] footer { background-color: #2d2520; border-top-color: transparent; }
+[data-tema="vilagos"] footer, [data-tema="vilagos"] footer p, [data-tema="vilagos"] footer a { color: #e9dfd3; }
+[data-tema="vilagos"] footer a:hover { color: #e0b48a; }
+[data-tema="vilagos"] .social-links a { background-color: rgba(255, 255, 255, 0.1); color: #e9dfd3; }
+[data-tema="vilagos"] .social-links a:hover { background-color: #e0b48a; color: #2d2520; }
+[data-tema="vilagos"] footer .copyright { color: #b9ab9c; }
