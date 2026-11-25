@@ -14,7 +14,7 @@ Utolsó frissítés: 2026-11-25
 | Rész | Állapot |
 |---|---|
 | Főoldal (mintaoldal-másolat, galéria 80 valódi fotóval, GYIK, ajánlatkérő) | kész, workers.dev-en fut |
-| Ajtólap- és vasalattípus-kártyák, részletes felugró ablakkal | kész; a vasalatoknál diavetítés (lent). Címek: „Ajtólap típusok”, „Vasalat típusok” (2026-11-25) |
+| Ajtólap- és vasalattípus-kártyák, részletes felugró ablakkal | kész; a vasalatoknál diavetítés (lent). Címek: „Ajtólap típusok”, „Vasalat típusok” (2026-11-25). Az ajtólapkártyák 2026-11-25 óta álló, 4:5-ös képet kapnak (telefonon négyzetes), saját kivágással: `img/ajtolap-kartya-{tomorfa,nyomatos,fem,antik}.webp` (800×1000, EXIF nélkül; forrás: `ref-72`, `ref-82`, `ajtolap-fem` (Ricsi fotója), `galeria-06`). A kártya `<button>`, ezért flex oszloppal kényszerítjük a képet felülre és a „Részletek →”-t alulra (korábban a rövidebb szövegű kártyákon lecsúszott a kép). |
 | Ajtótervező (6 lépés, fotófeltöltés) → `POST /api/igeny` | kész; a 6. lépés címe 2026-11-25 óta „Ezt adtad meg” (a „Hova küldjük az ajánlatot?” cím kikerült, Zoli kérésére) |
 | Fotóillesztés a tervező 6. lépésében (az ajtó az ügyfél saját fotóján) | **prototípus**, élesben (workers.dev), valódi telefonon még nem kipróbálva |
 | 3D előnézet a tervező 6. lépésében (Three.js) | **prototípus**, élesben a 3. változat (élő váltás, szoba, méretek, szabad fal, bypass, kép mentése, AR; a fotóminőség/sugárkövetés 2026-11-25-én kikerült). Asztali gépen kipróbálva; az AR valódi telefonon még nem |
@@ -72,7 +72,7 @@ Minden munka a `main` ágban van és élesben fut a workers.dev próbacímen (ut
    A fotón is ki kell próbálni: a pontok és a sarokpöttyök egymás mellett telefonon, keskeny nyílásnál.
 3. **GitHub-deploy:** a `CLOUDFLARE_API_TOKEN` és a `CLOUDFLARE_ACCOUNT_ID` secret beállítása (addig kézi deploy, lásd lent).
 4. **Domainváltás** a lenti „Élesítés előtt kötelező” lista szerint.
-5. Ismert apróság: a `public/script.js` (csak az adatkezelési és az impresszum oldal tölti be) még tartalmaz egy régi, használaton kívüli galérialistát a `galeria-*` képekkel.
+5. ~~A `public/script.js` régi galérialistája~~: 2026-11-25-én kitakarítva; a fájlban (csak az adatkezelési és az impresszum oldal tölti be) már csak a menükód van, a régi űrlap- és galériakód kikerült.
 
 ## Telepítés
 

@@ -997,6 +997,15 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 .type-card .card-img-wrapper, .type-card .card-img, .type-card .card-content { display: block; }
 .type-card .card-content h3 { font-size: 1.3rem; }
 .type-more { display: inline-block; margin-top: 1rem; color: var(--accent); font-weight: 600; font-size: 0.9rem; }
+/* A kártya <button>: a gomb alapból függőlegesen középre teszi a tartalmát, ezért a rövidebb szövegű kártyán
+   a kép lejjebb csúszott. Oszlopos flex: a kép mindig felül, a „Részletek →” mindig a kártya alján. */
+.type-card { display: flex; flex-direction: column; justify-content: flex-start; height: 100%; }
+.type-card .card-content { flex: 1; display: flex; flex-direction: column; }
+.type-card .type-more { margin-top: auto; padding-top: 1rem; align-self: flex-start; }
+/* Ajtólapok: álló (4:5) kép, mert az ajtó álló; a képek erre a kivágásra készültek (img/ajtolap-kartya-*.webp) */
+.slabs-grid .card-img { height: auto; aspect-ratio: 4 / 5; background-position: center top; }
+/* telefonon egy oszlop: ott a 4:5 túl magas lenne, négyzetes (felül a sín, alatta az ajtó) */
+@media (max-width: 600px) { .slabs-grid .card-img { aspect-ratio: 1 / 1; } }
 .type-dialog {
   position: fixed; inset: 0; margin: auto; height: fit-content;
   width: min(1125px, 94vw); max-height: 94vh; /* +25% (Zoli, 2026-11-25) */ padding: 0; overflow: auto;
