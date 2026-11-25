@@ -189,35 +189,48 @@ function lapTest(w, h, elM, lapM) {
 }
 
 // Felirat a 3D térben (mindig a néző felé fordul)
+// A felirat mérete a képernyőn állandó (FELIRAT_PX magas), akárhonnan nézzük: sizeAttenuation nélkül,
+// a méretezést a feliratokMeretez() végzi a vászon magassága szerint. A vászon pontosan a címke méretű.
+const FELIRAT_PX = 26;
 function felirat(szoveg, szin = '#2d2520') {
-    const c = document.createElement('canvas'); c.width = 512; c.height = 128;
+    const H = 128, betu = '600 76px Outfit, Inter, sans-serif';
+    const m = document.createElement('canvas').getContext('2d'); m.font = betu;
+    const c = document.createElement('canvas');
+    c.width = Math.ceil(m.measureText(szoveg).width + 72); c.height = H;
     const x = c.getContext('2d');
-    x.font = '600 56px Outfit, Inter, sans-serif';
-    const w = Math.min(500, x.measureText(szoveg).width + 48);
-    x.fillStyle = 'rgba(255,255,255,0.92)';
-    x.beginPath(); x.roundRect((512 - w) / 2, 22, w, 84, 42); x.fill();
-    x.fillStyle = szin; x.textAlign = 'center'; x.textBaseline = 'middle'; x.fillText(szoveg, 256, 66);
-    const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace;
-    const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: t, depthTest: false, transparent: true }));
-    s.scale.set(0.56, 0.14, 1); s.renderOrder = 10;
+    x.fillStyle = 'rgba(255,255,255,0.95)';
+    x.beginPath(); x.roundRect(2, 2, c.width - 4, H - 4, (H - 4) / 2); x.fill();
+    x.lineWidth = 4; x.strokeStyle = szin; x.globalAlpha = 0.55; x.stroke(); x.globalAlpha = 1;
+    x.font = betu; x.fillStyle = szin; x.textAlign = 'center'; x.textBaseline = 'middle';
+    x.fillText(szoveg, c.width / 2, H / 2 + 4);
+    const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 4;
+    const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: t, depthTest: false, transparent: true, sizeAttenuation: false }));
+    s.userData.arany = c.width / H; s.renderOrder = 10;
     return s;
+}
+function feliratokMeretez() {
+    if (!st || !st.renderer) return;
+    const ch = st.renderer.domElement.clientHeight || 400;
+    const y = FELIRAT_PX / ch * 2 * Math.tan(THREE.MathUtils.degToRad(st.camera.fov / 2));
+    st.overlay.traverse((o) => { if (o.isSprite && o.userData.arany) o.scale.set(y * o.userData.arany, y, 1); });
 }
 // Méretvonal két pont között, végein kis keresztvonallal és felirattal
 function meretVonal(a, b, szoveg, szin) {
     const g = new THREE.Group();
     const m = new THREE.MeshBasicMaterial({ color: szin, depthTest: false });
     const d = new THREE.Vector3().subVectors(b, a), hossz = d.length();
-    const vonal = new THREE.Mesh(new THREE.BoxGeometry(hossz, 0.008, 0.008), m);
+    const vonal = new THREE.Mesh(new THREE.BoxGeometry(hossz, 0.012, 0.012), m);
     vonal.position.copy(a).addScaledVector(d, 0.5);
     vonal.quaternion.setFromUnitVectors(new THREE.Vector3(1, 0, 0), d.clone().normalize());
     vonal.renderOrder = 9; g.add(vonal);
     [a, b].forEach((p) => {
-        const v = new THREE.Mesh(new THREE.BoxGeometry(0.008, 0.008, 0.008), m);
-        v.scale.set(Math.abs(d.y) > Math.abs(d.x) ? 8 : 1, Math.abs(d.y) > Math.abs(d.x) ? 1 : 8, 1);
+        const v = new THREE.Mesh(new THREE.BoxGeometry(0.012, 0.012, 0.012), m);
+        v.scale.set(Math.abs(d.y) > Math.abs(d.x) ? 7 : 1, Math.abs(d.y) > Math.abs(d.x) ? 1 : 7, 1);
         v.position.copy(p); v.renderOrder = 9; g.add(v);
     });
-    const f = felirat(szoveg, szin === 0xc0392b ? '#c0392b' : '#2d2520');
-    f.position.copy(a).addScaledVector(d, 0.5).add(new THREE.Vector3(0, Math.abs(d.y) > Math.abs(d.x) ? 0 : 0.09, 0));
+    // a felirat a vonal közepén ül (a vonal mögötte fut át), a vonal színével
+    const f = felirat(szoveg, '#' + new THREE.Color(szin).getHexString());
+    f.position.copy(a).addScaledVector(d, 0.5);
     g.add(f);
     return g;
 }
@@ -520,6 +533,7 @@ function epit(nezetAlap) {
         st.jel = epitJelenet(o, tex, st.szoba, st.meretek);
         st.scene.add(st.jel.g);
         st.overlay.add(st.jel.ov);
+        feliratokMeretez();
         st.ptKell = true;
         st.nyit = 0; st.cel = 0;
         st.gomb.textContent = 'Nyisd ki';
@@ -649,7 +663,14 @@ function init(boxEl) {
         const dnKam = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
         pt.renderToCanvasCallback = (target, r, quad) => {
             const ac = r.autoClear; r.autoClear = false;
-            if (pt.samples < 150 && quad.material.opacity >= 1) { dn.map = target.texture; r.render(dnJel, dnKam); }
+            // a zajszűrő végig dolgozik, egyre enyhébben: korábban 150 mintánál kikapcsolt, és gyenge
+            // grafikus kártyán (néhány minta/s) percekig a nyers, szemcsés („pixeles”) kép látszott
+            if (quad.material.opacity >= 1) {
+                const n = pt.samples;
+                dn.sigma = n < 150 ? 3.5 : Math.max(1.5, 3.5 - (n - 150) / 1350 * 2);
+                dn.threshold = n < 150 ? 0.04 : Math.max(0.015, 0.04 - (n - 150) / 1350 * 0.025);
+                dn.map = target.texture; r.render(dnJel, dnKam);
+            }
             else quad.render(r);
             r.autoClear = ac; raRajzol();
         };
@@ -812,6 +833,7 @@ function meretez() {
     st.renderer.setSize(w, h, true);
     st.camera.aspect = w / h;
     st.camera.updateProjectionMatrix();
+    feliratokMeretez();
 }
 
 function alapNezet() {
