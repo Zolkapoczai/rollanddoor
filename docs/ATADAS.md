@@ -14,8 +14,8 @@ Utolsó frissítés: 2026-11-25
 | Rész | Állapot |
 |---|---|
 | Főoldal (mintaoldal-másolat, galéria 80 valódi fotóval, GYIK, ajánlatkérő) | kész, workers.dev-en fut |
-| Ajtólap- és vasalattípus-kártyák, részletes felugró ablakkal | kész; a vasalatoknál diavetítés (lent) |
-| Ajtótervező (6 lépés, fotófeltöltés) → `POST /api/igeny` | kész |
+| Ajtólap- és vasalattípus-kártyák, részletes felugró ablakkal | kész; a vasalatoknál diavetítés (lent). Címek: „Ajtólap típusok”, „Vasalat típusok” (2026-11-25) |
+| Ajtótervező (6 lépés, fotófeltöltés) → `POST /api/igeny` | kész; a 6. lépés címe 2026-11-25 óta „Ezt adtad meg” (a „Hova küldjük az ajánlatot?” cím kikerült, Zoli kérésére) |
 | Fotóillesztés a tervező 6. lépésében (az ajtó az ügyfél saját fotóján) | **prototípus**, élesben (workers.dev), valódi telefonon még nem kipróbálva |
 | 3D előnézet a tervező 6. lépésében (Three.js) | **prototípus**, élesben a 3. változat (élő váltás, szoba, méretek, szabad fal, bypass, kép mentése, AR; a fotóminőség/sugárkövetés 2026-11-25-én kikerült). Asztali gépen kipróbálva; az AR valódi telefonon még nem |
 | Technológia (dupla sín) | **törölve** 2026-11-25-én (Zoli): a főoldalon nincs, és a `technologia.html/.css/.js`, a `public/video/` és a `tools/video-felvetel.mjs` is kikerült a repóból. Visszaállítható a `7b19bc8` commitból (`git checkout 7b19bc8 -- public/technologia.html …`). A dupla sín a hero-sorban és az első kártyán szerepel. |
