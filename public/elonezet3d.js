@@ -589,7 +589,9 @@ function init(boxEl) {
     renderer.domElement.className = 'd3-canvas';
     renderer.domElement.setAttribute('role', 'img');
     renderer.domElement.setAttribute('aria-label', 'Az ajtó 3D előnézete a választásaid szerint');
-    wrap.append(renderer.domElement, reteg);
+    // teljes képernyő gomb a jelenet jobb felső sarkában
+    const teljesGomb = document.createElement('button'); teljesGomb.type = 'button'; teljesGomb.className = 'd3-teljes';
+    wrap.append(renderer.domElement, reteg, teljesGomb);
 
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(0xd8d3cb);
@@ -630,6 +632,22 @@ function init(boxEl) {
     });
     ment.addEventListener('click', kepMentes);
     arGomb.addEventListener('click', ar);
+    teljesFelirat(teljesGomb, false);
+    teljesGomb.addEventListener('click', () => (st.teljes ? teljesKi() : teljesBe()));
+    // a böngésző saját teljes képernyőjéből Esc-kel kilépve a mi állapotunk is álljon vissza
+    // (natívnak csak akkor számít, ha a böngésző ténylegesen belépett: van, ahol a kérésre nem jön válasz)
+    const fsValtozas = () => {
+        if (!st) return;
+        const elem = document.fullscreenElement || document.webkitFullscreenElement;
+        if (elem === st.wrap) st.fsNativ = true;
+        else if (st.teljes && st.fsNativ) teljesKi();
+    };
+    document.addEventListener('fullscreenchange', fsValtozas);
+    document.addEventListener('webkitfullscreenchange', fsValtozas);
+    // a helyettesítő módban (iPhone) az Esc-et mi kezeljük; a felugró választó Esc-je ezt nem éri el (stopPropagation)
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && st && st.teljes && !(document.fullscreenElement || document.webkitFullscreenElement)) teljesKi();
+    });
     tobbGomb.addEventListener('click', () => {
         tobb.hidden = !tobb.hidden;
         tobbGomb.setAttribute('aria-expanded', String(!tobb.hidden));
@@ -659,9 +677,11 @@ function init(boxEl) {
     let elozoSzel = 0;
     if (window.ResizeObserver) {
         new ResizeObserver(() => {
-            const w = wrap.clientWidth;
-            if (!w || w === elozoSzel) return;
-            elozoSzel = w; meretez(); st.kell = true; st.pontKell = true;
+            // teljes képernyőn a magasság is számít (pl. a telefon elforgatása); különben csak a szélesség,
+            // mert ott a doboz magasságát maga a vászon adja
+            const w = wrap.clientWidth, kulcs = w + 'x' + (st.teljes ? wrap.clientHeight : 0);
+            if (!w || kulcs === elozoSzel) return;
+            elozoSzel = kulcs; meretez(); st.kell = true; st.pontKell = true;
         }).observe(wrap);
     }
     if (window.IntersectionObserver) {
@@ -747,11 +767,51 @@ function hurok() {
     } : null);
 }
 
+/* ---------- Teljes képernyő ----------
+   A böngésző saját teljes képernyős módja (Fullscreen API), ahol van; ahol nincs (iPhone Safari: elemet nem enged
+   teljes képernyőre), ugyanaz a CSS-osztály a böngészőablakot kitöltő rétegként jeleníti meg. */
+function teljesFelirat(b, be) {
+    const t = be ? 'Kilépés a teljes képernyőből' : 'Teljes képernyő';
+    b.textContent = be ? '✕' : '⛶'; b.setAttribute('aria-label', t); b.title = t;
+    b.setAttribute('aria-pressed', String(be));
+}
+function teljesValtozott() {
+    teljesFelirat(st.wrap.querySelector('.d3-teljes'), st.teljes);
+    // a natív teljes képernyő átméretezése késve érkezik: a következő képkockában méretezünk és keretezünk újra
+    meretez(); alapNezet(); st.kell = true; st.pontKell = true;
+    requestAnimationFrame(() => { meretez(); alapNezet(); st.kell = true; st.pontKell = true; });
+}
+function teljesBe() {
+    st.teljes = true; st.fsNativ = false;
+    st.wrap.classList.add('d3-teljes-mod');
+    document.documentElement.classList.add('d3-teljes-nyitva');   // a lap ne görögjön alatta
+    // a natív teljes képernyőt csak kérjük; ha a böngésző belép, a fullscreenchange jelzi (fsNativ),
+    // ha nem (elutasítja vagy nem válaszol), marad a helyettesítő réteg
+    const k = st.wrap.requestFullscreen || st.wrap.webkitRequestFullscreen;
+    if (k) {
+        try { const p = k.call(st.wrap); if (p && p.catch) p.catch(() => { /* marad a réteg */ }); } catch (e) { /* marad a réteg */ }
+    }
+    teljesValtozott();
+}
+function teljesKi() {
+    if (!st.teljes) return;
+    st.teljes = false;
+    const nativ = st.fsNativ; st.fsNativ = false;
+    if (nativ && (document.fullscreenElement || document.webkitFullscreenElement)) {
+        try { (document.exitFullscreen || document.webkitExitFullscreen).call(document); } catch (e) { /* nem baj */ }
+    }
+    st.wrap.classList.remove('d3-teljes-mod');
+    document.documentElement.classList.remove('d3-teljes-nyitva');
+    teljesValtozott();
+}
+
 function meretez() {
     if (!st.renderer) return;
     const w = st.wrap.clientWidth || 600;
     // a 0 magasság (rejtett vagy épp átméretezett ablak) végtelen képarányt és üres, NaN-os kamerát adna
-    const h = Math.max(200, Math.round(Math.min(w * (w < 500 ? 1.1 : 0.68), (window.innerHeight || 800) * 0.72)));
+    const h = st.teljes
+        ? Math.max(200, st.wrap.clientHeight || window.innerHeight || 800)   // teljes képernyőn a teljes magasság
+        : Math.max(200, Math.round(Math.min(w * (w < 500 ? 1.1 : 0.68), (window.innerHeight || 800) * 0.72)));
     st.renderer.setSize(w, h, true);
     st.camera.aspect = w / h;
     st.camera.updateProjectionMatrix();
