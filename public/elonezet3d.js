@@ -1,8 +1,9 @@
 /* 3D előnézet a tervezőben: a választásokból (méret, elrendezés, ajtólap, szín, vasalat, irány, fogantyú)
  * egy valósághű, körbeforgatható jelenet; az ajtó gombra kinyílik. Szemléltetés, nem látványterv.
- * - A tárgyakon ülő pontokkal (vagy magára a tárgyra koppintva) felugró ablakban váltható az anyag, a szín,
- *   a vasalat, az elrendezés és az irány; ezek visszaíródnak a tervező mezőibe (api.beallit), így az
- *   ajánlatkérésbe is bekerülnek. A méretpont a tervező 2. lépésére visz (api.meret).
+ * - A tárgyakon ülő „+” pontokkal (vagy magára a tárgyra koppintva) felugró ablakban váltható az ajtólap
+ *   anyaga és színe, valamint a vasalat színe (public/valaszto.js); ezek visszaíródnak a tervező mezőibe
+ *   (api.beallit), így az ajánlatkérésbe is bekerülnek. A geometria és a méret csak a tervezőben változik.
+ * - Csak valós idejű kép (sugárkövetés nincs, 2026-11-25 óta): csak változáskor rajzol, álló nézetben nem terhel.
  * - Fal- és padlóválasztás (csak a nézethez), méretvonalak, a szabad fal ellenőrzése sarokfallal.
  * - Kép mentése; AR (model-viewer, csak telefonon, kérésre töltődik be).
  * three.js (MIT) + RoomEnvironment + OrbitControls + GLTFExporter: public/vendor/three/three.bundle.min.js.
@@ -135,37 +136,6 @@ function tegla() {
     return canvasTex(c);
 }
 
-/* ---------- Környezeti térkép: kocka → equirect adattextúra ---------- */
-function equirectKockabol(renderer, kocka, w = 1024, h = 512) {
-    const rt = new THREE.WebGLRenderTarget(w, h, { type: THREE.FloatType });
-    const mat = new THREE.ShaderMaterial({
-        uniforms: { t: { value: kocka } },
-        vertexShader: 'varying vec2 vUv; void main(){ vUv = uv; gl_Position = vec4(position.xy, 0.0, 1.0); }',
-        fragmentShader: `uniform samplerCube t; varying vec2 vUv;
-            void main(){
-                float phi = (vUv.x - 0.5) * 6.28318530718, th = (vUv.y - 0.5) * 3.14159265359;
-                vec3 d = vec3(cos(th) * cos(phi), sin(th), cos(th) * sin(phi));
-                gl_FragColor = vec4(textureCube(t, d).rgb, 1.0);
-            }`,
-        depthTest: false, depthWrite: false
-    });
-    const quad = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), mat);
-    const sc = new THREE.Scene(); sc.add(quad);
-    const cam = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
-    const elozo = renderer.getRenderTarget();
-    renderer.setRenderTarget(rt); renderer.render(sc, cam); renderer.setRenderTarget(elozo);
-    const adat = new Float32Array(w * h * 4);
-    renderer.readRenderTargetPixels(rt, 0, 0, w, h, adat);
-    rt.dispose(); mat.dispose(); quad.geometry.dispose();
-    const t = new THREE.DataTexture(adat, w, h, THREE.RGBAFormat, THREE.FloatType);
-    t.mapping = THREE.EquirectangularReflectionMapping;
-    t.colorSpace = THREE.LinearSRGBColorSpace;
-    t.minFilter = THREE.LinearFilter; t.magFilter = THREE.LinearFilter; t.generateMipmaps = false;
-    t.needsUpdate = true;
-    return t;
-}
-
-/* ---------- Segédek ---------- */
 function mesh(geo, mat, arnyek = true) {
     const m = new THREE.Mesh(geo, mat);
     m.castShadow = arnyek; m.receiveShadow = true;
@@ -189,7 +159,7 @@ function lapTest(w, h, elM, lapM) {
 }
 
 // Felirat a 3D térben (mindig a néző felé fordul)
-// A felirat mérete a képernyőn állandó (FELIRAT_PX magas), akárhonnan nézzük: sizeAttenuation nélkül,
+// A felirat mérete a képernyőn állandó (legfeljebb FELIRAT_PX magas, keskeny nézetben kisebb), akárhonnan nézzük: sizeAttenuation nélkül,
 // a méretezést a feliratokMeretez() végzi a vászon magassága szerint. A vászon pontosan a címke méretű.
 const FELIRAT_PX = 26;
 function felirat(szoveg, szin = '#2d2520') {
@@ -211,7 +181,9 @@ function felirat(szoveg, szin = '#2d2520') {
 function feliratokMeretez() {
     if (!st || !st.renderer) return;
     const ch = st.renderer.domElement.clientHeight || 400;
-    const y = FELIRAT_PX / ch * 2 * Math.tan(THREE.MathUtils.degToRad(st.camera.fov / 2));
+    // keskeny (telefonos) nézetben kisebb, hogy a szomszédos feliratok ne érjenek össze: 17–26 px
+    const px = Math.max(17, Math.min(FELIRAT_PX, (st.wrap.clientWidth || 600) * 0.045));
+    const y = px / ch * 2 * Math.tan(THREE.MathUtils.degToRad(st.camera.fov / 2));
     st.overlay.traverse((o) => { if (o.isSprite && o.userData.arany) o.scale.set(y * o.userData.arany, y, 1); });
 }
 // Méretvonal két pont között, végein kis keresztvonallal és felirattal
@@ -534,7 +506,6 @@ function epit(nezetAlap) {
         st.scene.add(st.jel.g);
         st.overlay.add(st.jel.ov);
         feliratokMeretez();
-        st.ptKell = true;
         st.nyit = 0; st.cel = 0;
         st.gomb.textContent = 'Nyisd ki';
         st.pontKell = true;
@@ -582,15 +553,13 @@ function init(boxEl) {
     const ment = gombEl('Kép mentése');
     const arGomb = gombEl('Nézd meg a szobádban (AR)');
     const tobbGomb = gombEl('Továbbiak ▾'); tobbGomb.setAttribute('aria-expanded', 'false');
-    const fotoAll = document.createElement('span'); fotoAll.className = 'd3-meret';
-    gombok.append(gomb, alap, ment, arGomb, tobbGomb, fotoAll);
-    // Továbbiak: méretvonalak, fotóminőség, szoba (fal, padló)
+    gombok.append(gomb, alap, ment, arGomb, tobbGomb);
+    // Továbbiak: méretvonalak, szoba (fal, padló)
     const tobb = document.createElement('div'); tobb.className = 'd3-tobb'; tobb.hidden = true; tobb.id = 'd3Tobb';
     tobbGomb.setAttribute('aria-controls', tobb.id);
     const tobbGombok = document.createElement('div'); tobbGombok.className = 'fi-btns';
     const meretGomb = gombEl('Méretek elrejtése');
-    const fotoGomb = gombEl('Fotóminőség: be');
-    tobbGombok.append(meretGomb, fotoGomb);
+    tobbGombok.append(meretGomb);
     const szobaSorok = document.createElement('div'); szobaSorok.className = 'd3-panel';
     tobb.append(tobbGombok, szobaSorok);
     const figy = document.createElement('p'); figy.className = 'd3-figy'; figy.hidden = true; figy.setAttribute('role', 'status');
@@ -625,12 +594,10 @@ function init(boxEl) {
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(0xd8d3cb);
     THREE.RectAreaLightUniformsLib.init();
-    // környezeti fény: szoba-környezet kockatérképbe rajzolva (a valós idejű kép és a sugárkövető is ezt használja)
-    const kockaRT = new THREE.WebGLCubeRenderTarget(512, { type: THREE.HalfFloatType });
-    new THREE.CubeCamera(0.1, 100, kockaRT).update(renderer, new THREE.RoomEnvironment());
-    // a sugárkövető equirect (adat)textúrát kér; a kockatérképet ide alakítjuk át (a saját átalakítója a 0.187-tel nem fut)
-    scene.environment = equirectKockabol(renderer, kockaRT.texture);
-    kockaRT.dispose();
+    // környezeti fény és tükröződés: szoba-környezet előszűrt környezeti térképként (PMREM)
+    const pmrem = new THREE.PMREMGenerator(renderer);
+    scene.environment = pmrem.fromScene(new THREE.RoomEnvironment(), 0.04).texture;
+    pmrem.dispose();
     scene.environmentIntensity = 0.55;
     const nap = new THREE.DirectionalLight(0xfff1de, 2.4);
     nap.position.set(-2.2, 3.6, 3.4); nap.castShadow = true;
@@ -647,38 +614,10 @@ function init(boxEl) {
         minAzimuthAngle: -1.35, maxAzimuthAngle: 1.35,
         minPolarAngle: 0.95, maxPolarAngle: 1.62
     });
-    controls.addEventListener('change', () => { st.kell = true; st.kamValt = true; st.pontKell = true; });
+    controls.addEventListener('change', () => { st.kell = true; st.pontKell = true; });
 
-    // Sugárkövető (path tracing): álló nézetnél képkockáról képkockára fotórealisztikus képet számol.
-    let pt = null;
-    try {
-        pt = new THREE.WebGLPathTracer(renderer);
-        Object.assign(pt, { bounces: 6, transmissiveBounces: 8, filterGlossyFactor: 0.5, renderDelay: 150, minSamples: 2, fadeDuration: 400, renderScale: 1 });
-        pt.tiles.set(3, 3);   // kis darabokban számol, hogy egy lépés se akassza meg a grafikus kártyát
-        const raRajzol = () => { const ac = renderer.autoClear; renderer.autoClear = false; renderer.render(st.overlay, st.camera); renderer.autoClear = ac; };
-        pt.rasterizeSceneCallback = (sc, cam) => { renderer.render(sc, cam); raRajzol(); };
-        // kevés mintánál zajszűrővel rajzoljuk ki (élmegőrző elmosás), utána a nyers, egyre tisztább képet
-        const dn = new THREE.DenoiseMaterial({ sigma: 3.5, threshold: 0.04, kSigma: 1.2 });
-        const dnJel = new THREE.Scene(); dnJel.add(new THREE.Mesh(new THREE.PlaneGeometry(2, 2), dn));
-        const dnKam = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
-        pt.renderToCanvasCallback = (target, r, quad) => {
-            const ac = r.autoClear; r.autoClear = false;
-            // a zajszűrő végig dolgozik, egyre enyhébben: korábban 150 mintánál kikapcsolt, és gyenge
-            // grafikus kártyán (néhány minta/s) percekig a nyers, szemcsés („pixeles”) kép látszott
-            if (quad.material.opacity >= 1) {
-                const n = pt.samples;
-                dn.sigma = n < 150 ? 3.5 : Math.max(1.5, 3.5 - (n - 150) / 1350 * 2);
-                dn.threshold = n < 150 ? 0.04 : Math.max(0.015, 0.04 - (n - 150) / 1350 * 0.025);
-                dn.map = target.texture; r.render(dnJel, dnKam);
-            }
-            else quad.render(r);
-            r.autoClear = ac; raRajzol();
-        };
-    } catch (e) { pt = null; fotoGomb.hidden = true; }
-
-    st = { box: boxEl, wrap, renderer, scene, camera, controls, gomb, msg, figy, szobaSorok, arGomb, pt, fotoAll,
-           reteg, pontGombok, pontKell: true,
-           overlay: new THREE.Scene(), foto: !!pt, ptKell: true, kamValt: true,
+    st = { box: boxEl, wrap, renderer, scene, camera, controls, gomb, msg, figy, szobaSorok, arGomb,
+           reteg, pontGombok, pontKell: true, overlay: new THREE.Scene(),
            nyit: 0, cel: 0, kell: true, latszik: true, meretek: true, szoba: { fal: 'feher', padlo: 'vilagos' } };
     try { Object.assign(st.szoba, JSON.parse(localStorage.getItem('rnd_3d_szoba') || '{}')); } catch (e) { /* nem baj */ }
 
@@ -688,12 +627,6 @@ function init(boxEl) {
         st.meretek = !st.meretek;
         meretGomb.textContent = st.meretek ? 'Méretek elrejtése' : 'Méretek mutatása';
         epit(false);
-    });
-    fotoGomb.addEventListener('click', () => {
-        st.foto = !st.foto;
-        fotoGomb.textContent = st.foto ? 'Fotóminőség: be' : 'Fotóminőség: ki';
-        st.fotoAll.textContent = '';
-        st.ptKell = true; st.kell = true;
     });
     ment.addEventListener('click', kepMentes);
     arGomb.addEventListener('click', ar);
@@ -722,13 +655,13 @@ function init(boxEl) {
     // AR csak érintőképernyős eszközön (telefon, tablet) értelmes
     arGomb.hidden = !(window.matchMedia && window.matchMedia('(pointer: coarse)').matches);
 
-    // csak valódi szélességváltozásra méretezünk át (a feliratok frissülése ne indítsa újra a fotószámítást)
+    // csak valódi szélességváltozásra méretezünk át
     let elozoSzel = 0;
     if (window.ResizeObserver) {
         new ResizeObserver(() => {
             const w = wrap.clientWidth;
             if (!w || w === elozoSzel) return;
-            elozoSzel = w; meretez(); st.kell = true; st.kamValt = true; st.pontKell = true;
+            elozoSzel = w; meretez(); st.kell = true; st.pontKell = true;
         }).observe(wrap);
     }
     if (window.IntersectionObserver) {
@@ -739,7 +672,6 @@ function init(boxEl) {
     // ha a grafikus kártya leállítja a számítást (elveszett WebGL-kontextus), ne maradjon fekete, hallgatag kép
     renderer.domElement.addEventListener('webglcontextlost', (e) => {
         e.preventDefault();
-        st.foto = false; fotoGomb.textContent = 'Fotóminőség: ki';
         st.msg.textContent = 'A grafikus kártya túlterhelődött, ezért a 3D nézet leállt. Töltsd újra az oldalt; a megadott adataid megmaradnak.';
     });
 }
@@ -807,20 +739,10 @@ function hurok() {
             const v = csendes ? 1 : dt / 1.8;
             st.nyit = st.cel > st.nyit ? Math.min(st.cel, st.nyit + v) : Math.max(st.cel, st.nyit - v);
             st.kell = true;
-            if (st.nyit === st.cel) st.ptKell = true;   // megállt az ajtó: új jelenet a sugárkövetőnek
         }
         if (!st.jel) return;
         if (mozog) st.pontKell = true;
-        if (st.pt && st.foto && !mozog) {
-            if (st.ptKell) { st.ptKell = false; st.kamValt = false; lapokHelyzet(st.nyit); st.pt.setScene(st.scene, st.camera); }
-            if (st.kamValt) { st.kamValt = false; st.pt.updateCamera(); }
-            if (st.pt.samples < 1500) {
-                st.pt.renderSample();
-                const n = Math.floor(st.pt.samples);
-                if (n !== st.utolsoMinta) { st.utolsoMinta = n; st.fotoAll.textContent = n < 2 ? 'Fotó számítása…' : `Fotóminőség: ${n} minta`; }
-            }
-            st.kell = false;
-        } else if (st.kell) { st.kell = false; rajzol(); }
+        if (st.kell) { st.kell = false; rajzol(); }   // csak változáskor rajzolunk (álló nézetben nem terheli a gépet)
         pontokFrissit();
     } : null);
 }
@@ -869,7 +791,7 @@ function rajzol() {
 function kepMentes() {
     if (!st.jel) return;
     // ugyanabban a lépésben olvassuk ki, mielőtt a böngésző törli a vásznat
-    if (st.pt && st.foto && st.pt.samples >= 2 && st.nyit === st.cel) st.pt.renderSample(); else rajzol();
+    rajzol();
     st.renderer.domElement.toBlob((blob) => {
         if (!blob) { st.msg.textContent = 'A képet most nem sikerült elmenteni.'; return; }
         const a = document.createElement('a');
