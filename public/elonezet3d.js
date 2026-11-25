@@ -1,7 +1,8 @@
 /* 3D előnézet a tervezőben: a választásokból (méret, elrendezés, ajtólap, szín, vasalat, irány, fogantyú)
  * egy valósághű, körbeforgatható jelenet; az ajtó gombra kinyílik. Szemléltetés, nem látványterv.
- * - A jelenet alatti gombokkal az anyag, a szín, a vasalat, az elrendezés és az irány élőben váltható;
- *   ezek visszaíródnak a tervező mezőibe (api.beallit), így az ajánlatkérésbe is bekerülnek.
+ * - A tárgyakon ülő pontokkal (vagy magára a tárgyra koppintva) felugró ablakban váltható az anyag, a szín,
+ *   a vasalat, az elrendezés és az irány; ezek visszaíródnak a tervező mezőibe (api.beallit), így az
+ *   ajánlatkérésbe is bekerülnek. A méretpont a tervező 2. lépésére visz (api.meret).
  * - Fal- és padlóválasztás (csak a nézethez), méretvonalak, a szabad fal ellenőrzése sarokfallal.
  * - Kép mentése; AR (model-viewer, csak telefonon, kérésre töltődik be).
  * three.js (MIT) + RoomEnvironment + OrbitControls + GLTFExporter: public/vendor/three/three.bundle.min.js.
@@ -22,29 +23,10 @@ const LAP_V = 0.04;      // ajtólap-vastagság (m)
 const texCache = {};
 let st = null;           // egyetlen nézet a lapon
 
-// A jelenet alatti választók. mezo: a tervező mezőjének neve; helyi: csak a nézetet állítja.
-const VALASZTOK = [
-    { cim: 'Ajtólap', mezo: 'lap', opciok: [['tomorfa', 'Tömörfa'], ['nyomatos', 'Nyomatos'], ['fem', 'Fém'], ['antik', 'Antik'], ['uveg', 'Üveg'], ['fem_uveg', 'Fém keret üveggel']] },
-    { cim: 'Szín', mezo: 'szin', opciok: [['natur_fa', 'Natúr fa'], ['pacolt_fa', 'Pácolt'], ['ral9016', 'Fehér'], ['ral9005', 'Fekete'], ['ral7016', 'Antracit'], ['ral7035', 'Világosszürke']],
-      lathato: (o) => !['nyomatos', 'antik', 'uveg'].includes(lapNev(o)) },
-    { cim: 'Vasalat', mezo: 'vasalatTipus', opciok: [['pajta', 'Pajta'], ['rejtett', 'Rejtett'], ['lebego', 'Lebegő'], ['falban', 'Falban futó']] },
-    { cim: 'Vasalat színe', mezo: 'vasSzin', opciok: Object.entries(VASSZIN).map(([k, v]) => [k, v.nev]), lathato: (o) => o.vasalatTipus === 'pajta' },
-    { cim: 'Elrendezés', mezo: 'tipus', opciok: [['egyszarnyu', 'Egyszárnyú'], ['ketszarnyu', 'Kétszárnyú'], ['bypass', 'Egymás előtt']], lathato: (o) => !falbanE(o) },
-    { cim: 'Nyitás iránya', mezo: 'irany', opciok: [['balra', 'Balra'], ['jobbra', 'Jobbra']], lathato: (o) => o.tipus !== 'ketszarnyu' },
-    { cim: 'Fal (csak a nézethez)', mezo: 'fal3d', helyi: true, opciok: [['feher', 'Fehér'], ['bezs', 'Bézs'], ['szurke', 'Szürke'], ['sotet', 'Sötét'], ['tegla', 'Tégla']] },
-    { cim: 'Padló (csak a nézethez)', mezo: 'padlo3d', helyi: true, opciok: [['vilagos', 'Világos parketta'], ['sotet', 'Sötét parketta'], ['jarolap', 'Járólap']] }
-];
-
-const lapNev = (o) => TEX[o.lap] ? o.lap : (o.lap === 'uveg' || o.lap === 'fem_uveg' ? o.lap : 'tomorfa');
-const falbanE = (o) => o.vasalatTipus === 'falban' || o.tipus === 'falban';
-function vasSzinKulcs(o) {
-    if (o.vasalatSzin !== 'egyeb') return 'fekete';
-    const t = String(o.vasalatEgyeb || '').toLowerCase();
-    if (t.includes('inox')) return 'inox';
-    if (t.includes('bronz')) return 'bronz';
-    if (t.includes('fehér') || t.includes('feher')) return 'feher';
-    return 'fekete';
-}
+// A választók listája, csoportjai, a felugró ablak és a pontok: közös a fotóillesztéssel (public/valaszto.js)
+const V = window.Valaszto;
+const { lapNev, falbanE, vasSzinKulcs } = V;
+const csopSorai = (k) => V.csopSorai(k, st.o);
 
 /* ---------- Textúrák ---------- */
 function textura(nev) {
@@ -337,6 +319,10 @@ function epitJelenet(o, tex, szoba, meretek) {
     const ov = new THREE.Group();      // méretvonalak, feliratok: a fotórealisztikus kép fölé rajzolva
     const a = anyagok(o, tex);
     const ff = FAL_V / 2;              // a fal elülső síkja
+    // a kattintható tárgyak megjelölése (userData.cel) és a pontok horgonyai (üres tárgyak, a pontok ezeket követik)
+    const vasAdd = (x) => { x.userData.cel = 'vasalat'; ajtoG.add(x); };
+    const horgony = (szulo, x, y, z) => { const h = new THREE.Object3D(); h.position.set(x, y, z); szulo.add(h); return h; };
+    const pontok = {};
 
     // fal
     let falM;
@@ -406,6 +392,7 @@ function epitJelenet(o, tex, szoba, meretek) {
     lapok.forEach((l) => {
         const lap = ajtolap(l.w, lapH, a, o.fogantyu ? l.fog : null, falban);
         lap.position.set(l.x0, alj, l.z);
+        lap.userData.cel = 'lap';
         ajtoG.add(lap);
         mozog.push({ obj: lap, x0: l.x0, ki: l.ki, kerekek: [] });
     });
@@ -421,24 +408,24 @@ function epitJelenet(o, tex, szoba, meretek) {
     if (o.vasalatTipus === 'pajta' && !falban) {
         // dupla sín: belső laposacél a falon, távtartók és imbuszcsavarok, előtte a külső sín(ek)
         const sinY = alj + lapH + 0.12;
-        const belso = box(sinMax - sinMin, 0.045, 0.008, a.vas); belso.position.set((sinMin + sinMax) / 2, sinY, ff + 0.004); ajtoG.add(belso);
+        const belso = box(sinMax - sinMin, 0.045, 0.008, a.vas); belso.position.set((sinMin + sinMax) / 2, sinY, ff + 0.004); vasAdd(belso);
         const sinZk = [...new Set(lapok.map((l) => +(l.z - z0).toFixed(3)))];   // 0, és bypassnál az előrébb futó sín
         sinZk.forEach((dz) => {
             const [mn, mx] = terjedelem(lapok.filter((l) => +(l.z - z0).toFixed(3) === dz));
-            const k = box(mx - mn, 0.05, 0.01, a.vas); k.position.set((mn + mx) / 2, sinY - dz * 0.0, ff + 0.045 + dz); ajtoG.add(k);
-            [-1, 1].forEach((s) => { const v = box(0.02, 0.07, 0.03, a.vas); v.position.set((mn + mx) / 2 + s * ((mx - mn) / 2 - 0.01), sinY + 0.01, ff + 0.045 + dz); ajtoG.add(v); });
+            const k = box(mx - mn, 0.05, 0.01, a.vas); k.position.set((mn + mx) / 2, sinY - dz * 0.0, ff + 0.045 + dz); vasAdd(k);
+            [-1, 1].forEach((s) => { const v = box(0.02, 0.07, 0.03, a.vas); v.position.set((mn + mx) / 2 + s * ((mx - mn) / 2 - 0.01), sinY + 0.01, ff + 0.045 + dz); vasAdd(v); });
         });
         const melyseg = 0.045 + Math.max(...sinZk);
         const db = Math.max(3, Math.round((sinMax - sinMin) / 0.45));
         for (let i = 0; i <= db; i++) {
             const x = sinMin + 0.06 + i * (sinMax - sinMin - 0.12) / db;
-            const tt = henger(0.013, melyseg - 0.013, a.vas); tt.rotation.x = Math.PI / 2; tt.position.set(x, sinY, ff + 0.008 + (melyseg - 0.013) / 2); ajtoG.add(tt);
-            const fej = henger(0.009, 0.006, a.vas); fej.rotation.x = Math.PI / 2; fej.position.set(x, sinY, ff + melyseg + 0.008); ajtoG.add(fej);
+            const tt = henger(0.013, melyseg - 0.013, a.vas); tt.rotation.x = Math.PI / 2; tt.position.set(x, sinY, ff + 0.008 + (melyseg - 0.013) / 2); vasAdd(tt);
+            const fej = henger(0.009, 0.006, a.vas); fej.rotation.x = Math.PI / 2; fej.position.set(x, sinY, ff + melyseg + 0.008); vasAdd(fej);
         }
         mozog.forEach((m, i) => {
             const l = lapok[i], dz = l.z - z0;
             [-l.w / 2 + 0.16, l.w / 2 - 0.16].forEach((dx) => {
-                const t = new THREE.Group();
+                const t = new THREE.Group(); t.userData.cel = 'vasalat';
                 const kerekY = sinY + 0.025 + 0.065 - alj;
                 const kerek = gorgo(a.vas);
                 kerek.position.set(dx, kerekY, ff + 0.045 + dz - l.z);
@@ -455,23 +442,31 @@ function epitJelenet(o, tex, szoba, meretek) {
         });
     } else if (o.vasalatTipus === 'rejtett' && !falban) {
         const elol = Math.max(...lapok.map((l) => l.z)) + LAP_V / 2 + 0.03;
-        const lemez = box(sinMax - sinMin + 0.1, 0.16, 0.02, falM); lemez.position.set((sinMin + sinMax) / 2, alj + lapH + 0.06, elol); ajtoG.add(lemez);
-        const tarto = box(sinMax - sinMin + 0.1, 0.02, elol - ff + 0.01, falM); tarto.position.set((sinMin + sinMax) / 2, alj + lapH + 0.13, (ff + elol) / 2); ajtoG.add(tarto);
+        const lemez = box(sinMax - sinMin + 0.1, 0.16, 0.02, falM); lemez.position.set((sinMin + sinMax) / 2, alj + lapH + 0.06, elol); vasAdd(lemez);
+        const tarto = box(sinMax - sinMin + 0.1, 0.02, elol - ff + 0.01, falM); tarto.position.set((sinMin + sinMax) / 2, alj + lapH + 0.13, (ff + elol) / 2); vasAdd(tarto);
     }
     if (!falban && o.vasalatTipus !== 'lebego' && o.megvezeto !== false) {
         const mvx = bypass || ket ? 0 : (balra ? W / 2 + 0.09 : -W / 2 - 0.09);
-        const mv = box(0.07, 0.025, 0.06 + (bypass ? elore : 0), a.fekete); mv.position.set(mvx, 0.0125, z0 + (bypass ? elore / 2 : 0)); ajtoG.add(mv);
+        const mv = box(0.07, 0.025, 0.06 + (bypass ? elore : 0), a.fekete); mv.position.set(mvx, 0.0125, z0 + (bypass ? elore / 2 : 0)); vasAdd(mv);
     }
     if (falban) {
         const tokM = new THREE.MeshStandardMaterial({ color: 0xf6f4ef, roughness: 0.45 });
         [1, -1].forEach((sz) => {
             const zz = sz * (ff + 0.006);
-            [-1, 1].forEach((sx) => { const t = box(0.06, H + 0.06, 0.012, tokM); t.position.set(sx * (W / 2 + 0.03), (H + 0.06) / 2, zz); g.add(t); });
-            const t = box(W + 0.12, 0.06, 0.012, tokM); t.position.set(0, H + 0.03, zz); g.add(t);
+            [-1, 1].forEach((sx) => { const t = box(0.06, H + 0.06, 0.012, tokM); t.position.set(sx * (W / 2 + 0.03), (H + 0.06) / 2, zz); t.userData.cel = 'vasalat'; g.add(t); });
+            const t = box(W + 0.12, 0.06, 0.012, tokM); t.position.set(0, H + 0.03, zz); t.userData.cel = 'vasalat'; g.add(t);
         });
         [-1, 1].forEach((sx) => { const b = box(0.012, H, FAL_V, tokM); b.position.set(sx * (W / 2 - 0.006), H / 2, 0); g.add(b); });
     }
     g.add(ajtoG);
+
+    // pontok: ajtólap (az elöl futó lapon, együtt mozog vele) és vasalat; a 3D-ben elrendezés- és méretpont nincs
+    const elsoI = lapok.reduce((m, l, i) => (l.z > lapok[m].z ? i : m), 0);
+    pontok.lap = horgony(mozog[elsoI].obj, 0, lapH * 0.6, LAP_V / 2 + 0.05);
+    if (falban) pontok.vasalat = horgony(g, 0, H + 0.03, ff + 0.04);
+    else if (o.vasalatTipus === 'pajta') pontok.vasalat = horgony(g, (sinMin + sinMax) / 2, alj + lapH + 0.12, ff + 0.1 + (bypass ? elore : 0));
+    else if (o.vasalatTipus === 'rejtett') pontok.vasalat = horgony(g, (sinMin + sinMax) / 2, alj + lapH + 0.06, Math.max(...lapok.map((l) => l.z)) + LAP_V / 2 + 0.07);
+    else pontok.vasalat = horgony(mozog[elsoI].obj, 0, lapH - 0.12, LAP_V / 2 + 0.05);   // lebegő: a lap felső élénél
 
     // szabad fal: sarokfal a megadott távolságban, és ellenőrzés
     const szabad = Number(o.szabadFal);
@@ -505,7 +500,7 @@ function epitJelenet(o, tex, szoba, meretek) {
             c.geometry.computeTangents();
         }
     });
-    return { g, ov, ajtoG, mozog, W, H, falH, parkKozep: ket || bypass ? 0 : (balra ? -W / 2 : W / 2), ell, ff };
+    return { g, ov, ajtoG, mozog, W, H, falH, parkKozep: ket || bypass ? 0 : (balra ? -W / 2 : W / 2), ell, ff, pontok };
 }
 
 /* ---------- Felület ---------- */
@@ -528,7 +523,7 @@ function epit(nezetAlap) {
         st.ptKell = true;
         st.nyit = 0; st.cel = 0;
         st.gomb.textContent = 'Nyisd ki';
-        st.meret.textContent = Math.round(st.jel.W * 100) + ' × ' + Math.round(st.jel.H * 100) + ' cm-es nyílás';
+        st.pontKell = true;
         const e = st.jel.ell;
         st.figy.hidden = !e.van;
         if (e.van) {
@@ -537,7 +532,8 @@ function epit(nezetAlap) {
                 ? `A nyitott ajtó elfér: kb. ${e.kell} cm hely kell, ${e.szabad} cm szabad fal van.`
                 : `Figyelem: a nyitott ajtónak kb. ${e.kell} cm szabad fal kell ezen az oldalon, te ${e.szabad} cm-t adtál meg. Az ajánlatnál egyeztetjük a megoldást.`;
         }
-        panelFrissit();
+        st.vp.frissit();
+        szobaFrissit();
         st.arKesz = null; st.arGomb.textContent = 'Nézd meg a szobádban (AR)';
         if (nezetAlap) alapNezet();
         st.kell = true;
@@ -565,30 +561,40 @@ function init(boxEl) {
     boxEl.textContent = '';
     const wrap = document.createElement('div'); wrap.className = 'd3-wrap';
     const help = document.createElement('p'); help.className = 'fi-help';
-    help.textContent = 'Húzással körbeforgathatod, két ujjal vagy görgővel nagyíthatsz. Alul élőben válthatsz anyagot, színt és vasalatot; amit itt választasz, az az ajánlatkérésbe is bekerül.';
+    help.textContent = 'Koppints a „+” pontokra az ajtón vagy a vasalaton: ott válthatsz anyagot és színt, és ez az ajánlatkérésbe is bekerül. Húzással körbeforgathatod, két ujjal vagy görgővel nagyíthatsz.';
     const gombok = document.createElement('div'); gombok.className = 'fi-btns';
     const gomb = gombEl('Nyisd ki', 'btn-primary fi-btn');
     const alap = gombEl('Alapnézet');
-    const meretGomb = gombEl('Méretek elrejtése');
-    const fotoGomb = gombEl('Fotóminőség: be');
-    const fotoAll = document.createElement('span'); fotoAll.className = 'd3-meret';
     const ment = gombEl('Kép mentése');
     const arGomb = gombEl('Nézd meg a szobádban (AR)');
-    const meret = document.createElement('span'); meret.className = 'd3-meret';
-    gombok.append(gomb, alap, meretGomb, fotoGomb, ment, arGomb, meret, fotoAll);
+    const tobbGomb = gombEl('Továbbiak ▾'); tobbGomb.setAttribute('aria-expanded', 'false');
+    const fotoAll = document.createElement('span'); fotoAll.className = 'd3-meret';
+    gombok.append(gomb, alap, ment, arGomb, tobbGomb, fotoAll);
+    // Továbbiak: méretvonalak, fotóminőség, szoba (fal, padló)
+    const tobb = document.createElement('div'); tobb.className = 'd3-tobb'; tobb.hidden = true; tobb.id = 'd3Tobb';
+    tobbGomb.setAttribute('aria-controls', tobb.id);
+    const tobbGombok = document.createElement('div'); tobbGombok.className = 'fi-btns';
+    const meretGomb = gombEl('Méretek elrejtése');
+    const fotoGomb = gombEl('Fotóminőség: be');
+    tobbGombok.append(meretGomb, fotoGomb);
+    const szobaSorok = document.createElement('div'); szobaSorok.className = 'd3-panel';
+    tobb.append(tobbGombok, szobaSorok);
     const figy = document.createElement('p'); figy.className = 'd3-figy'; figy.hidden = true; figy.setAttribute('role', 'status');
-    const panel = document.createElement('div'); panel.className = 'd3-panel';
     const note = document.createElement('p'); note.className = 'pic-note';
     note.textContent = 'Szemléltető 3D kép. A pontos látványtervet megrendelés után kapod.';
     const msg = document.createElement('p'); msg.className = 'fi-msg'; msg.setAttribute('role', 'status');
-    boxEl.append(help, wrap, figy, gombok, panel, msg, note);
+    boxEl.append(help, wrap, figy, gombok, tobb, msg, note);
+
+    // pontok a jelenet fölött (valódi gombok, a 3D-s horgonyokat követik); a felugró választó az init végén
+    const reteg = document.createElement('div'); reteg.className = 'd3-pontok';
+    const pontGombok = V.pontokLetrehoz(reteg, (k) => st.vp.valt(k));   // a méret a méretvonalakon látszik
 
     let renderer;
     try {
         renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
     } catch (e) {
         msg.textContent = 'Ez a böngésző nem tud 3D-t megjeleníteni. Az ajánlatkérést ez nem érinti.';
-        wrap.remove(); gombok.remove(); panel.remove();
+        wrap.remove(); gombok.remove(); tobb.remove(); help.remove();
         st = { box: boxEl };
         return;
     }
@@ -600,7 +606,7 @@ function init(boxEl) {
     renderer.domElement.className = 'd3-canvas';
     renderer.domElement.setAttribute('role', 'img');
     renderer.domElement.setAttribute('aria-label', 'Az ajtó 3D előnézete a választásaid szerint');
-    wrap.appendChild(renderer.domElement);
+    wrap.append(renderer.domElement, reteg);
 
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(0xd8d3cb);
@@ -627,7 +633,7 @@ function init(boxEl) {
         minAzimuthAngle: -1.35, maxAzimuthAngle: 1.35,
         minPolarAngle: 0.95, maxPolarAngle: 1.62
     });
-    controls.addEventListener('change', () => { st.kell = true; st.kamValt = true; });
+    controls.addEventListener('change', () => { st.kell = true; st.kamValt = true; st.pontKell = true; });
 
     // Sugárkövető (path tracing): álló nézetnél képkockáról képkockára fotórealisztikus képet számol.
     let pt = null;
@@ -649,7 +655,8 @@ function init(boxEl) {
         };
     } catch (e) { pt = null; fotoGomb.hidden = true; }
 
-    st = { box: boxEl, wrap, renderer, scene, camera, controls, gomb, meret, msg, figy, panel, arGomb, pt, fotoAll,
+    st = { box: boxEl, wrap, renderer, scene, camera, controls, gomb, msg, figy, szobaSorok, arGomb, pt, fotoAll,
+           reteg, pontGombok, pontKell: true,
            overlay: new THREE.Scene(), foto: !!pt, ptKell: true, kamValt: true,
            nyit: 0, cel: 0, kell: true, latszik: true, meretek: true, szoba: { fal: 'feher', padlo: 'vilagos' } };
     try { Object.assign(st.szoba, JSON.parse(localStorage.getItem('rnd_3d_szoba') || '{}')); } catch (e) { /* nem baj */ }
@@ -669,6 +676,28 @@ function init(boxEl) {
     });
     ment.addEventListener('click', kepMentes);
     arGomb.addEventListener('click', ar);
+    tobbGomb.addEventListener('click', () => {
+        tobb.hidden = !tobb.hidden;
+        tobbGomb.setAttribute('aria-expanded', String(!tobb.hidden));
+        tobbGomb.textContent = tobb.hidden ? 'Továbbiak ▾' : 'Továbbiak ▴';
+    });
+    st.vp = V.letrehoz({
+        wrap, pontok: pontGombok,
+        allapot: () => ({ o: st.o, szoba: st.szoba }),
+        valaszt,
+        kepMeret: () => ({ cw: st.wrap.clientWidth, ch: st.renderer.domElement.clientHeight })
+    });
+    // koppintás magára a tárgyra (ajtólap, vasalat): ugyanazt a választót nyitja; húzás (forgatás) nem számít
+    const cv = renderer.domElement;
+    V.koppintas(cv, (e) => { const cel = celAlatt(e); if (cel) st.vp.nyit(cel); });
+    let utolsoMozgas = 0;
+    cv.addEventListener('pointermove', (e) => {
+        if (e.pointerType !== 'mouse' || e.buttons) return;
+        const most = performance.now();
+        if (most - utolsoMozgas < 60) return;
+        utolsoMozgas = most;
+        cv.style.cursor = celAlatt(e) ? 'pointer' : '';
+    });
     // AR csak érintőképernyős eszközön (telefon, tablet) értelmes
     arGomb.hidden = !(window.matchMedia && window.matchMedia('(pointer: coarse)').matches);
 
@@ -678,7 +707,7 @@ function init(boxEl) {
         new ResizeObserver(() => {
             const w = wrap.clientWidth;
             if (!w || w === elozoSzel) return;
-            elozoSzel = w; meretez(); st.kell = true; st.kamValt = true;
+            elozoSzel = w; meretez(); st.kell = true; st.kamValt = true; st.pontKell = true;
         }).observe(wrap);
     }
     if (window.IntersectionObserver) {
@@ -694,40 +723,53 @@ function init(boxEl) {
     });
 }
 
-// A választók (gombsorok) a jelenet alatt
-function panelFrissit() {
-    const o = st.o, p = st.panel;
-    p.textContent = '';
-    VALASZTOK.forEach((v) => {
-        if (v.lathato && !v.lathato(o)) return;
-        const sor = document.createElement('div'); sor.className = 'd3-sor';
-        const cim = document.createElement('span'); cim.className = 'd3-cim'; cim.textContent = v.cim;
-        const gs = document.createElement('div'); gs.className = 'd3-chipek'; gs.setAttribute('role', 'group'); gs.setAttribute('aria-label', v.cim);
-        const aktiv = v.mezo === 'vasSzin' ? vasSzinKulcs(o) : v.mezo === 'fal3d' ? st.szoba.fal : v.mezo === 'padlo3d' ? st.szoba.padlo
-            : v.mezo === 'lap' ? lapNev(o) : v.mezo === 'tipus' ? (o.tipus === 'ketszarnyu' || o.tipus === 'bypass' ? o.tipus : 'egyszarnyu')
-            : v.mezo === 'irany' ? (o.irany === 'jobbra' ? 'jobbra' : 'balra') : o[v.mezo];
-        v.opciok.forEach(([ertek, nev]) => {
-            const b = document.createElement('button'); b.type = 'button'; b.className = 'd3-chip'; b.textContent = nev;
-            b.setAttribute('aria-pressed', String(ertek === aktiv));
-            b.addEventListener('click', () => valaszt(v, ertek));
-            gs.appendChild(b);
-        });
-        sor.append(cim, gs);
-        p.appendChild(sor);
+// A Továbbiak menü szobasorai
+function szobaFrissit() {
+    V.sorokbaRajzol(st.szobaSorok, csopSorai('szoba'), st.o, st.szoba, valaszt);
+}
+
+/* ---------- Pontok: a 3D-s horgonyok képernyőhelye; ami takarásban vagy a képen kívül van, nem látszik ---------- */
+const _v = new THREE.Vector3(), _ray = new THREE.Raycaster();
+function pontokFrissit() {
+    const cw = st.wrap.clientWidth, ch = st.renderer.domElement.clientHeight;
+    const takarasEll = st.pontKell; st.pontKell = false;
+    const kam = st.camera.position;
+    Object.entries(st.pontGombok).forEach(([k, b]) => {
+        const h = st.jel.pontok[k];
+        if (!h || !csopSorai(k).length) { b.hidden = true; return; }
+        h.getWorldPosition(_v);
+        const tav = _v.distanceTo(kam);
+        if (takarasEll) {
+            _ray.set(kam, _v.clone().sub(kam).normalize());
+            _ray.far = tav;
+            const t = _ray.intersectObject(st.jel.g, true).find((x) => x.object.isMesh);
+            b.dataset.takar = t && t.distance < tav - 0.03 ? '1' : '';
+        }
+        _v.project(st.camera);
+        V.pontHelyez(b, (_v.x + 1) / 2 * cw, (1 - _v.y) / 2 * ch, cw, ch, _v.z > 1 || b.dataset.takar === '1');
     });
+    st.vp.helyez();
+}
+
+// Melyik megjelölt tárgy (ajtólap, vasalat) van az egér vagy az ujj alatt
+function celAlatt(e) {
+    if (!st.jel) return null;
+    const r = st.renderer.domElement.getBoundingClientRect();
+    _ray.far = Infinity;
+    _ray.setFromCamera(new THREE.Vector2((e.clientX - r.left) / r.width * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1), st.camera);
+    const t = _ray.intersectObject(st.jel.g, true).find((x) => x.object.isMesh);
+    for (let o = t && t.object; o; o = o.parent) {
+        if (o.userData.cel) return csopSorai(o.userData.cel).length ? o.userData.cel : null;
+    }
+    return null;
 }
 
 function valaszt(v, ertek) {
-    const o = st.o, be = (n, e) => { o[n] = e; if (st.api && st.api.beallit) st.api.beallit(n, e); };
-    if (v.mezo === 'fal3d' || v.mezo === 'padlo3d') {
+    if (v.helyi) {
         st.szoba[v.mezo === 'fal3d' ? 'fal' : 'padlo'] = ertek;
         try { localStorage.setItem('rnd_3d_szoba', JSON.stringify(st.szoba)); } catch (e) { /* nem baj */ }
-    } else if (v.mezo === 'vasSzin') {
-        if (ertek === 'fekete') { be('vasalatSzin', 'matt_fekete'); }
-        else { be('vasalatSzin', 'egyeb'); be('vasalatEgyeb', VASSZIN[ertek].nev); }
     } else {
-        if (v.mezo === 'vasalatTipus' && ertek !== 'falban' && o.tipus === 'falban') be('tipus', 'egyszarnyu');
-        be(v.mezo, ertek);
+        V.alkalmaz(st.o, v, ertek, st.api && st.api.beallit);
     }
     epit(false);
 }
@@ -747,6 +789,7 @@ function hurok() {
             if (st.nyit === st.cel) st.ptKell = true;   // megállt az ajtó: új jelenet a sugárkövetőnek
         }
         if (!st.jel) return;
+        if (mozog) st.pontKell = true;
         if (st.pt && st.foto && !mozog) {
             if (st.ptKell) { st.ptKell = false; st.kamValt = false; lapokHelyzet(st.nyit); st.pt.setScene(st.scene, st.camera); }
             if (st.kamValt) { st.kamValt = false; st.pt.updateCamera(); }
@@ -757,13 +800,15 @@ function hurok() {
             }
             st.kell = false;
         } else if (st.kell) { st.kell = false; rajzol(); }
+        pontokFrissit();
     } : null);
 }
 
 function meretez() {
     if (!st.renderer) return;
     const w = st.wrap.clientWidth || 600;
-    const h = Math.round(Math.min(w * (w < 500 ? 1.1 : 0.68), window.innerHeight * 0.72));
+    // a 0 magasság (rejtett vagy épp átméretezett ablak) végtelen képarányt és üres, NaN-os kamerát adna
+    const h = Math.max(200, Math.round(Math.min(w * (w < 500 ? 1.1 : 0.68), (window.innerHeight || 800) * 0.72)));
     st.renderer.setSize(w, h, true);
     st.camera.aspect = w / h;
     st.camera.updateProjectionMatrix();

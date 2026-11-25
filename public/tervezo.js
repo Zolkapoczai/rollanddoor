@@ -313,8 +313,14 @@
         if (!box.open) { return; } // csak kinyitva rajzolunk
         var v = readForm();
         window.FotoIllesztes.render(byId('fotoIllesztes'), van ? photos[0] : null, {
-            lap: v.lap, szin: v.szin, vasalatTipus: v.vasalatTipus, tipus: v.tipus, irany: v.irany, fogantyu: !!v.fogantyu
-        });
+            lap: v.lap, szin: v.szin, vasalatTipus: v.vasalatTipus, tipus: v.tipus, irany: v.irany, fogantyu: !!v.fogantyu,
+            vasalatSzin: v.vasalatSzin, vasalatEgyeb: v.vasalatEgyeb, szelesseg: v.szelesseg, magassag: v.magassag
+        }, { beallit: beallitFoto });
+    }
+    // A fotón választott érték: a tervező mezője, az összegzés, a fotó, és ha nyitva van, a 3D is frissül.
+    function beallitFoto(nev, ertek) {
+        beallit3d(nev, ertek);
+        render3d();
     }
     /* ---------- 3D előnézet (elonezet3d.js + three.js), csak kinyitáskor töltődik be ---------- */
     var d3Modul = null;

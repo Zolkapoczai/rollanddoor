@@ -7,6 +7,8 @@
 
     var TEXTURA = { tomorfa: 'tomorfa', fem: 'fem', nyomatos: 'nyomatos', antik: 'antik' };
     var FESTETT = { ral9016: '#eeede6', ral9005: '#111214', ral7016: '#383e42', ral7035: '#c5c7c4' };
+    // vasalatszín: [sín és pánt, görgő, görgő éle]
+    var VASSZIN = { fekete: ['#141414', '#1c1c1c', '#3a3a3a'], inox: ['#aeb3b8', '#c4c8cc', '#7d8287'], bronz: ['#5e3f25', '#6e4b2c', '#3a2716'], feher: ['#e8e7e2', '#f1f0ec', '#a9a8a2'] };
     var texCache = {};
     var state = null; // { file, url, img, sarok:[{x,y}×4] (képpixelben), opts, ... }
 
@@ -103,6 +105,12 @@
         if (o.tipus === 'ketszarnyu') {
             return { park: 'mindket', lapok: [[L, T, 0.5, 1, 'jobb'], [0.5, T, R, 1, 'bal']] };
         }
+        if (o.tipus === 'bypass') {
+            // egymás előtt futó: két lap középen átfedéssel, az elülső (a nyitás felőli) rajzolódik utoljára
+            var hatso = park === 'bal' ? [L, T, 0.56, 1, 'jobb'] : [0.44, T, R, 1, 'bal'];
+            var elso = park === 'bal' ? [0.44, T, R, 1, 'bal'] : [L, T, 0.56, 1, 'jobb'];
+            return { park: park, lapok: [hatso, elso] };
+        }
         return { park: park, lapok: [[L, T, R, 1, park === 'bal' ? 'jobb' : 'bal']] };
     }
 
@@ -154,24 +162,77 @@
                 ctx.fillStyle = '#121212'; ctx.fill();
             }
         });
-        // látszó sín és görgők (pajta)
-        if (o.vasalatTipus === 'pajta' && !t.falban) {
-            var rl = t.park === 'bal' || t.park === 'mindket' ? -1.2 : -0.1;
-            var rr = t.park === 'jobb' || t.park === 'mindket' ? 2.2 : 1.1;
-            ctx.fillStyle = '#141414';
-            negyszog(ctx, Hn, rl, -0.085, rr, -0.06); ctx.fill();
+        // látszó sín és görgők (pajta), a vasalat választott színével
+        var sin = sinTeglalap(o, t);
+        if (sin) {
+            var vs = VASSZIN[window.Valaszto ? window.Valaszto.vasSzinKulcs(o) : 'fekete'] || VASSZIN.fekete;
+            ctx.fillStyle = vs[0];
+            negyszog(ctx, Hn, sin[0], -0.085, sin[1], -0.06); ctx.fill();
             t.lapok.forEach(function (l) {
                 [l[0] + 0.12, l[2] - 0.12].forEach(function (u) {
-                    negyszog(ctx, Hn, u - 0.022, -0.1, u + 0.022, 0.07); ctx.fillStyle = '#141414'; ctx.fill();
-                    kor(ctx, Hn, u, -0.1, 0.05, 0.022); ctx.fillStyle = '#1c1c1c'; ctx.fill();
-                    ctx.strokeStyle = '#3a3a3a'; ctx.lineWidth = 1; ctx.stroke();
+                    negyszog(ctx, Hn, u - 0.022, -0.1, u + 0.022, 0.07); ctx.fillStyle = vs[0]; ctx.fill();
+                    kor(ctx, Hn, u, -0.1, 0.05, 0.022); ctx.fillStyle = vs[1]; ctx.fill();
+                    ctx.strokeStyle = vs[2]; ctx.lineWidth = 1; ctx.stroke();
                 });
             });
         }
     }
+    // A pajtasín vízszintes kiterjedése az egységnégyzetben [bal, jobb], vagy null, ha nincs látszó sín.
+    function sinTeglalap(o, t) {
+        if (o.vasalatTipus !== 'pajta' || t.falban) { return null; }
+        return [t.park === 'bal' || t.park === 'mindket' ? -1.2 : -0.1, t.park === 'jobb' || t.park === 'mindket' ? 2.2 : 1.1];
+    }
+
+    /* ---------- Pontok a fotón (ajtólap, vasalat színe) és koppintás a lapra vagy a sínre ---------- */
+    // A pontok helye az egységnégyzetben (u, v), a rajzolt ajtóhoz igazítva.
+    function pontHelyek(o) {
+        var t = lapok(o), elso = t.lapok[t.lapok.length - 1];
+        var lu = (elso[0] + elso[2]) / 2;
+        // a sarokpöttyöktől (u, v = 0 vagy 1) távol, hogy keskeny nyílásnál se torlódjanak
+        // a vasalat pontja csak pajtánál látszik: a sín nyílás melletti, kinyúló részén
+        return { lap: [lu, 0.45], vasalat: [t.park === 'jobb' ? 1.35 : -0.35, -0.073] };
+    }
+    function bentVan(p, q) { // p pont a q négyszögben (konvex vagy nem, páros-páratlan szabály)
+        var bent = false;
+        for (var i = 0, j = q.length - 1; i < q.length; j = i++) {
+            if ((q[i].y > p.y) !== (q[j].y > p.y) && p.x < (q[j].x - q[i].x) * (p.y - q[i].y) / (q[j].y - q[i].y) + q[i].x) { bent = !bent; }
+        }
+        return bent;
+    }
+    function talalat(e) {
+        if (!state.img || state.rejt) { return null; }
+        var r = state.cv.getBoundingClientRect(), p = { x: e.clientX - r.left, y: e.clientY - r.top };
+        var Hc = homografia(state.sarok.map(function (s) { return { x: s.x * state.k, y: s.y * state.k }; }));
+        var o = state.opts, t = lapok(o), sin = sinTeglalap(o, t);
+        function sarkok(u0, v0, u1, v1) { return [Hc(u0, v0), Hc(u1, v0), Hc(u1, v1), Hc(u0, v1)]; }
+        if (sin && bentVan(p, sarkok(sin[0], -0.13, sin[1], -0.05))) { return 'vasalat'; }
+        for (var i = t.lapok.length - 1; i >= 0; i--) {
+            var l = t.lapok[i];
+            if (bentVan(p, sarkok(l[0], l[1], l[2], l[3]))) { return 'lap'; }
+        }
+        return null;
+    }
+    function pontokHelyez(m) {
+        var V = window.Valaszto;
+        if (!V || !state.pontok) { return; }
+        var Hc = homografia(state.sarok.map(function (s) { return { x: s.x * m.k, y: s.y * m.k }; }));
+        var hely = pontHelyek(state.opts);
+        Object.keys(state.pontok).forEach(function (k) {
+            var b = state.pontok[k];
+            var nincs = state.rejt || !V.csopSorai(k, state.opts).length;
+            var p = Hc(hely[k][0], hely[k][1]);
+            V.pontHelyez(b, p.x, p.y, m.cssW, m.cssH, nincs);
+        });
+        state.vp.helyez();
+    }
+    function valaszt(v, ertek) {
+        window.Valaszto.alkalmaz(state.opts, v, ertek, state.api && state.api.beallit);
+        if (!(state.api && state.api.beallit)) { rajzol(false); state.vp.frissit(); }
+    }
 
     /* ---------- Felület ---------- */
-    function render(box, file, opts) {
+    // api.beallit(mezo, ertek): a pontokon választott érték visszaírása a tervező mezőjébe
+    function render(box, file, opts, api) {
         if (!file) { box.hidden = true; return; }
         box.hidden = false;
         if (!state || state.file !== file) {
@@ -180,6 +241,7 @@
             epit(box);
         }
         state.opts = opts;
+        state.api = api || state.api;
         var lapNev = TEXTURA[opts.lap] ? opts.lap : 'tomorfa';
         Promise.all([state.img ? Promise.resolve(state.img) : loadImg(state.url), textura(lapNev)]).then(function (r) {
             state.img = r[0];
@@ -190,6 +252,7 @@
                 state.sarok = [{ x: x, y: y }, { x: x + w, y: y }, { x: x + w, y: y + h }, { x: x, y: y + h }];
             }
             rajzol(false);
+            if (state.vp) { state.vp.frissit(); }
         }).catch(function () {
             box.querySelector('.fi-msg').textContent = 'Ezt a képet nem tudjuk itt megjeleníteni. Az ajánlatkérést ez nem érinti.';
         });
@@ -199,7 +262,7 @@
         box.textContent = '';
         var p = document.createElement('p');
         p.className = 'fi-help';
-        p.textContent = 'Húzd a 4 kerek pöttyöt a nyílás 4 sarkára (a padlónál is). Az ajtó a választásaid szerint rákerül a fotódra.';
+        p.textContent = 'Húzd a 4 számozott pöttyöt a nyílás 4 sarkára (a padlónál is). Az ajtó a választásaid szerint rákerül a fotódra; a „+” pontokra koppintva anyagot és színt válthatsz.';
         var wrap = document.createElement('div');
         wrap.className = 'fi-wrap';
         var cv = document.createElement('canvas');
@@ -207,6 +270,24 @@
         cv.setAttribute('role', 'img');
         cv.setAttribute('aria-label', 'A fotód a rárajzolt ajtóval');
         wrap.appendChild(cv);
+        // választópontok (a sarokpöttyök alatt, hogy a húzás mindig elsőbbséget kapjon)
+        var V = window.Valaszto;
+        if (V) {
+            var reteg = document.createElement('div');
+            reteg.className = 'd3-pontok';
+            wrap.appendChild(reteg);
+            state.pontok = V.pontokLetrehoz(reteg, function (k) { state.vp.valt(k); });
+            state.vp = V.letrehoz({
+                wrap: wrap, pontok: state.pontok,
+                allapot: function () { return { o: state.opts, szoba: null }; },
+                valaszt: valaszt,
+                kepMeret: function () { var m = meret(); return { cw: m.cssW, ch: m.cssH }; }
+            });
+            V.koppintas(cv, function (e) { var k = talalat(e); if (k) { state.vp.nyit(k); } });
+            cv.addEventListener('pointermove', function (e) {
+                if (e.pointerType === 'mouse' && !e.buttons) { cv.style.cursor = talalat(e) ? 'pointer' : ''; }
+            });
+        }
         var nevek = ['bal felső', 'jobb felső', 'jobb alsó', 'bal alsó'];
         var fogok = nevek.map(function (nev, i) {
             var b = document.createElement('button');
@@ -229,6 +310,7 @@
             state.rejt = !state.rejt;
             mutat.setAttribute('aria-pressed', String(!!state.rejt));
             mutat.textContent = state.rejt ? 'Ajtó mutatása' : 'Csak a fotó';
+            if (state.rejt && state.vp) { state.vp.zar(false); }
             rajzol(false);
         });
         var ment = document.createElement('button');
@@ -284,6 +366,8 @@
             });
             state.wrap.style.width = m.cssW + 'px';
             state.wrap.style.height = m.cssH + 'px';
+            state.k = m.k;
+            pontokHelyez(m);
         }
     }
 
