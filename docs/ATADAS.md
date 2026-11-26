@@ -23,6 +23,7 @@ Utolsó frissítés: 2026-11-25
 | Világos, otthonosabb főoldal – **PRÓBAVÁLTOZAT** | csak a `/?tema=vilagos` címmel jelenik meg, az alap (sötét) oldal változatlan. Krém/homok háttér, sötétebb karamell kiemelőszín (`#9c6842`, világos alapon is olvasható), lakásfotós hero (`ref-01`, tükrözve), lekerekített kártyák és gombok, lágy árnyékok, meleg sötétbarna lábléc, világos alapra színezett logó (`img/logo-vilagos.webp`). Fájl: `public/landing-vilagos.css`, kapcsoló: egy sor az `index.html` fejében. A többi oldal (tervező, blog) nem kapja meg. **Ricsi döntésére vár**; ha jóváhagyja, a változókat a `landing.css`-be kell átvezetni, és a kapcsolót törölni. |
 | Megrendelés 7 állomása, automatikus levelek, cron | backend kész, élesben végigpróbálva |
 | Ricsi dashboardja (`/dashboard`) | kész, **átmenetileg belépés nélkül nyitott** |
+| Ricsi 1. módosítási köre (`Módosítások_V1.docx`, 2026-11-26) | **kész**: a hero-ból kikerült a „Minden ajtót dupla sínnel szerelünk.” sor és a „Fedezd fel…” bekezdés (a dokumentum „Ezek nem kellenek” felirata képen volt, ez a értelmezésünk, Ricsi megerősítésére vár); a dupla sínes kártyáról lekerült az „Ez a legfontosabb” jelvény, új szöveg; „Személyre szabott dizájn” és „Profi beszerelés” (korábban „Könnyű beszerelés”, a GLS-es mondat kikerült) Ricsi szövegével; menü: Kezdőlap, Miért a Roll’n’Door, Ajtólapok, Vasalatok, Ajtótervező, GY.I.K., Kapcsolat, Ajánlatkérés (Galéria, Blog és Dashboard kikerült; a `/dashboard` címen továbbra is elérhető); a blog ki van kapcsolva: a `/blog` és `/blog.html` a `_redirects`-ben a főoldalra irányít (`blog.html` megmaradt, visszakapcsoláskor a `_redirects` négy sorát kell törölni). A menü `white-space: nowrap` lett, hogy 1024 px-en is egy sorban maradjon. |
 | Saját domain (`rollndoor.hu`) | **nincs átállítva**, a régi WordPress fut rajta |
 
 ### Vasalattípus-ablakok diavetítése (2026-11-24)
@@ -82,7 +83,7 @@ Minden munka a `main` ágban van és élesben fut a workers.dev próbacímen (ut
 
 ## Élesítés (domainváltás) előtt kötelező
 
-1. A `/dashboard` belépés mögé: töröld a `DASHBOARD_NYILT` sort a `wrangler.jsonc`-ból, és vedd ki a „Dashboard” menüpontot. A próbamegrendeléseket töröld az éles D1-ből.
+1. A `/dashboard` belépés mögé: töröld a `DASHBOARD_NYILT` sort a `wrangler.jsonc`-ból, (a „Dashboard” menüpont 2026-11-26 óta már nincs a főoldalon). A próbamegrendeléseket töröld az éles D1-ből.
 2. ~~A Technológia faltípusos része~~: 2026-11-25-én kikerült a főoldalról, nincs teendő.
 3. A DNSSEC kikapcsolása az Integrityn, utána a névszerver-váltás, végül a `SITE_URL` visszaállítása a `wrangler.jsonc`-ban. A pontos sorrend a `TERV.md` 6. pontjában van.
 4. Resend: domain és a `valasz` aldomain, webhook, DMARC-rekord.
