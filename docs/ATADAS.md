@@ -68,7 +68,7 @@ Utolsó frissítés: 2026-11-25
 
 ## Folytatás új sessionben – nyitott teendők (2026-11-25)
 
-Minden munka a `main` ágban van és élesben fut a workers.dev próbacímen (utolsó deploy: 2026-11-25, a 3D és a fotós választópontokkal, PR #12); nincs félbehagyott ág vagy commitolatlan módosítás.
+Minden munka a `main` ágban van és élesben fut a workers.dev próbacímen (utolsó deploy: 2026-11-27, Ricsi V2 köre: ajtólapkártyák és részletes ablakok, kézzel, `wrangler deploy`); nincs félbehagyott ág vagy commitolatlan módosítás.
 
 1. **Ricsi döntései:** a világos téma (`/?tema=vilagos`) legyen-e az alap (ha igen: a változókat a `landing.css`-be átvezetni, a kapcsolót törölni, a tervezőt és a blogot is átszínezni); mennyi szabad fal kell a nyitott ajtónak (most lapszélesség + 3–5 cm); a rejtett és a lebegő vasalat rajza helyes-e; a `TODO`-k a típusablakokban, a GYIK-ban és a galérianevekben.
 2. **Telefonos próba:** az AR („Nézd meg a szobádban”) és a 3D pontjai (alsó panel, koppintás vs. forgatás) valódi telefonon.
