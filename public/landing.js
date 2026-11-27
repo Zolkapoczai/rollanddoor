@@ -447,35 +447,60 @@ const galleryImages = [
     render();
 })();
 
-// --- Tolóajtó-típusok: kattintásra részletes ablak. VÁZLAT-szövegek, validálásra várnak. ---
+// --- Tolóajtó-típusok: kattintásra részletes ablak. Ajtólapok: Ricsi végleges szövegei; vasalatok: VÁZLAT, validálásra vár. ---
 (function () {
     const dlg = document.getElementById('type-dialog');
     if (!dlg || typeof dlg.showModal !== 'function') return;
-    // Ajtólapoknál Ricsi kérésére nincs részletes lista, csak nagy kép és rövid szöveg.
+    // Ajtólapok: Ricsi szövegei (Módosítások V2, 2026-11-27): bevezető, alcím, 4 félkövér kezdetű pont.
+    // A kép ugyanaz, mint a kártyán (ott 4:5-ös kivágásban).
     const TYPES = {
         tomorfa: {
-            title: 'Tömörfa ajtólapok',
-            img: 'img/galeria-02-loft-tomorfa.webp',
-            text: 'Természetes erezet, időtálló tartás és valódi fa karakter, egyedi méretre és színre szabva. Bármelyik vasalatunkkal kérheted.',
-            list: []
+            title: 'Tömörfa ajtólapok – Természetes elegancia, kompromisszumok nélkül',
+            img: 'img/referencia/ref-09-kandallo-z-ajto.webp',
+            text: 'A tömörfa tolóajtó nemcsak térelválasztó, hanem az otthonod egyik legmeghatározóbb bútordarabja. A valódi fa melegséget, egyedi mintázatot és masszív, prémium érzetet ad minden helyiségnek.',
+            sub: 'Mitől különlegesek a Roll’n’Door tömörfa ajtólapok?',
+            list: [
+                ['Válogatott alapanyagok', 'Gondosan szárított tömörfából dolgozunk, hogy az ajtó évek múlva is tökéletesen működjön.'],
+                ['Teljesen egyedi méret és kialakítás', 'Nem szabványméretekben gondolkodunk. Milliméterre pontosan a falnyílásodhoz gyártjuk az ajtólapot.'],
+                ['Szabad felületkezelés és színválasztás', 'Kérheted természetes olajozással vagy lakkozással, hogy a fa erezete hangsúlyos maradjon, de bármilyen egyedi pác- vagy RAL/NCS színre is lefestjük.'],
+                ['Bármelyik vasalattal kombinálható', 'A klasszikus, látszó pajtaajtó-vasalattal rusztikus hangulatot teremt, míg lebegő vagy rejtett sínes rendszerrel modern, letisztult hatást kelt.']
+            ]
         },
         nyomatos: {
-            title: 'Nyomatos ajtólapok',
-            img: 'img/referencia/ref-22-fenykepes-nappali.webp', // izlandi fotónyomat (Zoli, 2026-11-25)
-            text: 'Egyedi grafika, fotó vagy minta prémium minőségben – az ajtód az otthonod központi dizájneleme lesz. Bármelyik vasalatunkkal kérheted.',
-            list: []
+            title: 'Nyomatos ajtólapok – Egyedi látványvilág az otthonodban',
+            img: 'img/referencia/ref-22-fenykepes-nappali.webp',
+            text: 'A nyomatos tolóajtóval az ajtólap nemcsak egy funkcionális térelválasztó, hanem egy hatalmas, művészi falfelület, amely azonnal meghatározza a szoba hangulatát. Legyen szó saját fotóról, absztrakt grafikáról vagy különleges textúráról, az elképzelésedet tűéles minőségben keltjük életre.',
+            sub: 'Mitől különlegesek a Roll’n’Door nyomatos ajtólapok?',
+            list: [
+                ['Tűéles, nagy felbontású nyomtatás', 'Speciális, nagy formátumú technológiával dolgozunk, így a színek élénkek, a részletek pedig közelről nézve is kristálytiszták maradnak.'],
+                ['Karcálló, könnyen tisztítható felület', 'A nyomatot védőréteggel látjuk el, így ellenáll a mindennapi használatnak, nem fakul ki a napfénytől, és egy nedves ruhával pillanatok alatt tisztán tartható.'],
+                ['Akár kétoldalas kialakítás', 'Kérheted az ajtó mindkét oldalát ugyanazzal a mintával, de akár két teljesen eltérő grafikát is választhatsz, hogy mindkét helyiség stílusához tökéletesen passzoljon.'],
+                ['Bármelyik vasalattal kombinálható', 'Letisztult, lebegő vagy rejtett sínes vasalattal modern galériahatást kelt, míg egy fekete pajtaajtó-vasalattal izgalmas, indusztriális kontrasztot alkot.']
+            ]
         },
         fem: {
-            title: 'Fém ajtólapok',
-            img: 'img/ajtolap-fem.webp',
-            text: 'Letisztult, indusztriális megjelenés és masszív szerkezet modern vagy loft terekbe tervezve. Bármelyik vasalatunkkal kérheted.',
-            list: []
+            title: 'Fém ajtólapok – Indusztriális karakter és időtálló stabilitás',
+            img: 'img/referencia/ref-35-lezervagott-feher.webp',
+            text: 'A fém tolóajtó egyszerre sugároz modern eleganciát és nyers, indusztriális erőt. Legyen szó loft hangulatú nappaliról, modern irodáról vagy letisztult minimál otthonról, a precízen megmunkált acél szerkezet garantáltan a tér fókuszpontja lesz.',
+            sub: 'Mitől különlegesek a Roll’n’Door fém ajtólapok?',
+            list: [
+                ['Masszív, mégis könnyed működés', 'A masszív acél- és fémszerkezetek súlyát a Roll’n’Door dupla sínes rendszere (akár 80 kg-ig) erőlködés nélkül, halkan és stabilan mozgatja.'],
+                ['Teli vagy üvegezett kialakítás', 'Kérheted teljesen zárt, karakteres fémlemez kivitelben, vagy fémkeretes üvegezéssel (átlátszó, savmart vagy bordázott üveggel), ha a térelválasztás mellett a természetes fényt is megtartanád.'],
+                ['Strapabíró porszórt felület', 'A klasszikus matt fekete és antracit mellett bármilyen egyedi RAL színben kérheted, a szinterezett felület pedig rendkívül ellenálló a karcokkal és az ütődésekkel szemben.'],
+                ['Bármelyik vasalattal kombinálható', 'Látszó pajtaajtó-vasalattal az autentikus műhely- és loft stílust erősíti, míg rejtett sínes vagy falban futó megoldással ultramodern, építészeti hatást kelt.']
+            ]
         },
         antik: {
-            title: 'Antik ajtólapok',
-            img: 'img/galeria-06-antik-diszes-ajto.webp',
-            text: 'Különleges, patinás és rusztikus darabok egyedi történettel, modern dupla sínes működésre hangolva. Bármelyik vasalatunkkal kérheted.',
-            list: []
+            title: 'Antik ajtólapok – Nagypolgári elegancia új szerepben',
+            img: 'img/ajtolap-antik-nagypolgari.webp',
+            text: 'Egy régi, kazettás nagypolgári ajtó olyan lélekkel és arányokkal rendelkezik, amit modern tömeggyártással lehetetlen utánozni. Megmentjük ezeket az időtálló darabokat, és a Roll’n’Door precíz vasalatrendszerével a mai otthonok látványos, könnyedén gördülő tolóajtajává alakítjuk őket.',
+            sub: 'Mitől különlegesek a Roll’n’Door antik ajtólapok?',
+            list: [
+                ['Valódi múlt és egyedi patina', 'Klasszikus, több évtizedes polgári ajtószárnyakból dolgozunk, amelyeknek minden apró erezete és kazettás tagolása valódi történetet mesél.'],
+                ['Szakszerű felújítás és méretre szabás', 'Az ajtólapot megtisztítjuk, megerősítjük, a te nyílásodhoz igazítjuk, és felkészítjük a modern tolóajtó-vasalatok stabil fogadására.'],
+                ['Saját régi ajtóból is elkészítjük', 'Van egy régi polgári ajtód a padláson vagy egy felújításból? Hozd el hozzánk, és átalakítjuk modern tolóajtóvá – de ha nincs, mi is segítünk megtalálni a megfelelő darabot.'],
+                ['Izgalmas stíluskombinációk', 'Egy patinás nagypolgári ajtólap látszó pajtaajtó-vasalattal autentikus, rusztikus hangulatot ad, míg lebegő vagy rejtett sínes rendszerrel lenyűgöző, modern kontrasztot teremt.']
+            ]
         },
         pajta: {
             title: 'Pajtaajtó-vasalat látszó görgőkkel',
@@ -599,8 +624,18 @@ const galleryImages = [
             opener = btn;
             dlg.querySelector('#type-dialog-title').textContent = t.title;
             dlg.querySelector('.type-dialog-text').textContent = t.text;
+            dlg.querySelector('.type-dialog-sub').textContent = t.sub || '';
             const ul = dlg.querySelector('.type-dialog-list');
-            ul.replaceChildren(...t.list.map((s) => { const li = document.createElement('li'); li.textContent = s; return li; }));
+            // Egy pont lehet sima szöveg, vagy [félkövér kezdet, szöveg] pár.
+            ul.replaceChildren(...t.list.map((s) => {
+                const li = document.createElement('li');
+                if (Array.isArray(s)) {
+                    const b = document.createElement('strong');
+                    b.textContent = s[0] + ': ';
+                    li.append(b, s[1]);
+                } else li.textContent = s;
+                return li;
+            }));
             stopShow();
             imgEl.setAttribute('aria-label', t.title);
             if (t.slides) startShow(t.slides, t.title);

@@ -134,6 +134,8 @@ Fizetős Gemini az ajánlat megírásához, ~~ajtó ráillesztése az ügyfél f
 
 Főoldal menü: Kezdőlap, Miért a Roll’n’Door, Ajtólapok, Vasalatok, Ajtótervező, GY.I.K., Kapcsolat, Ajánlatkérés. A blog ki van kapcsolva (átirányítás a főoldalra), a Galéria és a Dashboard kikerült a menüből. A hero-ból kikerült a dupla sínes sor és a leíró bekezdés. A kártyaszövegek Ricsi megadása szerint. Részletek: `docs/ATADAS.md`.
 
+2026-11-27 (`Módosítások_V2.docx`): az ajtólapkártyák új képet kaptak, a Tömörfa és az Antik új szöveget, és mind a 4 ajtólap felugró ablaka Ricsi részletes leírását mutatja (bevezető, alcím, 4 pont). Az ablakban ugyanaz a kép, mint a kártyán (Zoli döntése). A következő kör a vasalatok szekció.
+
 ### Világos téma próbaváltozat (2026-11-25)
 
 - Zoli kérésére (sok női látogató várható) egy világosabb, otthonosabb főoldal-változat készült, amely csak a `/?tema=vilagos` címen látszik. A landing a mintaoldal másolata (Ricsi döntése, 2026-11-14), ezért az alap kinézet csak **Ricsi jóváhagyásával** változhat. Szándékosan nincs benne rózsaszín, pasztell, kézírásos betű vagy virágminta. Részletek: `docs/ATADAS.md`.
@@ -141,7 +143,7 @@ Főoldal menü: Kezdőlap, Miért a Roll’n’Door, Ajtólapok, Vasalatok, Ajt�
 ### Ajtólap- és vasalattípusok a főoldalon (`/#ajtolapok`, `/#tipusok`), 2026-11-24
 
 - Két egymást követő kártyasor a „Miért a Roll’n’Door?” és a „Referenciáink” között. Az első az ajtólap (tömörfa, nyomatos, fém, antik), a második a vasalat (pajta, rejtett, lebegő, falban futó). Címük 2026-11-25 óta „Ajtólap típusok” és „Vasalat típusok” (korábban „1. lépés: Válaszd ki az ajtólapot” / „2. lépés: Válaszd ki a vasalatot”, Zoli kérésére). Alatta egy gomb az Ajtótervezőre.
-- **Ricsi döntése (2026-11-24):** alapvetően minden ajtólap mehet minden vasalattal. Fém ajtólap önállóan is készül. Üvegbetétes külön típusként nem kell (2026-11-24). Ajtólaponként nem kell részletes lista. A fém kártya képe Ricsi fotója (`img/ajtolap-fem*.webp`; a kártyán 2026-11-25 óta 4:5-ös kivágásban: `img/ajtolap-kartya-fem.webp`). A tömörfa kártya képe azóta `ref-72`, a nyomatosé `ref-82` (hídminta), az antiké a `galeria-06` teljes változata (Zoli kérésére, hogy szépek és jól elhelyezettek legyenek).
+- **Ricsi döntése (2026-11-24):** alapvetően minden ajtólap mehet minden vasalattal. Fém ajtólap önállóan is készül. Üvegbetétes külön típusként nem kell (2026-11-24). Ajtólaponként nem kell részletes lista (2026-11-27 óta van: Ricsi V2 köre). A fém kártya képe Ricsi fotója (`img/ajtolap-fem*.webp`; a kártyán 2026-11-25 óta 4:5-ös kivágásban: `img/ajtolap-kartya-fem.webp`). A tömörfa kártya képe azóta `ref-72`, a nyomatosé `ref-82` (hídminta), az antiké a `galeria-06` teljes változata (Zoli kérésére, hogy szépek és jól elhelyezettek legyenek).
 - **Vasalatablakok diavetítése (Zoli kérésére, 2026-11-24):** a 4 vasalat felugró ablakában ugyanaz a jelenet 4 ajtólappal, lassú áttűnéssel, 5.-ként a működés animációja (metszet → kizoomolt elölnézet). Az azonos perspektíva miatt montázs, nem MI-kép (`tools/ajtolap-montazs.py`, `tools/vasalat-animaciok.py`). A rejtett és a lebegő szerkezetét Ricsinek jóvá kell hagynia. Részletek: `docs/ATADAS.md`.
 - A tervező ezt követi: a 3. lépésben nyomatos, fém és antik ajtólap is választható, az 5. lépésben vasalattípus (`vasalat_tipus`: pajta / rejtett / lebego / falban / nem_tudom). A Worker változatlan, a válaszokat és az összegzést általánosan tárolja.
 
